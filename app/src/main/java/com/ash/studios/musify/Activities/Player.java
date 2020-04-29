@@ -37,6 +37,7 @@ import static com.ash.studios.musify.Utils.Instance.repeat;
 import static com.ash.studios.musify.Utils.Instance.shuffle;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Instance.uri;
+import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Player extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
     Toolbar toolbar;
@@ -57,7 +58,7 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
-        Utils.setUpUI(this);
+        setUpUI(this);
         setIDs();
 
         seekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {

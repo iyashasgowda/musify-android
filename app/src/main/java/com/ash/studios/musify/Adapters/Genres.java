@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +24,10 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     public ArrayList<Genre> genres;
     private Context context;
 
-    public Genres(Context context, ArrayList<Genre> genres) {
+    public Genres(Context context, ArrayList<Genre> genres, ProgressBar pb) {
         this.context = context;
         this.genres = genres;
+        pb.setVisibility(View.GONE);
     }
 
     @NonNull

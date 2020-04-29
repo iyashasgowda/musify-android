@@ -26,6 +26,8 @@ import com.ash.studios.musify.Utils.Utils;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Utils.setUpUI;
+
 @SuppressLint("SetTextI18n")
 public class SongList extends AppCompatActivity {
     TextView title;
@@ -43,7 +45,7 @@ public class SongList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.song_list);
-        Utils.setUpUI(this);
+        setUpUI(this);
 
         setIDs();
         setListTitle();
@@ -93,6 +95,48 @@ public class SongList extends AppCompatActivity {
                     CL.setVisibility(View.VISIBLE);
                     break;
             }
+
+            RM.setOnClickListener(rm -> {
+                rv.setAdapter(null);
+                loader.setVisibility(View.VISIBLE);
+                dialog.dismiss();
+
+                switch (listType) {
+                    case "all_songs":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context), loader)), 10);
+                        break;
+                    case "folders":
+                        //TODO:need to get all song folders
+                        break;
+                    case "albums":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new Albums(context, Utils.getAlbums(context), loader)), 10);
+                        break;
+                    case "artists":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new Artists(context, Utils.getArtists(context), loader)), 10);
+                        break;
+                    case "genres":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new Genres(context, Utils.getGenres(context), loader)), 10);
+                        break;
+                    case "play_lists":
+                        //TODO:need to get playlists
+                        break;
+                    case "top_rated":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader)), 10);
+                        break;
+                    case "low_rated":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader)), 10);
+                        break;
+                    case "recently_added":
+                        //TODO:need to get recently added songs
+                        break;
+                }
+            });
         });
     }
 
@@ -139,15 +183,10 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_all_songs));
         icon.setColorFilter(Color.parseColor(color));
 
-        if (Utils.songs == null || Utils.songs.size() == 0) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context)));
-                loader.setVisibility(View.GONE);
-            }, 50);
-        } else {
-            rv.setAdapter(new AllSongs(context, Utils.songs));
-            loader.setVisibility(View.GONE);
-        }
+        if (Utils.songs == null || Utils.songs.size() == 0)
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context), loader)), 10);
+        else rv.setAdapter(new AllSongs(context, Utils.songs, loader));
     }
 
     private void getFolders(String color) {
@@ -161,15 +200,10 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
         icon.setColorFilter(Color.parseColor(color));
 
-        if (Utils.albums == null || Utils.albums.size() == 0) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Albums(context, Utils.getAlbums(context)));
-                loader.setVisibility(View.GONE);
-            }, 50);
-        } else {
-            rv.setAdapter(new Albums(context, Utils.albums));
-            loader.setVisibility(View.GONE);
-        }
+        if (Utils.albums == null || Utils.albums.size() == 0)
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    rv.setAdapter(new Albums(context, Utils.getAlbums(context), loader)), 10);
+        else rv.setAdapter(new Albums(context, Utils.albums, loader));
     }
 
     private void getArtists(String color) {
@@ -177,15 +211,10 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
         icon.setColorFilter(Color.parseColor(color));
 
-        if (Utils.artists == null || Utils.artists.size() == 0) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Artists(context, Utils.getArtists(context)));
-                loader.setVisibility(View.GONE);
-            }, 50);
-        } else {
-            rv.setAdapter(new Artists(context, Utils.artists));
-            loader.setVisibility(View.GONE);
-        }
+        if (Utils.artists == null || Utils.artists.size() == 0)
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    rv.setAdapter(new Artists(context, Utils.getArtists(context), loader)), 10);
+        else rv.setAdapter(new Artists(context, Utils.artists, loader));
     }
 
     private void getGenres(String color) {
@@ -193,15 +222,10 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
         icon.setColorFilter(Color.parseColor(color));
 
-        if (Utils.genres == null || Utils.genres.size() == 0) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Genres(context, Utils.getGenres(context)));
-                loader.setVisibility(View.GONE);
-            }, 50);
-        } else {
-            rv.setAdapter(new Genres(context, Utils.genres));
-            loader.setVisibility(View.GONE);
-        }
+        if (Utils.genres == null || Utils.genres.size() == 0)
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    rv.setAdapter(new Genres(context, Utils.getGenres(context), loader)), 10);
+        else rv.setAdapter(new Genres(context, Utils.genres, loader));
     }
 
     private void getPlayLists(String color) {
@@ -215,8 +239,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(context, Utils.getTR(context)));
-        loader.setVisibility(View.GONE);
+        rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader));
     }
 
     private void getLowRated(String color) {
@@ -224,8 +247,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_low_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(context, Utils.getLR(context)));
-        loader.setVisibility(View.GONE);
+        rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader));
     }
 
     private void getRecentlyAdded(String color) {
@@ -247,10 +269,10 @@ public class SongList extends AppCompatActivity {
     @Override
     protected void onResume() {
         if (listType.equals("top_rated")) {
-            rv.setAdapter(new AllSongs(context, Utils.getTR(context)));
+            rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader));
             rv.scrollToPosition(lastPosition);
         } else if (listType.equals("low_rated")) {
-            rv.setAdapter(new AllSongs(context, Utils.getLR(context)));
+            rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader));
             rv.scrollToPosition(lastPosition);
         }
         super.onResume();

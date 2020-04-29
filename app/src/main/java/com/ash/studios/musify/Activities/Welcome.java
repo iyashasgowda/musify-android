@@ -21,6 +21,8 @@ import androidx.core.content.ContextCompat;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
+import static com.ash.studios.musify.Utils.Utils.setUpUI;
+
 public class Welcome extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     ProgressBar loader;
@@ -31,7 +33,7 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
-        Utils.setUpUI(this);
+        setUpUI(this);
         setIDs();
 
         new Handler(Looper.getMainLooper()).postDelayed(this::checkPermission, 500);

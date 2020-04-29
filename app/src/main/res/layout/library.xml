@@ -8,6 +8,7 @@
     tools:ignore="ContentDescription,HardcodedText,UnusedAttribute">
 
     <ScrollView
+        android:id="@+id/library_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,6 +38,21 @@
                     android:transitionName="library"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/library_options_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/border_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/border_ripple"
+                    android:padding="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/library"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/library"
+                    app:srcCompat="@drawable/ic_more" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/all_songs"
@@ -192,43 +208,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/play_lists"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/ripple"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genres">
-
-                    <ImageView
-                        android:id="@+id/playlists_icon"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:alpha="0.6"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_playlist" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="Playlists"
-                        android:textColor="@android:color/white"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/playlists_icon"
-                        app:layout_constraintStart_toEndOf="@+id/playlists_icon"
-                        app:layout_constraintTop_toTopOf="@+id/playlists_icon" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/genres"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -262,6 +241,43 @@
                         app:layout_constraintBottom_toBottomOf="@+id/genres_icon"
                         app:layout_constraintStart_toEndOf="@+id/genres_icon"
                         app:layout_constraintTop_toTopOf="@+id/genres_icon" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/play_lists"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/genres">
+
+                    <ImageView
+                        android:id="@+id/playlists_icon"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_playlist" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="Playlists"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/playlists_icon"
+                        app:layout_constraintStart_toEndOf="@+id/playlists_icon"
+                        app:layout_constraintTop_toTopOf="@+id/playlists_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -303,58 +319,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/recently_added"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/ripple"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/low_rated">
-
-                    <ImageView
-                        android:id="@+id/recently_added_icon"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:alpha="0.6"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_added" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="Recently Added"
-                        android:textColor="@android:color/white"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/recently_added_icon"
-                        app:layout_constraintStart_toEndOf="@+id/recently_added_icon"
-                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/border_bg"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/border_ripple"
-                    android:padding="8dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/library"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/library"
-                    app:srcCompat="@drawable/ic_more" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/low_rated"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -389,6 +353,45 @@
                         app:layout_constraintBottom_toBottomOf="@+id/low_rated_icon"
                         app:layout_constraintStart_toEndOf="@+id/low_rated_icon"
                         app:layout_constraintTop_toTopOf="@+id/low_rated_icon" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/recently_added"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="100dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/low_rated">
+
+                    <ImageView
+                        android:id="@+id/recently_added_icon"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_added" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="Recently Added"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/recently_added_icon"
+                        app:layout_constraintStart_toEndOf="@+id/recently_added_icon"
+                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -93,7 +93,6 @@ public class Utils extends Application {
 
         ScrollView scrollView = dialog.findViewById(R.id.dialog_scroll_view);
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
-
         return dialog;
     }
 

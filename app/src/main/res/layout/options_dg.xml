@@ -72,6 +72,9 @@
                             android:layout_height="32dp"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
+                            android:alpha="0.6"
+                            app:layout_constraintBottom_toTopOf="@+id/view"
+                            app:layout_constraintEnd_toStartOf="@+id/dialog_name"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 

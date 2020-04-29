@@ -3,6 +3,7 @@ package com.ash.studios.musify.Activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +19,13 @@ import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
+import static com.ash.studios.musify.Utils.Utils.setUpUI;
+
 @SuppressLint("SetTextI18n")
 public class Bunch extends AppCompatActivity {
     TextView bunchTitle, goBackTo;
     ConstraintLayout goBackBtn;
+    ProgressBar loader;
     ImageView coverArt;
     RecyclerView rv;
 
@@ -29,7 +33,7 @@ public class Bunch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bunch_list);
-        Utils.setUpUI(this);
+        setUpUI(this);
 
         setIDs();
         setBunchAttrs();
@@ -37,6 +41,7 @@ public class Bunch extends AppCompatActivity {
 
     private void setIDs() {
         rv = findViewById(R.id.bunch_rv);
+        loader = findViewById(R.id.bunch_pb);
         coverArt = findViewById(R.id.cover_art);
         goBackTo = findViewById(R.id.go_back_to);
         goBackBtn = findViewById(R.id.go_back_btn);
@@ -76,7 +81,7 @@ public class Bunch extends AppCompatActivity {
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getAlbumSongs(this, album.getAlbum_id())));
+            rv.setAdapter(new AllSongs(this, Utils.getAlbumSongs(this, album.getAlbum_id()), loader));
         }
     }
 
@@ -92,7 +97,7 @@ public class Bunch extends AppCompatActivity {
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getArtistSongs(this, artist.getArtist_id())));
+            rv.setAdapter(new AllSongs(this, Utils.getArtistSongs(this, artist.getArtist_id()), loader));
         }
     }
 
@@ -108,7 +113,7 @@ public class Bunch extends AppCompatActivity {
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getGenreSongs(this, genre.getGenre_id())));
+            rv.setAdapter(new AllSongs(this, Utils.getGenreSongs(this, genre.getGenre_id()), loader));
         }
     }
 }
