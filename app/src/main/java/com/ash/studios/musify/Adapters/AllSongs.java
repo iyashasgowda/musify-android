@@ -50,7 +50,7 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
         holder.duration.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
 
         //Setting album art
-        Glide.with(context).asBitmap().load(Utils.getAlbumArt(song.getAlbum_id())).placeholder(R.mipmap.icon).into(holder.albumCover);
+        Glide.with(context.getApplicationContext()).asBitmap().load(Utils.getAlbumArt(song.getAlbum_id())).placeholder(R.mipmap.icon).into(holder.albumCover);
 
         //Setting onClick listener
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Player.class).putExtra("position", position)));

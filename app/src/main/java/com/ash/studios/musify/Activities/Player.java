@@ -6,12 +6,15 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.palette.graphics.Palette;
 
@@ -24,14 +27,13 @@ import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import static com.ash.studios.musify.Adapters.AllSongs.list;
 
-public class Player extends AppCompatActivity {
+public class Player extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
+    Toolbar toolbar;
     CircularSeekBar seekBar;
     FloatingActionButton playPause;
     TextView title, artist, duration;
@@ -41,7 +43,9 @@ public class Player extends AppCompatActivity {
     static Song song;
     static MediaPlayer mp;
     static ArrayList<Song> songs = new ArrayList<>();
+
     int position = -1;
+    Handler handler = new Handler();
     Thread fabThread, prevThread, nextThread;
 
     @Override
@@ -50,6 +54,7 @@ public class Player extends AppCompatActivity {
         setContentView(R.layout.player);
         Utils.setUpUI(this);
         setIDs();
+
         seekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
@@ -58,25 +63,40 @@ public class Player extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(CircularSeekBar seekBar) {
-
             }
 
             @Override
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
-
             }
         });
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (mp != null) {
-                    int currentPosition = mp.getCurrentPosition() / 1000;
-                    seekBar.setProgress(currentPosition);
-                }
-            }
-        }, 0, 1000);
-
+        bindSeekBar();
         getSong();
+        mp.setOnCompletionListener(this);
+    }
+
+    private void setIDs() {
+        title = findViewById(R.id.title);
+        artist = findViewById(R.id.artist);
+        toolbar = findViewById(R.id.toolbar);
+        seekBar = findViewById(R.id.seek_bar);
+        duration = findViewById(R.id.duration);
+        albumArt = findViewById(R.id.album_art);
+        background = findViewById(R.id.background);
+
+        next = findViewById(R.id.next);
+        previous = findViewById(R.id.prev);
+        repeat = findViewById(R.id.repeat);
+        shuffle = findViewById(R.id.shuffle);
+        playPause = findViewById(R.id.play_pause);
+
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(view -> finish());
+        toolbar.inflateMenu(R.menu.player);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.ic_equalizer)
+                Toast.makeText(Player.this, "Equalizer", Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 
     private void getSong() {
@@ -101,149 +121,17 @@ public class Player extends AppCompatActivity {
         setSongAttrs(song);
     }
 
-    private void setIDs() {
-        title = findViewById(R.id.title);
-        artist = findViewById(R.id.artist);
-        seekBar = findViewById(R.id.seek_bar);
-        duration = findViewById(R.id.duration);
-        albumArt = findViewById(R.id.album_art);
-        background = findViewById(R.id.background);
-
-        next = findViewById(R.id.next);
-        previous = findViewById(R.id.prev);
-        repeat = findViewById(R.id.repeat);
-        shuffle = findViewById(R.id.shuffle);
-        playPause = findViewById(R.id.play_pause);
-    }
-
-    @Override
-    protected void onResume() {
-        fabThreadFun();
-        prevThreadFun();
-        nextThreadFun();
-        super.onResume();
-    }
-
-    private void nextThreadFun() {
-        nextThread = new Thread() {
-
+    private void bindSeekBar() {
+        this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                super.run();
-                next.setOnClickListener(v -> {
-
-                    if (mp.isPlaying()) {
-                        mp.stop();
-                        mp.release();
-                        position = ((position + 1) % songs.size());
-                        uri = Uri.parse(songs.get(position).getPath());
-                        mp = MediaPlayer.create(getApplicationContext(), uri);
-
-                        seekBar.setProgress(0);
-                        seekBar.setMax(mp.getDuration() / 1000f);
-                        song = songs.get(position);
-                        setSongAttrs(song);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-
-                        playPause.setImageResource(R.drawable.ic_pause);
-                        mp.start();
-                    } else {
-                        mp.stop();
-                        mp.release();
-                        position = ((position + 1) % songs.size());
-                        uri = Uri.parse(songs.get(position).getPath());
-                        mp = MediaPlayer.create(getApplicationContext(), uri);
-
-                        seekBar.setProgress(0);
-                        seekBar.setMax(mp.getDuration() / 1000f);
-                        song = songs.get(position);
-                        setSongAttrs(song);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-                        playPause.setImageResource(R.drawable.ic_play);
-                    }
-                });
+                if (mp != null) {
+                    int currentPosition = mp.getCurrentPosition() / 1000;
+                    seekBar.setProgress(currentPosition);
+                }
+                handler.postDelayed(this, 1000);
             }
-        };
-        nextThread.start();
-    }
-
-    private void prevThreadFun() {
-        prevThread = new Thread() {
-
-            @Override
-            public void run() {
-                super.run();
-                previous.setOnClickListener(v -> {
-
-                    if (mp.isPlaying()) {
-                        mp.stop();
-                        mp.release();
-                        position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
-                        uri = Uri.parse(songs.get(position).getPath());
-                        mp = MediaPlayer.create(getApplicationContext(), uri);
-
-                        seekBar.setProgress(0);
-                        seekBar.setMax(mp.getDuration() / 1000f);
-                        song = songs.get(position);
-                        setSongAttrs(song);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-
-                        playPause.setImageResource(R.drawable.ic_pause);
-                        mp.start();
-                    } else {
-                        mp.stop();
-                        mp.release();
-                        position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
-                        uri = Uri.parse(songs.get(position).getPath());
-                        mp = MediaPlayer.create(getApplicationContext(), uri);
-
-                        seekBar.setProgress(0);
-                        seekBar.setMax(mp.getDuration() / 1000f);
-                        song = songs.get(position);
-                        setSongAttrs(song);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-                        playPause.setImageResource(R.drawable.ic_play);
-                    }
-                });
-            }
-        };
-        prevThread.start();
+        });
     }
 
     private void fabThreadFun() {
@@ -252,41 +140,116 @@ public class Player extends AppCompatActivity {
             @Override
             public void run() {
                 super.run();
-                playPause.setOnClickListener(v -> {
-
-                    if (mp.isPlaying()) {
-                        playPause.setImageResource(R.drawable.ic_play);
-                        mp.pause();
-                        seekBar.setMax(mp.getDuration() / 1000f);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-                    } else {
-                        playPause.setImageResource(R.drawable.ic_pause);
-                        mp.start();
-                        seekBar.setMax(mp.getDuration() / 1000f);
-
-                        new Timer().scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (mp != null) {
-                                    int currentPosition = mp.getCurrentPosition() / 1000;
-                                    seekBar.setProgress(currentPosition);
-                                }
-                            }
-                        }, 0, 1000);
-                    }
-                });
+                playPause.setOnClickListener(v -> fabBtnClicked());
             }
         };
         fabThread.start();
+    }
+
+    private void fabBtnClicked() {
+        if (mp.isPlaying()) {
+            playPause.setImageResource(R.drawable.ic_play);
+            mp.pause();
+        } else {
+            playPause.setImageResource(R.drawable.ic_pause);
+            mp.start();
+        }
+        seekBar.setMax(mp.getDuration() / 1000f);
+        bindSeekBar();
+    }
+
+    private void prevThreadFun() {
+        prevThread = new Thread() {
+
+            @Override
+            public void run() {
+                super.run();
+                previous.setOnClickListener(v -> prevBtnClicked());
+            }
+        };
+        prevThread.start();
+    }
+
+    private void prevBtnClicked() {
+        if (mp.isPlaying()) {
+            mp.stop();
+            mp.release();
+            position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_pause);
+            mp.start();
+        } else {
+            mp.stop();
+            mp.release();
+            position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_play);
+        }
+    }
+
+    private void nextThreadFun() {
+        nextThread = new Thread() {
+
+            @Override
+            public void run() {
+                super.run();
+                next.setOnClickListener(v -> nextBtnClicked());
+            }
+        };
+        nextThread.start();
+    }
+
+    private void nextBtnClicked() {
+        if (mp.isPlaying()) {
+            mp.stop();
+            mp.release();
+            position = ((position + 1) % songs.size());
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_pause);
+            mp.start();
+        } else {
+            mp.stop();
+            mp.release();
+            position = ((position + 1) % songs.size());
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_play);
+        }
     }
 
     private void setSongAttrs(Song song) {
@@ -304,10 +267,10 @@ public class Player extends AppCompatActivity {
             } catch (IOException e) {
                 bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
             }
-            Glide.with(Player.this).load(bitmap).into(albumArt);
+            Glide.with(getApplicationContext()).load(bitmap).into(albumArt);
             albumArt.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_down));
 
-            BlurImage.with(this).load(bitmap).intensity(30).Async(true).into(background);
+            BlurImage.with(getApplicationContext()).load(bitmap).intensity(30).Async(true).into(background);
             Palette.from(bitmap).generate(palette -> {
                 if (palette != null) {
                     String accent = "#000000", accentLight = "#80212121";
@@ -327,6 +290,24 @@ public class Player extends AppCompatActivity {
                     seekBar.setCircleProgressColor(Color.parseColor(accent));
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        fabThreadFun();
+        prevThreadFun();
+        nextThreadFun();
+        super.onResume();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        nextBtnClicked();
+        if (mp != null) {
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+            mp.start();
+            mp.setOnCompletionListener(this);
         }
     }
 }

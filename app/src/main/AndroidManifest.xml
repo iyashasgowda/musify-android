@@ -15,9 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/LightTheme"
         tools:ignore="AllowBackup,UnusedAttribute">
-        <activity android:name=".Activities.Player" />
-        <activity android:name=".Activities.SongList" />
-        <activity android:name=".Activities.Library">
+        <activity
+            android:name=".Activities.Player"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SongList"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.Library"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
