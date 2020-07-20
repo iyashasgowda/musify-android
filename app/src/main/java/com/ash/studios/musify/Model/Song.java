@@ -1,6 +1,9 @@
 package com.ash.studios.musify.Model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Song implements Serializable {
     private long id;
@@ -78,5 +81,38 @@ public class Song implements Serializable {
 
     public void setAlbum_id(long album_id) {
         this.album_id = album_id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Song)) return false;
+        Song song = (Song) o;
+        return getId() == song.getId() &&
+                getDuration() == song.getDuration() &&
+                getAlbum_id() == song.getAlbum_id() &&
+                Objects.equals(getPath(), song.getPath()) &&
+                Objects.equals(getTitle(), song.getTitle()) &&
+                Objects.equals(getAlbum(), song.getAlbum()) &&
+                Objects.equals(getArtist(), song.getArtist());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getPath(), getTitle(), getAlbum(), getArtist(), getDuration(), getAlbum_id());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Song{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", title='" + title + '\'' +
+                ", album='" + album + '\'' +
+                ", artist='" + artist + '\'' +
+                ", duration=" + duration +
+                ", album_id=" + album_id +
+                '}';
     }
 }

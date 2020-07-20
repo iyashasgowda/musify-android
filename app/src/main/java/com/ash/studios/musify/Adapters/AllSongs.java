@@ -22,11 +22,11 @@ import java.util.ArrayList;
 
 public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
     private Context context;
-    private ArrayList<Song> list;
+    public static ArrayList<Song> list;
 
     public AllSongs(Context context, ArrayList<Song> list) {
         this.context = context;
-        this.list = list;
+        AllSongs.list = list;
     }
 
     @NonNull
@@ -53,7 +53,7 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
         Glide.with(context).asBitmap().load(Utils.getAlbumArt(song.getAlbum_id())).placeholder(R.mipmap.icon).into(holder.albumCover);
 
         //Setting onClick listener
-        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Player.class).putExtra("SONG", song)));
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Player.class).putExtra("position", position)));
     }
 
     @Override

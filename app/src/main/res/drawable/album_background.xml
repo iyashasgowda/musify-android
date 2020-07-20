@@ -8,10 +8,6 @@
         android:topLeftRadius="0dp"
         android:topRightRadius="0dp" />
 
-    <gradient
-        android:angle="270"
-        android:centerColor="#FFF"
-        android:endColor="#000"
-        android:startColor="#FFF" />
+    <solid android:color="@android:color/black" />
 
 </shape>
