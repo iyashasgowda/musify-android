@@ -33,8 +33,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/card_view"
-        app:srcCompat="@drawable/ic_shuffle"
-        tools:ignore="ContentDescription,UnusedAttribute" />
+        app:srcCompat="@drawable/ic_shuffle" />
 
     <ImageView
         android:id="@+id/repeat"
@@ -121,9 +120,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
+        android:fontFamily="@font/josefin_sans_bold"
         android:text="00:00"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/play_pause"
         app:layout_constraintEnd_toEndOf="parent"
@@ -133,14 +132,13 @@
         android:id="@+id/seek_bar"
         android:layout_width="316dp"
         android:layout_height="316dp"
-        app:cs_circle_color="#55444444"
+        app:cs_circle_color="#80212121"
         app:cs_circle_progress_color="#000000"
         app:cs_circle_stroke_width="4.5dp"
         app:cs_circle_style="round"
         app:cs_disable_progress_glow="true"
         app:cs_end_angle="170"
         app:cs_move_outside_circle="false"
-        app:cs_negative_enabled="false"
         app:cs_pointer_color="#000000"
         app:cs_pointer_halo_color_ontouch="@android:color/transparent"
         app:cs_pointer_stroke_width="18dp"

@@ -53,7 +53,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/all_song_image"
+                        android:id="@+id/all_song_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -75,9 +75,9 @@
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
                         android:transitionName="text"
-                        app:layout_constraintBottom_toBottomOf="@+id/all_song_image"
-                        app:layout_constraintStart_toEndOf="@+id/all_song_image"
-                        app:layout_constraintTop_toTopOf="@+id/all_song_image"
+                        app:layout_constraintBottom_toBottomOf="@+id/all_song_icon"
+                        app:layout_constraintStart_toEndOf="@+id/all_song_icon"
+                        app:layout_constraintTop_toTopOf="@+id/all_song_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,7 +95,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/folders_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -114,9 +114,9 @@
                         android:text="Folders"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                        app:layout_constraintStart_toEndOf="@+id/imageView2"
-                        app:layout_constraintTop_toTopOf="@+id/imageView2"
+                        app:layout_constraintBottom_toBottomOf="@+id/folders_icon"
+                        app:layout_constraintStart_toEndOf="@+id/folders_icon"
+                        app:layout_constraintTop_toTopOf="@+id/folders_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -134,7 +134,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView3"
+                        android:id="@+id/albums_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -153,9 +153,9 @@
                         android:text="Albums"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                        app:layout_constraintStart_toEndOf="@+id/imageView3"
-                        app:layout_constraintTop_toTopOf="@+id/imageView3"
+                        app:layout_constraintBottom_toBottomOf="@+id/albums_icon"
+                        app:layout_constraintStart_toEndOf="@+id/albums_icon"
+                        app:layout_constraintTop_toTopOf="@+id/albums_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -173,7 +173,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView4"
+                        android:id="@+id/artists_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -192,9 +192,9 @@
                         android:text="Artists"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                        app:layout_constraintStart_toEndOf="@+id/imageView4"
-                        app:layout_constraintTop_toTopOf="@+id/imageView4"
+                        app:layout_constraintBottom_toBottomOf="@+id/artists_icon"
+                        app:layout_constraintStart_toEndOf="@+id/artists_icon"
+                        app:layout_constraintTop_toTopOf="@+id/artists_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -212,7 +212,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView5"
+                        android:id="@+id/playlists_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -231,9 +231,9 @@
                         android:text="Playlists"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-                        app:layout_constraintStart_toEndOf="@+id/imageView5"
-                        app:layout_constraintTop_toTopOf="@+id/imageView5"
+                        app:layout_constraintBottom_toBottomOf="@+id/playlists_icon"
+                        app:layout_constraintStart_toEndOf="@+id/playlists_icon"
+                        app:layout_constraintTop_toTopOf="@+id/playlists_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -251,7 +251,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView6"
+                        android:id="@+id/genres_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -270,9 +270,9 @@
                         android:text="Genres"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-                        app:layout_constraintStart_toEndOf="@+id/imageView6"
-                        app:layout_constraintTop_toTopOf="@+id/imageView6"
+                        app:layout_constraintBottom_toBottomOf="@+id/genres_icon"
+                        app:layout_constraintStart_toEndOf="@+id/genres_icon"
+                        app:layout_constraintTop_toTopOf="@+id/genres_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -290,7 +290,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView7"
+                        android:id="@+id/top_rated_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -309,9 +309,9 @@
                         android:text="Top Rated"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-                        app:layout_constraintStart_toEndOf="@+id/imageView7"
-                        app:layout_constraintTop_toTopOf="@+id/imageView7"
+                        app:layout_constraintBottom_toBottomOf="@+id/top_rated_icon"
+                        app:layout_constraintStart_toEndOf="@+id/top_rated_icon"
+                        app:layout_constraintTop_toTopOf="@+id/top_rated_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -330,7 +330,7 @@
                     tools:ignore="UnusedAttribute">
 
                     <ImageView
-                        android:id="@+id/imageView8"
+                        android:id="@+id/recently_added_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
                         android:layout_marginStart="20dp"
@@ -349,9 +349,9 @@
                         android:text="Recently Added"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-                        app:layout_constraintStart_toEndOf="@+id/imageView8"
-                        app:layout_constraintTop_toTopOf="@+id/imageView8"
+                        app:layout_constraintBottom_toBottomOf="@+id/recently_added_icon"
+                        app:layout_constraintStart_toEndOf="@+id/recently_added_icon"
+                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

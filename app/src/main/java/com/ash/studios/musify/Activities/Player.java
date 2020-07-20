@@ -10,12 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.palette.graphics.Palette;
 
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.IOException;
@@ -25,8 +27,9 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 public class Player extends AppCompatActivity {
     Bitmap bitmap;
     CircularSeekBar seekBar;
-    ImageView albumArt, background;
+    FloatingActionButton playPause;
     TextView title, artist, duration;
+    ImageView albumArt, background, previous, next, shuffle, repeat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class Player extends AppCompatActivity {
 
             artist.setText(song.getArtist());
             duration.setText(Utils.getDuration(song.getDuration()));
+            duration.setTypeface(ResourcesCompat.getFont(this, R.font.josefin_sans_bold));
 
             Uri image = Utils.getAlbumArt(song.getAlbum_id());
             Glide.with(this).load(image).placeholder(R.mipmap.icon).into(albumArt);
@@ -55,16 +59,16 @@ public class Player extends AppCompatActivity {
             } catch (IOException e) {
                 bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
             }
-            BlurImage.with(this).load(bitmap).intensity(5).Async(true).into(background);
+            BlurImage.with(this).load(bitmap).intensity(30).Async(true).into(background);
 
             Palette.from(bitmap).generate(palette -> {
 
                 if (palette != null) {
-                    Palette.Swatch dominant = palette.getDominantSwatch();
+                    Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
 
-                    if (dominant != null) {
-                        String accent = "#" + String.format("%06X", (0xFFFFFF & dominant.getRgb()));
-                        String accentLight = "#80" + String.format("%06X", (0xFFFFFF & dominant.getRgb()));
+                    if (vibrant != null) {
+                        String accent = "#" + String.format("%06X", (0xFFFFFF & vibrant.getRgb()));
+                        String accentLight = "#80" + String.format("%06X", (0xFFFFFF & vibrant.getRgb()));
 
                         seekBar.setPointerColor(Color.parseColor(accent));
                         seekBar.setCircleColor(Color.parseColor(accentLight));

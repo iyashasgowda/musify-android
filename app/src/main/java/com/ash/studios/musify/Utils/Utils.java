@@ -15,10 +15,15 @@ import android.view.WindowManager;
 import com.ash.studios.musify.Model.Song;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils {
+
+    public static String getNewColor() {
+        return String.format("#%06X", new Random().nextInt(0xFFFFFF + 1));
+    }
 
     public static Uri getAlbumArt(long id) {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), id);

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Player;
@@ -46,6 +47,7 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
 
         //Setting song duration
         holder.duration.setText(Utils.getDuration(song.getDuration()));
+        holder.duration.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
 
         //Setting album art
         Glide.with(context).asBitmap().load(Utils.getAlbumArt(song.getAlbum_id())).placeholder(R.mipmap.icon).into(holder.albumCover);
