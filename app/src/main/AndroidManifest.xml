@@ -16,6 +16,9 @@
         android:theme="@style/LightTheme"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
+            android:name=".Activities.Bunch"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activities.Player"
             android:screenOrientation="portrait" />
         <activity

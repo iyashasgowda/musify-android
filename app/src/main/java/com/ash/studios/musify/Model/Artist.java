@@ -60,7 +60,7 @@ public class Artist implements Serializable {
                 "artist_id=" + artist_id +
                 ", artist='" + artist + '\'' +
                 ", album_count=" + album_count +
-                ", song_sount=" + song_count +
+                ", song_count=" + song_count +
                 '}';
     }
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/black"
+    tools:ignore="ContentDescription,HardcodedText,UnusedAttribute">
 
     <ScrollView
         android:layout_width="0dp"
@@ -35,36 +36,34 @@
                     android:textStyle="bold"
                     android:transitionName="library"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/all_songs"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="@drawable/ripple"
                     android:transitionName="all_songs"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/library"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/library">
 
                     <ImageView
                         android:id="@+id/all_song_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         android:transitionName="node"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_all_songs"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_all_songs" />
 
                     <TextView
                         android:id="@+id/all_song_text"
@@ -77,8 +76,7 @@
                         android:transitionName="text"
                         app:layout_constraintBottom_toBottomOf="@+id/all_song_icon"
                         app:layout_constraintStart_toEndOf="@+id/all_song_icon"
-                        app:layout_constraintTop_toTopOf="@+id/all_song_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/all_song_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -91,21 +89,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/all_songs"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/all_songs">
 
                     <ImageView
                         android:id="@+id/folders_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_folders"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_folders" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -116,8 +113,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/folders_icon"
                         app:layout_constraintStart_toEndOf="@+id/folders_icon"
-                        app:layout_constraintTop_toTopOf="@+id/folders_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/folders_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -130,21 +126,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/folders"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/folders">
 
                     <ImageView
                         android:id="@+id/albums_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_album"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_album" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,8 +150,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/albums_icon"
                         app:layout_constraintStart_toEndOf="@+id/albums_icon"
-                        app:layout_constraintTop_toTopOf="@+id/albums_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/albums_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,21 +163,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/albums"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/albums">
 
                     <ImageView
                         android:id="@+id/artists_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_mic"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_mic" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -194,8 +187,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/artists_icon"
                         app:layout_constraintStart_toEndOf="@+id/artists_icon"
-                        app:layout_constraintTop_toTopOf="@+id/artists_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/artists_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -208,21 +200,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/genres"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/genres">
 
                     <ImageView
                         android:id="@+id/playlists_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_playlist"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_playlist" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -233,8 +224,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/playlists_icon"
                         app:layout_constraintStart_toEndOf="@+id/playlists_icon"
-                        app:layout_constraintTop_toTopOf="@+id/playlists_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/playlists_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,21 +237,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/artists"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/artists">
 
                     <ImageView
                         android:id="@+id/genres_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_genres"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_genres" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -272,8 +261,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/genres_icon"
                         app:layout_constraintStart_toEndOf="@+id/genres_icon"
-                        app:layout_constraintTop_toTopOf="@+id/genres_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/genres_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -286,21 +274,20 @@
                     android:foreground="@drawable/ripple"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/play_lists"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/play_lists">
 
                     <ImageView
                         android:id="@+id/top_rated_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_top_rated"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_top_rated" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -311,8 +298,7 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/top_rated_icon"
                         app:layout_constraintStart_toEndOf="@+id/top_rated_icon"
-                        app:layout_constraintTop_toTopOf="@+id/top_rated_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/top_rated_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -326,21 +312,20 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/top_rated"
-                    tools:ignore="UnusedAttribute">
+                    app:layout_constraintTop_toBottomOf="@+id/top_rated">
 
                     <ImageView
                         android:id="@+id/recently_added_icon"
                         android:layout_width="26dp"
                         android:layout_height="26dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:alpha="0.6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_added"
-                        tools:ignore="ContentDescription" />
+                        app:srcCompat="@drawable/ic_added" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -351,10 +336,24 @@
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/recently_added_icon"
                         app:layout_constraintStart_toEndOf="@+id/recently_added_icon"
-                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon"
-                        tools:ignore="HardcodedText" />
+                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/border_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/border_ripple"
+                    android:padding="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/library"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/library"
+                    app:srcCompat="@drawable/ic_more" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -3,7 +3,6 @@ package com.ash.studios.musify.Activities;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,15 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Adapters.Albums;
 import com.ash.studios.musify.Adapters.AllSongs;
 import com.ash.studios.musify.Adapters.Artists;
+import com.ash.studios.musify.Adapters.Genres;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
 @SuppressLint("SetTextI18n")
-public class SongList extends AppCompatActivity implements View.OnClickListener {
+public class SongList extends AppCompatActivity {
+    TextView title;
+    ImageView icon;
+    RecyclerView rv;
     ConstraintLayout backToLib;
-    RecyclerView songListView;
-    TextView activityTitle;
-    ImageView activityIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +36,14 @@ public class SongList extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void setIDs() {
+        rv = findViewById(R.id.song_list);
+        icon = findViewById(R.id.activity_icon);
         backToLib = findViewById(R.id.lib_back);
-        songListView = findViewById(R.id.song_list);
-        activityIcon = findViewById(R.id.activity_icon);
-        activityTitle = findViewById(R.id.activity_title);
+        title = findViewById(R.id.activity_title);
 
-        backToLib.setOnClickListener(this);
+        backToLib.setOnClickListener(v -> finish());
+        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setHasFixedSize(true);
     }
 
     private void setListTitle() {
@@ -79,67 +81,62 @@ public class SongList extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void getAllSongs(String color) {
-        activityTitle.setText("All Songs");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_all_songs));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("All Songs");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_all_songs));
+        icon.setColorFilter(Color.parseColor(color));
 
         AllSongs allSongs = new AllSongs(this, Utils.getAllSongs(this));
-        songListView.setLayoutManager(new LinearLayoutManager(this));
-        songListView.setAdapter(allSongs);
+        rv.setAdapter(allSongs);
     }
 
     private void getFolders(String color) {
-        activityTitle.setText("Folders");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_folders));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Folders");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_folders));
+        icon.setColorFilter(Color.parseColor(color));
     }
 
     private void getAlbums(String color) {
-        activityTitle.setText("Albums");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Albums");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
+        icon.setColorFilter(Color.parseColor(color));
 
         Albums albums = new Albums(this, Utils.getAlbums(this));
-        songListView.setLayoutManager(new LinearLayoutManager(this));
-        songListView.setAdapter(albums);
+        rv.setAdapter(albums);
     }
 
     private void getArtists(String color) {
-        activityTitle.setText("Artists");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Artists");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
+        icon.setColorFilter(Color.parseColor(color));
 
         Artists artists = new Artists(this, Utils.getArtists(this));
-        songListView.setLayoutManager(new LinearLayoutManager(this));
-        songListView.setAdapter(artists);
+        rv.setAdapter(artists);
     }
 
     private void getGenres(String color) {
-        activityTitle.setText("Genres");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Genre");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
+        icon.setColorFilter(Color.parseColor(color));
+
+        Genres genres = new Genres(this, Utils.getGenres(this));
+        rv.setAdapter(genres);
     }
 
     private void getPlayLists(String color) {
-        activityTitle.setText("Play Lists");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_playlist));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Play Lists");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_playlist));
+        icon.setColorFilter(Color.parseColor(color));
     }
 
     private void getTopRated(String color) {
-        activityTitle.setText("Top Rated");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
-        activityIcon.setColorFilter(Color.parseColor(color));
+        title.setText("Top Rated");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
+        icon.setColorFilter(Color.parseColor(color));
     }
 
     private void getRecentlyAdded(String color) {
-        activityTitle.setText("Recently Added");
-        activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_added));
-        activityIcon.setColorFilter(Color.parseColor(color));
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.lib_back) finish();
+        title.setText("Recently Added");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_added));
+        icon.setColorFilter(Color.parseColor(color));
     }
 }

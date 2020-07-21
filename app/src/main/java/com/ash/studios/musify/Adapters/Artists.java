@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ash.studios.musify.Activities.Bunch;
 import com.ash.studios.musify.Model.Artist;
+import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
@@ -19,12 +22,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
-    public static ArrayList<Artist> artists;
+    public ArrayList<Artist> artists;
     private Context context;
 
     public Artists(Context context, ArrayList<Artist> artists) {
         this.context = context;
-        Artists.artists = artists;
+        this.artists = artists;
     }
 
     @NonNull
@@ -36,6 +39,7 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull Artists.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
+        ArrayList<Song> songs = Utils.getArtistSongs(context, artist.getArtist_id());
 
         holder.artistName.setText(artist.getArtist());
         holder.songCount.setText(artist.getSong_count() == 1 ? "1 Song" : artist.getSong_count() + " Songs");
@@ -43,13 +47,13 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
         holder.albumCount.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
-                .load(Utils.getAlbumArt(artist.getArtist_id()))
+                .load(Utils.getAlbumArt(songs.get(0).getAlbum_id()))
                 .placeholder(R.mipmap.icon)
                 .into(holder.albumCover);
 
-        holder.itemView.setOnClickListener(v -> {
-            //TODO
-        });
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Bunch.class)
+                .putExtra("TYPE", "ARTISTS")
+                .putExtra("CONTENT", artist)));
     }
 
     @Override
