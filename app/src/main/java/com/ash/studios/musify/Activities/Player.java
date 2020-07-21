@@ -3,6 +3,7 @@ package com.ash.studios.musify.Activities;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,24 +27,24 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Random;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import static com.ash.studios.musify.Adapters.AllSongs.list;
+import static com.ash.studios.musify.Utils.Instance.mp;
+import static com.ash.studios.musify.Utils.Instance.repeat;
+import static com.ash.studios.musify.Utils.Instance.shuffle;
+import static com.ash.studios.musify.Utils.Instance.songs;
+import static com.ash.studios.musify.Utils.Instance.uri;
 
 public class Player extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
     Toolbar toolbar;
     CircularSeekBar seekBar;
     FloatingActionButton playPause;
     TextView title, artist, duration;
-    ImageView albumArt, background, previous, next, shuffle, repeat;
+    ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn;
 
-    static Uri uri;
-    static Song song;
-    static MediaPlayer mp;
-    static ArrayList<Song> songs = new ArrayList<>();
-
+    Song song;
     int position = -1;
     Handler handler = new Handler();
     Thread fabThread, prevThread, nextThread;
@@ -72,6 +73,30 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         bindSeekBar();
         getSong();
         mp.setOnCompletionListener(this);
+
+        shuffleBtn.setOnClickListener(view -> {
+            if (shuffle) {
+                shuffle = false;
+                shuffleBtn.setBackgroundResource(0);
+                shuffleBtn.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN);
+            } else {
+                shuffle = true;
+                shuffleBtn.setBackgroundResource(R.drawable.btn_on_bg);
+                shuffleBtn.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+            }
+        });
+
+        repeatBtn.setOnClickListener(view -> {
+            if (repeat) {
+                repeat = false;
+                repeatBtn.setBackgroundResource(0);
+                repeatBtn.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN);
+            } else {
+                repeat = true;
+                repeatBtn.setBackgroundResource(R.drawable.btn_on_bg);
+                repeatBtn.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+            }
+        });
     }
 
     private void setIDs() {
@@ -83,25 +108,24 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         albumArt = findViewById(R.id.album_art);
         background = findViewById(R.id.background);
 
-        next = findViewById(R.id.next);
-        previous = findViewById(R.id.prev);
-        repeat = findViewById(R.id.repeat);
-        shuffle = findViewById(R.id.shuffle);
+        nextBtn = findViewById(R.id.next);
+        previousBtn = findViewById(R.id.prev);
+        repeatBtn = findViewById(R.id.repeat);
+        shuffleBtn = findViewById(R.id.shuffle);
         playPause = findViewById(R.id.play_pause);
 
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(view -> finish());
         toolbar.inflateMenu(R.menu.player);
         toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.ic_equalizer)
-                Toast.makeText(Player.this, "Equalizer", Toast.LENGTH_SHORT).show();
+            if (item.getItemId() == R.id.ic_options)
+                Toast.makeText(Player.this, "Menu", Toast.LENGTH_SHORT).show();
             return true;
         });
     }
 
     private void getSong() {
         position = getIntent().getIntExtra("position", -1);
-        songs = list;
 
         if (songs != null) {
             song = songs.get(position);
@@ -134,6 +158,63 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         });
     }
 
+    private void prevThreadFun() {
+        prevThread = new Thread() {
+
+            @Override
+            public void run() {
+                super.run();
+                previousBtn.setOnClickListener(v -> prevBtnClicked());
+            }
+        };
+        prevThread.start();
+    }
+
+    private void prevBtnClicked() {
+        if (mp.isPlaying()) {
+            mp.stop();
+            mp.release();
+
+            if (shuffle && !repeat)
+                position = new Random().nextInt((songs.size() - 1) + 1);
+            else if (!shuffle && !repeat)
+                position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
+
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_pause);
+            mp.start();
+        } else {
+            mp.stop();
+            mp.release();
+
+            if (shuffle && !repeat)
+                position = new Random().nextInt((songs.size() - 1) + 1);
+            else if (!shuffle && !repeat)
+                position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
+
+            uri = Uri.parse(songs.get(position).getPath());
+            mp = MediaPlayer.create(getApplicationContext(), uri);
+
+            seekBar.setProgress(0);
+            seekBar.setMax(mp.getDuration() / 1000f);
+            song = songs.get(position);
+            setSongAttrs(song);
+
+            bindSeekBar();
+            mp.setOnCompletionListener(this);
+            playPause.setBackgroundResource(R.drawable.ic_play);
+        }
+    }
+
     private void fabThreadFun() {
         fabThread = new Thread() {
 
@@ -158,60 +239,13 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         bindSeekBar();
     }
 
-    private void prevThreadFun() {
-        prevThread = new Thread() {
-
-            @Override
-            public void run() {
-                super.run();
-                previous.setOnClickListener(v -> prevBtnClicked());
-            }
-        };
-        prevThread.start();
-    }
-
-    private void prevBtnClicked() {
-        if (mp.isPlaying()) {
-            mp.stop();
-            mp.release();
-            position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
-            uri = Uri.parse(songs.get(position).getPath());
-            mp = MediaPlayer.create(getApplicationContext(), uri);
-
-            seekBar.setProgress(0);
-            seekBar.setMax(mp.getDuration() / 1000f);
-            song = songs.get(position);
-            setSongAttrs(song);
-
-            bindSeekBar();
-            mp.setOnCompletionListener(this);
-            playPause.setBackgroundResource(R.drawable.ic_pause);
-            mp.start();
-        } else {
-            mp.stop();
-            mp.release();
-            position = ((position - 1) < 0 ? (songs.size() - 1) : (position - 1));
-            uri = Uri.parse(songs.get(position).getPath());
-            mp = MediaPlayer.create(getApplicationContext(), uri);
-
-            seekBar.setProgress(0);
-            seekBar.setMax(mp.getDuration() / 1000f);
-            song = songs.get(position);
-            setSongAttrs(song);
-
-            bindSeekBar();
-            mp.setOnCompletionListener(this);
-            playPause.setBackgroundResource(R.drawable.ic_play);
-        }
-    }
-
     private void nextThreadFun() {
         nextThread = new Thread() {
 
             @Override
             public void run() {
                 super.run();
-                next.setOnClickListener(v -> nextBtnClicked());
+                nextBtn.setOnClickListener(v -> nextBtnClicked());
             }
         };
         nextThread.start();
@@ -221,7 +255,9 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         if (mp.isPlaying()) {
             mp.stop();
             mp.release();
-            position = ((position + 1) % songs.size());
+
+            if (shuffle && !repeat) position = new Random().nextInt((songs.size() - 1) + 1);
+            else if (!shuffle && !repeat) position = ((position + 1) % songs.size());
             uri = Uri.parse(songs.get(position).getPath());
             mp = MediaPlayer.create(getApplicationContext(), uri);
 
@@ -237,7 +273,8 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         } else {
             mp.stop();
             mp.release();
-            position = ((position + 1) % songs.size());
+            if (shuffle && !repeat) position = new Random().nextInt((songs.size() - 1) + 1);
+            else if (!shuffle && !repeat) position = ((position + 1) % songs.size());
             uri = Uri.parse(songs.get(position).getPath());
             mp = MediaPlayer.create(getApplicationContext(), uri);
 
@@ -254,7 +291,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
 
     private void setSongAttrs(Song song) {
         if (song != null) {
-            Bitmap bitmap;
             title.setText(song.getTitle());
             title.setSelected(true);
 
@@ -262,15 +298,19 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
             duration.setText(Utils.getDuration(song.getDuration()));
             duration.setTypeface(ResourcesCompat.getFont(this, R.font.josefin_sans_bold));
 
+            Bitmap bitmap;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Utils.getAlbumArt(song.getAlbum_id()));
             } catch (IOException e) {
                 bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
             }
+
             Glide.with(getApplicationContext()).load(bitmap).into(albumArt);
             albumArt.startAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_down));
 
             BlurImage.with(getApplicationContext()).load(bitmap).intensity(30).Async(true).into(background);
+            background.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+
             Palette.from(bitmap).generate(palette -> {
                 if (palette != null) {
                     String accent = "#000000", accentLight = "#80212121";

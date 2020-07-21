@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardcodedText">
     <item
-        android:id="@+id/ic_equalizer"
-        android:icon="@drawable/ic_equalizer"
-        android:title="Equalizer"
+        android:id="@+id/ic_options"
+        android:icon="@drawable/ic_options"
+        android:title="Options"
         app:showAsAction="always" />
 </menu>

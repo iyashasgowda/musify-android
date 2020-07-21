@@ -12,6 +12,8 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.ash.studios.musify.Model.Album;
+import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Song;
 
 import java.util.ArrayList;
@@ -45,6 +47,33 @@ public class Utils {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
+    public static ArrayList<Album> getAlbums(Context context) {
+        ArrayList<Album> albums = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Albums._ID,
+                MediaStore.Audio.Albums.ALBUM,
+                MediaStore.Audio.Albums.ARTIST,
+                MediaStore.Audio.Albums.NUMBER_OF_SONGS
+        };
+        Cursor c = context.getContentResolver().query(uri, projection, null, null, "album asc");
+
+        if (c != null) {
+
+            while (c.moveToNext()) {
+                long album_id = c.getLong(0);
+                String album = c.getString(1);
+                String artist = c.getString(2);
+                int no_of_songs = c.getInt(3);
+
+                albums.add(new Album(album, artist, album_id, no_of_songs));
+            }
+            c.close();
+        }
+        return albums;
+    }
+
     public static ArrayList<Song> getAllSongs(Context context) {
         ArrayList<Song> songs = new ArrayList<>();
 
@@ -58,7 +87,7 @@ public class Utils {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
+        Cursor c = context.getContentResolver().query(uri, projection, null, null, "title asc");
 
         if (c != null) {
 
@@ -78,45 +107,29 @@ public class Utils {
         return songs;
     }
 
+    public static ArrayList<Artist> getArtists(Context context) {
+        ArrayList<Artist> artists = new ArrayList<>();
 
-    /*public static Song getFolderSong(String sortOrder, Context context, String path) {
-        Song song = new Song();
+        Uri uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Artists._ID,
+                MediaStore.Audio.Artists.ARTIST,
+                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
+                MediaStore.Audio.Artists.NUMBER_OF_TRACKS
+        };
+        Cursor c = context.getContentResolver().query(uri, projection, null, null, "artist asc");
 
-        if (path == null) return null;
-        Cursor c = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null,
-                MediaStore.Audio.Media.DATA + " like ? ", new String[]{"%" + path + "%"}, sortOrder);
+        if (c != null) {
+            while (c.moveToNext()) {
+                long artist_id = c.getLong(0);
+                String artist = c.getString(1);
+                int no_of_albums = c.getInt(2);
+                int no_of_songs = c.getInt(3);
 
-        if (c != null && c.moveToFirst()) {
-            String data = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA));
-            String album = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-            String title = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE));
-            String artist = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-
-            long id = c.getLong(c.getColumnIndex(MediaStore.Audio.Media._ID));
-            long albumId = c.getLong(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-            long duration = c.getLong(c.getColumnIndex(MediaStore.Audio.Media.DURATION));
-
-            int track = c.getInt(c.getColumnIndex(MediaStore.Audio.Media.TRACK));
-            Uri albumArt = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), albumId);
-
-            song.setId(id);
-            song.setData(data);
-            song.setTitle(title);
-            song.setTrack(track);
-            song.setAlbum(album);
-            song.setArtist(artist);
-            song.setAlbum_id(albumId);
-            song.setDuration(duration);
-            song.setAlbum_art(albumArt);
+                artists.add(new Artist(artist_id, artist, no_of_albums, no_of_songs));
+            }
+            c.close();
         }
-        if (c != null) c.close();
-        return song;
+        return artists;
     }
-
-    public static String getFolderPath() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
-            return Environment.getExternalStorageDirectory().getAbsolutePath();
-        else
-            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
-    }*/
 }

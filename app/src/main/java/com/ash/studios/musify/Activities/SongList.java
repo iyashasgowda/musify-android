@@ -12,7 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ash.studios.musify.Adapters.Albums;
 import com.ash.studios.musify.Adapters.AllSongs;
+import com.ash.studios.musify.Adapters.Artists;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
@@ -90,22 +92,26 @@ public class SongList extends AppCompatActivity implements View.OnClickListener 
         activityTitle.setText("Folders");
         activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_folders));
         activityIcon.setColorFilter(Color.parseColor(color));
-
-        /*FolderSongs folderSongs = new FolderSongs(this, GetSongFolders.getSongFolders(this));
-        songListView.setLayoutManager(new LinearLayoutManager(this));
-        songListView.setAdapter(folderSongs);*/
     }
 
     private void getAlbums(String color) {
         activityTitle.setText("Albums");
         activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
         activityIcon.setColorFilter(Color.parseColor(color));
+
+        Albums albums = new Albums(this, Utils.getAlbums(this));
+        songListView.setLayoutManager(new LinearLayoutManager(this));
+        songListView.setAdapter(albums);
     }
 
     private void getArtists(String color) {
         activityTitle.setText("Artists");
         activityIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
         activityIcon.setColorFilter(Color.parseColor(color));
+
+        Artists artists = new Artists(this, Utils.getArtists(this));
+        songListView.setLayoutManager(new LinearLayoutManager(this));
+        songListView.setAdapter(artists);
     }
 
     private void getGenres(String color) {
