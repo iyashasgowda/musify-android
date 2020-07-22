@@ -14,12 +14,9 @@ import com.ash.studios.musify.Adapters.AllSongs;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
-import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
 
 @SuppressLint("SetTextI18n")
 public class Bunch extends AppCompatActivity {
@@ -88,16 +85,14 @@ public class Bunch extends AppCompatActivity {
         Artist artist = (Artist) getIntent().getSerializableExtra("CONTENT");
 
         if (artist != null) {
-            ArrayList<Song> songs = Utils.getArtistSongs(this, artist.getArtist_id());
-
-            bunchTitle.setText(artist.getArtist());
+                       bunchTitle.setText(artist.getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .load(Utils.getAlbumArt(songs.get(0).getAlbum_id()))
+                    .load(Utils.getAlbumArt(artist.getAlbum_id()))
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, songs));
+            rv.setAdapter(new AllSongs(this, Utils.getArtistSongs(this, artist.getArtist_id())));
         }
     }
 
@@ -106,16 +101,14 @@ public class Bunch extends AppCompatActivity {
         Genre genre = (Genre) getIntent().getSerializableExtra("CONTENT");
 
         if (genre != null) {
-            ArrayList<Song> songs = Utils.getGenreSongs(this, genre.getGenre_id());
-
             bunchTitle.setText(genre.getGenre());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .load(Utils.getAlbumArt(songs.get(0).getAlbum_id()))
+                    .load(Utils.getAlbumArt(genre.getAlbum_id()))
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, songs));
+            rv.setAdapter(new AllSongs(this, Utils.getGenreSongs(this, genre.getGenre_id())));
         }
     }
 }

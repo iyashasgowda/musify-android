@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Bunch;
 import com.ash.studios.musify.Model.Artist;
-import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
@@ -39,7 +38,6 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull Artists.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
-        ArrayList<Song> songs = Utils.getArtistSongs(context, artist.getArtist_id());
 
         holder.artistName.setText(artist.getArtist());
         holder.songCount.setText(artist.getSong_count() == 1 ? "1 Song" : artist.getSong_count() + " Songs");
@@ -47,7 +45,7 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
         holder.albumCount.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
-                .load(Utils.getAlbumArt(songs.get(0).getAlbum_id()))
+                .load(Utils.getAlbumArt(artist.getAlbum_id()))
                 .placeholder(R.mipmap.icon)
                 .into(holder.albumCover);
 

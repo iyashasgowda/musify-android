@@ -85,7 +85,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_all_songs));
         icon.setColorFilter(Color.parseColor(color));
 
-        AllSongs allSongs = new AllSongs(this, Utils.getAllSongs(this));
+        AllSongs allSongs = new AllSongs(this, Utils.songs);
         rv.setAdapter(allSongs);
     }
 
@@ -100,7 +100,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
         icon.setColorFilter(Color.parseColor(color));
 
-        Albums albums = new Albums(this, Utils.getAlbums(this));
+        Albums albums = new Albums(this, Utils.albums);
         rv.setAdapter(albums);
     }
 
@@ -109,7 +109,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
         icon.setColorFilter(Color.parseColor(color));
 
-        Artists artists = new Artists(this, Utils.getArtists(this));
+        Artists artists = new Artists(this, Utils.artists);
         rv.setAdapter(artists);
     }
 
@@ -118,7 +118,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
         icon.setColorFilter(Color.parseColor(color));
 
-        Genres genres = new Genres(this, Utils.getGenres(this));
+        Genres genres = new Genres(this, Utils.genres);
         rv.setAdapter(genres);
     }
 

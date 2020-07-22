@@ -1,26 +1,19 @@
 package com.ash.studios.musify.Activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
 public class Library extends AppCompatActivity implements View.OnClickListener {
     ImageView allSong, folders, albums, artists, genres, playlists, topRated, recentlyAdded;
-    public static final int REQUEST_CODE = 1;
     String[] colors = new String[8];
 
     @Override
@@ -28,9 +21,9 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library);
         Utils.setUpUI(this);
+
         setIds();
         setColors();
-        checkPermission();
     }
 
     private void setColors() {
@@ -60,25 +53,6 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
         findViewById(R.id.play_lists).setOnClickListener(this);
         findViewById(R.id.top_rated).setOnClickListener(this);
         findViewById(R.id.recently_added).setOnClickListener(this);
-    }
-
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                Toast.makeText(this, "Permission granted :)", Toast.LENGTH_SHORT).show();
-            else
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
-        }
     }
 
     @Override

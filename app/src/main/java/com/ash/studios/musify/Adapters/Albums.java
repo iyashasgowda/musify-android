@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ash.studios.musify.Activities.Bunch;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
@@ -19,12 +21,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
-    public static ArrayList<Album> albums;
+    public ArrayList<Album> albums;
     private Context context;
 
     public Albums(Context context, ArrayList<Album> albums) {
         this.context = context;
-        Albums.albums = albums;
+        this.albums = albums;
     }
 
     @NonNull
@@ -47,9 +49,9 @@ public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
                 .placeholder(R.mipmap.icon)
                 .into(holder.albumCover);
 
-        holder.itemView.setOnClickListener(v -> {
-            //TODO
-        });
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Bunch.class)
+                .putExtra("TYPE", "ALBUMS")
+                .putExtra("CONTENT", album)));
     }
 
     @Override

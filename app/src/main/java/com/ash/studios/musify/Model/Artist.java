@@ -10,15 +10,14 @@ public class Artist implements Serializable {
     private String artist;
     private int album_count;
     private int song_count;
+    private long album_id;
 
-    public Artist() {
-    }
-
-    public Artist(long artist_id, String artist, int album_count, int song_count) {
+    public Artist(long artist_id, String artist, int album_count, int song_count, long album_id) {
         this.artist_id = artist_id;
         this.artist = artist;
         this.album_count = album_count;
         this.song_count = song_count;
+        this.album_id = album_id;
     }
 
     public long getArtist_id() {
@@ -37,6 +36,10 @@ public class Artist implements Serializable {
         return song_count;
     }
 
+    public long getAlbum_id() {
+        return album_id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,12 +48,13 @@ public class Artist implements Serializable {
         return getArtist_id() == artist1.getArtist_id() &&
                 getAlbum_count() == artist1.getAlbum_count() &&
                 getSong_count() == artist1.getSong_count() &&
+                getAlbum_id() == artist1.getAlbum_id() &&
                 Objects.equals(getArtist(), artist1.getArtist());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getArtist_id(), getArtist(), getAlbum_count(), getSong_count());
+        return Objects.hash(getArtist_id(), getArtist(), getAlbum_count(), getSong_count(), getAlbum_id());
     }
 
     @NonNull
@@ -61,6 +65,7 @@ public class Artist implements Serializable {
                 ", artist='" + artist + '\'' +
                 ", album_count=" + album_count +
                 ", song_count=" + song_count +
+                ", album_id=" + album_id +
                 '}';
     }
 }

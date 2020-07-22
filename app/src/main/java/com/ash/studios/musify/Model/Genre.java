@@ -8,26 +8,30 @@ import java.util.Objects;
 public class Genre implements Serializable {
     private long genre_id;
     private String genre;
+    private long album_id;
+    private int song_count;
 
-    public Genre(long genre_id, String genre) {
+    public Genre(long genre_id, String genre, long album_id, int song_count) {
         this.genre_id = genre_id;
         this.genre = genre;
+        this.album_id = album_id;
+        this.song_count = song_count;
     }
 
     public long getGenre_id() {
         return genre_id;
     }
 
-    public void setGenre_id(long genre_id) {
-        this.genre_id = genre_id;
-    }
-
     public String getGenre() {
         return genre;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public long getAlbum_id() {
+        return album_id;
+    }
+
+    public int getSong_count() {
+        return song_count;
     }
 
     @Override
@@ -36,12 +40,14 @@ public class Genre implements Serializable {
         if (!(o instanceof Genre)) return false;
         Genre genre1 = (Genre) o;
         return getGenre_id() == genre1.getGenre_id() &&
+                getAlbum_id() == genre1.getAlbum_id() &&
+                getSong_count() == genre1.getSong_count() &&
                 Objects.equals(getGenre(), genre1.getGenre());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getGenre_id(), getGenre());
+        return Objects.hash(getGenre_id(), getGenre(), getAlbum_id(), getSong_count());
     }
 
     @NonNull
@@ -50,6 +56,8 @@ public class Genre implements Serializable {
         return "Genre{" +
                 "genre_id=" + genre_id +
                 ", genre='" + genre + '\'' +
+                ", album_id=" + album_id +
+                ", song_count=" + song_count +
                 '}';
     }
 }

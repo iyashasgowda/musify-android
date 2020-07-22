@@ -24,28 +24,10 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils extends Application {
-
-    public static ArrayList<Genre> getGenres(Context context) {
-        ArrayList<Genre> genres = new ArrayList<>();
-
-        Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
-        String[] projection = {
-                MediaStore.Audio.Genres._ID,
-                MediaStore.Audio.Genres.NAME,
-        };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
-
-        if (c != null) {
-            while (c.moveToNext()) {
-                long genres_id = c.getLong(0);
-                String genre = c.getString(1);
-
-                genres.add(new Genre(genres_id, genre));
-            }
-            c.close();
-        }
-        return genres;
-    }
+    public static ArrayList<Song> songs;
+    public static ArrayList<Album> albums;
+    public static ArrayList<Genre> genres;
+    public static ArrayList<Artist> artists;
 
     public static String getNewColor() {
         return String.format("#%06X", new Random().nextInt(0xFFFFFF + 1));
@@ -71,37 +53,40 @@ public class Utils extends Application {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
-    public static ArrayList<Song> getGenreSongs(Context context, long genreId) {
-        ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<Genre> getGenres(Context context) {
+        ArrayList<Genre> genres = new ArrayList<>();
 
-        Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
+        Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
         String[] projection = {
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ALBUM_ID
+                MediaStore.Audio.Genres._ID,
+                MediaStore.Audio.Genres.NAME,
         };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, "title asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+        );
 
         if (c != null) {
-
             while (c.moveToNext()) {
-                long id = c.getLong(0);
-                String data = c.getString(1);
-                String title = c.getString(2);
-                String album = c.getString(3);
-                String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                long genres_id = c.getLong(0);
+                String genre = c.getString(1);
+                ArrayList<Song> songs = getGenreSongs(context, genres_id);
 
-                songs.add(new Song(id, data, title, album, artist, duration, album_id));
+                genres.add(
+                        new Genre(
+                                genres_id,
+                                genre,
+                                songs.get(0).getAlbum_id(),
+                                songs.size()
+                        )
+                );
             }
             c.close();
         }
-        return songs;
+        return genres;
     }
 
     public static ArrayList<Album> getAlbums(Context context) {
@@ -114,7 +99,13 @@ public class Utils extends Application {
                 MediaStore.Audio.Albums.ARTIST,
                 MediaStore.Audio.Albums.NUMBER_OF_SONGS
         };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, "album asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                "album asc"
+        );
 
         if (c != null) {
 
@@ -124,7 +115,14 @@ public class Utils extends Application {
                 String artist = c.getString(2);
                 int no_of_songs = c.getInt(3);
 
-                albums.add(new Album(album, artist, album_id, no_of_songs));
+                albums.add(
+                        new Album(
+                                album,
+                                artist,
+                                album_id,
+                                no_of_songs
+                        )
+                );
             }
             c.close();
         }
@@ -144,7 +142,13 @@ public class Utils extends Application {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, "title asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                "title asc"
+        );
 
         if (c != null) {
 
@@ -157,7 +161,17 @@ public class Utils extends Application {
                 long duration = c.getLong(5);
                 long album_id = c.getLong(6);
 
-                songs.add(new Song(id, data, title, album, artist, duration, album_id));
+                songs.add(
+                        new Song(
+                                id,
+                                data,
+                                title,
+                                album,
+                                artist,
+                                duration,
+                                album_id
+                        )
+                );
             }
             c.close();
         }
@@ -174,7 +188,13 @@ public class Utils extends Application {
                 MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
                 MediaStore.Audio.Artists.NUMBER_OF_TRACKS
         };
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, "artist asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                "artist asc"
+        );
 
         if (c != null) {
             while (c.moveToNext()) {
@@ -183,11 +203,68 @@ public class Utils extends Application {
                 int no_of_albums = c.getInt(2);
                 int no_of_songs = c.getInt(3);
 
-                artists.add(new Artist(artist_id, artist, no_of_albums, no_of_songs));
+                artists.add(
+                        new Artist(
+                                artist_id,
+                                artist,
+                                no_of_albums,
+                                no_of_songs,
+                                getArtistSongs(context, artist_id).get(0).getAlbum_id()
+                        )
+                );
             }
             c.close();
         }
         return artists;
+    }
+
+    public static ArrayList<Song> getGenreSongs(Context context, long genreId) {
+        ArrayList<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Genres.Members.getContentUri("external", genreId);
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM_ID
+        };
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                null,
+                null,
+                "title asc"
+        );
+
+        if (c != null) {
+
+            while (c.moveToNext()) {
+                long id = c.getLong(0);
+                String data = c.getString(1);
+                String title = c.getString(2);
+                String album = c.getString(3);
+                String artist = c.getString(4);
+                long duration = c.getLong(5);
+                long album_id = c.getLong(6);
+
+                songs.add(
+                        new Song(
+                                id,
+                                data,
+                                title,
+                                album,
+                                artist,
+                                duration,
+                                album_id
+                        )
+                );
+            }
+            c.close();
+        }
+        return songs;
     }
 
     public static ArrayList<Song> getAlbumSongs(Context context, long albumId) {
@@ -206,7 +283,13 @@ public class Utils extends Application {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
-        Cursor c = context.getContentResolver().query(uri, projection, selection, null, "title asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                selection,
+                null,
+                "title asc"
+        );
 
         if (c != null) {
 
@@ -219,7 +302,17 @@ public class Utils extends Application {
                 long duration = c.getLong(5);
                 long album_id = c.getLong(6);
 
-                songs.add(new Song(id, data, title, album, artist, duration, album_id));
+                songs.add(
+                        new Song(
+                                id,
+                                data,
+                                title,
+                                album,
+                                artist,
+                                duration,
+                                album_id
+                        )
+                );
             }
             c.close();
         }
@@ -242,7 +335,13 @@ public class Utils extends Application {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
-        Cursor c = context.getContentResolver().query(uri, projection, selection, null, "title asc");
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                selection,
+                null,
+                "title asc"
+        );
 
         if (c != null) {
 
@@ -255,19 +354,57 @@ public class Utils extends Application {
                 long duration = c.getLong(5);
                 long album_id = c.getLong(6);
 
-                songs.add(new Song(id, data, title, album, artist, duration, album_id));
+                songs.add(
+                        new Song(
+                                id,
+                                data,
+                                title,
+                                album,
+                                artist,
+                                duration,
+                                album_id
+                        )
+                );
             }
             c.close();
         }
         return songs;
     }
 
+    public static void fetchAllSongs(Context context) {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                songs = getAllSongs(context);
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                albums = getAlbums(context);
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                artists = getArtists(context);
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                genres = getGenres(context);
+            }
+        }.start();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
-        getAlbums(this);
-        getArtists(this);
-        getAllSongs(this);
+        fetchAllSongs(this);
     }
 }

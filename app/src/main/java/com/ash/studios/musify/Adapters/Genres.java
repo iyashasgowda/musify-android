@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Bunch;
 import com.ash.studios.musify.Model.Genre;
-import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
@@ -38,14 +37,13 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull Genres.ViewHolder holder, int position) {
         Genre genre = genres.get(position);
-        ArrayList<Song> songs = Utils.getGenreSongs(context, genre.getGenre_id());
 
         holder.genreName.setText(genre.getGenre());
-        holder.songCount.setText(songs.size() == 1 ? "1 Song" : songs.size() + " Songs");
+        holder.songCount.setText(genre.getSong_count() == 1 ? "1 Song" : genre.getSong_count() + " Songs");
 
         Glide.with(context.getApplicationContext())
                 .asBitmap()
-                .load(Utils.getAlbumArt(songs.get(0).getAlbum_id()))
+                .load(Utils.getAlbumArt(genre.getAlbum_id()))
                 .placeholder(R.mipmap.icon)
                 .into(holder.genreCover);
 
