@@ -34,7 +34,7 @@ public class Welcome extends AppCompatActivity {
         Utils.setUpUI(this);
         setIDs();
 
-        checkPermission();
+        new Handler(Looper.getMainLooper()).postDelayed(this::checkPermission, 500);
     }
 
     private void setIDs() {

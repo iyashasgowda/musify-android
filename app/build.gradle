@@ -39,6 +39,9 @@ dependencies {
     //Blur imageView
     implementation 'com.jackandphantom.android:blurimage:1.2.0'
 
+    //Bounce animation
+    implementation 'me.everything:overscroll-decor-android:1.1.0'
+
     //Porter shape imageView
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
 

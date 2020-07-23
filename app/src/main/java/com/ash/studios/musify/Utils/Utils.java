@@ -3,6 +3,7 @@ package com.ash.studios.musify.Utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,18 +14,23 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ScrollView;
 
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
 import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils extends Application {
@@ -67,6 +73,28 @@ public class Utils extends Application {
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+    }
+
+    public static Dialog getOptionsDialog(Context c) {
+        Dialog dialog = new Dialog(c);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dg_anim;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.options_dg);
+        dialog.show();
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+        ScrollView scrollView = dialog.findViewById(R.id.dialog_scroll_view);
+        OverScrollDecoratorHelper.setUpOverScroll(scrollView);
+
+        return dialog;
     }
 
     public static void saveToTR(Context c, Song song) {

@@ -1,6 +1,8 @@
 package com.ash.studios.musify.Activities;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,14 +24,18 @@ import com.ash.studios.musify.Adapters.Genres;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
+
 @SuppressLint("SetTextI18n")
 public class SongList extends AppCompatActivity {
     TextView title;
-    ImageView icon;
     RecyclerView rv;
     ProgressBar loader;
     ConstraintLayout backToLib;
+    ImageView icon, shuffleAllBtn, playAllBtn, searchBtn, optionsBtn;
 
+    Dialog dialog;
+    Context context;
     int lastPosition = 0;
     String listType, iconColor;
 
@@ -44,15 +50,50 @@ public class SongList extends AppCompatActivity {
     }
 
     private void setIDs() {
+        context = this;
         rv = findViewById(R.id.song_list);
         icon = findViewById(R.id.activity_icon);
         backToLib = findViewById(R.id.lib_back);
         loader = findViewById(R.id.list_loader);
         title = findViewById(R.id.activity_title);
+        searchBtn = findViewById(R.id.search_btn);
+        optionsBtn = findViewById(R.id.options_btn);
+        playAllBtn = findViewById(R.id.play_all_btn);
+        shuffleAllBtn = findViewById(R.id.shuffle_all_btn);
 
         backToLib.setOnClickListener(v -> finish());
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setLayoutManager(new LinearLayoutManager(context));
+        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
         rv.setHasFixedSize(true);
+
+        optionsBtn.setOnClickListener(v -> {
+            dialog = Utils.getOptionsDialog(context);
+
+            TextView dialogName = dialog.findViewById(R.id.dialog_name);
+            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
+            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout AN = dialog.findViewById(R.id.add_new);
+            ConstraintLayout CL = dialog.findViewById(R.id.clear_list);
+
+            dialogName.setText(title.getText());
+            dialogIcon.setImageDrawable(icon.getDrawable());
+
+            switch (listType) {
+                case "artists":
+                case "genres":
+                    SF.setVisibility(View.GONE);
+                    break;
+                case "play_lists":
+                    AN.setVisibility(View.VISIBLE);
+                    break;
+                case "recently_added":
+                    AN.setVisibility(View.VISIBLE);
+                    CL.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
     }
 
     private void setListTitle() {
@@ -90,6 +131,7 @@ public class SongList extends AppCompatActivity {
                     break;
             }
         }
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) disableBtns();
     }
 
     private void getAllSongs(String color) {
@@ -99,11 +141,11 @@ public class SongList extends AppCompatActivity {
 
         if (Utils.songs == null || Utils.songs.size() == 0) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new AllSongs(SongList.this, Utils.getAllSongs(SongList.this)));
+                rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context)));
                 loader.setVisibility(View.GONE);
             }, 50);
         } else {
-            rv.setAdapter(new AllSongs(this, Utils.songs));
+            rv.setAdapter(new AllSongs(context, Utils.songs));
             loader.setVisibility(View.GONE);
         }
     }
@@ -121,11 +163,11 @@ public class SongList extends AppCompatActivity {
 
         if (Utils.albums == null || Utils.albums.size() == 0) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Albums(SongList.this, Utils.getAlbums(SongList.this)));
+                rv.setAdapter(new Albums(context, Utils.getAlbums(context)));
                 loader.setVisibility(View.GONE);
             }, 50);
         } else {
-            rv.setAdapter(new Albums(this, Utils.albums));
+            rv.setAdapter(new Albums(context, Utils.albums));
             loader.setVisibility(View.GONE);
         }
     }
@@ -137,11 +179,11 @@ public class SongList extends AppCompatActivity {
 
         if (Utils.artists == null || Utils.artists.size() == 0) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Artists(SongList.this, Utils.getArtists(SongList.this)));
+                rv.setAdapter(new Artists(context, Utils.getArtists(context)));
                 loader.setVisibility(View.GONE);
             }, 50);
         } else {
-            rv.setAdapter(new Artists(this, Utils.artists));
+            rv.setAdapter(new Artists(context, Utils.artists));
             loader.setVisibility(View.GONE);
         }
     }
@@ -153,17 +195,17 @@ public class SongList extends AppCompatActivity {
 
         if (Utils.genres == null || Utils.genres.size() == 0) {
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                rv.setAdapter(new Genres(SongList.this, Utils.getGenres(SongList.this)));
+                rv.setAdapter(new Genres(context, Utils.getGenres(context)));
                 loader.setVisibility(View.GONE);
             }, 50);
         } else {
-            rv.setAdapter(new Genres(this, Utils.genres));
+            rv.setAdapter(new Genres(context, Utils.genres));
             loader.setVisibility(View.GONE);
         }
     }
 
     private void getPlayLists(String color) {
-        title.setText("Play Lists");
+        title.setText("Playlists");
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_playlist));
         icon.setColorFilter(Color.parseColor(color));
     }
@@ -173,7 +215,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(this, Utils.getTR(this)));
+        rv.setAdapter(new AllSongs(context, Utils.getTR(context)));
         loader.setVisibility(View.GONE);
     }
 
@@ -182,7 +224,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_low_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(this, Utils.getLR(this)));
+        rv.setAdapter(new AllSongs(context, Utils.getLR(context)));
         loader.setVisibility(View.GONE);
     }
 
@@ -192,13 +234,23 @@ public class SongList extends AppCompatActivity {
         icon.setColorFilter(Color.parseColor(color));
     }
 
+    private void disableBtns() {
+        searchBtn.setAlpha(0.4f);
+        playAllBtn.setAlpha(0.4f);
+        shuffleAllBtn.setAlpha(0.4f);
+
+        searchBtn.setOnClickListener(null);
+        playAllBtn.setOnClickListener(null);
+        shuffleAllBtn.setOnClickListener(null);
+    }
+
     @Override
     protected void onResume() {
         if (listType.equals("top_rated")) {
-            rv.setAdapter(new AllSongs(this, Utils.getTR(this)));
+            rv.setAdapter(new AllSongs(context, Utils.getTR(context)));
             rv.scrollToPosition(lastPosition);
         } else if (listType.equals("low_rated")) {
-            rv.setAdapter(new AllSongs(this, Utils.getLR(this)));
+            rv.setAdapter(new AllSongs(context, Utils.getLR(context)));
             rv.scrollToPosition(lastPosition);
         }
         super.onResume();
@@ -209,5 +261,11 @@ public class SongList extends AppCompatActivity {
         if (listType.equals("top_rated") || listType.equals("low_rated"))
             lastPosition = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
         super.onPause();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 }
