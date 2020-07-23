@@ -3,7 +3,11 @@ package com.ash.studios.musify.Activities;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +27,11 @@ public class SongList extends AppCompatActivity {
     TextView title;
     ImageView icon;
     RecyclerView rv;
+    ProgressBar loader;
     ConstraintLayout backToLib;
+
+    int lastPosition = 0;
+    String listType, iconColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class SongList extends AppCompatActivity {
         rv = findViewById(R.id.song_list);
         icon = findViewById(R.id.activity_icon);
         backToLib = findViewById(R.id.lib_back);
+        loader = findViewById(R.id.list_loader);
         title = findViewById(R.id.activity_title);
 
         backToLib.setOnClickListener(v -> finish());
@@ -47,8 +56,8 @@ public class SongList extends AppCompatActivity {
     }
 
     private void setListTitle() {
-        String listType = getIntent().getStringExtra("list_type");
-        String iconColor = getIntent().getStringExtra("icon_color");
+        listType = getIntent().getStringExtra("list_type");
+        iconColor = getIntent().getStringExtra("icon_color");
         if (listType != null) {
 
             switch (listType) {
@@ -73,6 +82,9 @@ public class SongList extends AppCompatActivity {
                 case "top_rated":
                     getTopRated(iconColor);
                     break;
+                case "low_rated":
+                    getLowRated(iconColor);
+                    break;
                 case "recently_added":
                     getRecentlyAdded(iconColor);
                     break;
@@ -85,8 +97,15 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_all_songs));
         icon.setColorFilter(Color.parseColor(color));
 
-        AllSongs allSongs = new AllSongs(this, Utils.songs);
-        rv.setAdapter(allSongs);
+        if (Utils.songs == null || Utils.songs.size() == 0) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                rv.setAdapter(new AllSongs(SongList.this, Utils.getAllSongs(SongList.this)));
+                loader.setVisibility(View.GONE);
+            }, 50);
+        } else {
+            rv.setAdapter(new AllSongs(this, Utils.songs));
+            loader.setVisibility(View.GONE);
+        }
     }
 
     private void getFolders(String color) {
@@ -100,8 +119,15 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
         icon.setColorFilter(Color.parseColor(color));
 
-        Albums albums = new Albums(this, Utils.albums);
-        rv.setAdapter(albums);
+        if (Utils.albums == null || Utils.albums.size() == 0) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                rv.setAdapter(new Albums(SongList.this, Utils.getAlbums(SongList.this)));
+                loader.setVisibility(View.GONE);
+            }, 50);
+        } else {
+            rv.setAdapter(new Albums(this, Utils.albums));
+            loader.setVisibility(View.GONE);
+        }
     }
 
     private void getArtists(String color) {
@@ -109,8 +135,15 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
         icon.setColorFilter(Color.parseColor(color));
 
-        Artists artists = new Artists(this, Utils.artists);
-        rv.setAdapter(artists);
+        if (Utils.artists == null || Utils.artists.size() == 0) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                rv.setAdapter(new Artists(SongList.this, Utils.getArtists(SongList.this)));
+                loader.setVisibility(View.GONE);
+            }, 50);
+        } else {
+            rv.setAdapter(new Artists(this, Utils.artists));
+            loader.setVisibility(View.GONE);
+        }
     }
 
     private void getGenres(String color) {
@@ -118,8 +151,15 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
         icon.setColorFilter(Color.parseColor(color));
 
-        Genres genres = new Genres(this, Utils.genres);
-        rv.setAdapter(genres);
+        if (Utils.genres == null || Utils.genres.size() == 0) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                rv.setAdapter(new Genres(SongList.this, Utils.getGenres(SongList.this)));
+                loader.setVisibility(View.GONE);
+            }, 50);
+        } else {
+            rv.setAdapter(new Genres(this, Utils.genres));
+            loader.setVisibility(View.GONE);
+        }
     }
 
     private void getPlayLists(String color) {
@@ -132,11 +172,42 @@ public class SongList extends AppCompatActivity {
         title.setText("Top Rated");
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(color));
+
+        rv.setAdapter(new AllSongs(this, Utils.getTR(this)));
+        loader.setVisibility(View.GONE);
+    }
+
+    private void getLowRated(String color) {
+        title.setText("Low Rated");
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_low_rated));
+        icon.setColorFilter(Color.parseColor(color));
+
+        rv.setAdapter(new AllSongs(this, Utils.getLR(this)));
+        loader.setVisibility(View.GONE);
     }
 
     private void getRecentlyAdded(String color) {
         title.setText("Recently Added");
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_added));
         icon.setColorFilter(Color.parseColor(color));
+    }
+
+    @Override
+    protected void onResume() {
+        if (listType.equals("top_rated")) {
+            rv.setAdapter(new AllSongs(this, Utils.getTR(this)));
+            rv.scrollToPosition(lastPosition);
+        } else if (listType.equals("low_rated")) {
+            rv.setAdapter(new AllSongs(this, Utils.getLR(this)));
+            rv.scrollToPosition(lastPosition);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (listType.equals("top_rated") || listType.equals("low_rated"))
+            lastPosition = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
+        super.onPause();
     }
 }

@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
@@ -42,12 +43,15 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
     CircularSeekBar seekBar;
     FloatingActionButton playPause;
     TextView title, artist, duration;
-    ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn;
+    ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn, likeBtn, dislikeBtn;
 
     Song song;
-    int position = -1;
+    ArrayList<Song> TRList, LRList;
     Handler handler = new Handler();
     Thread fabThread, prevThread, nextThread;
+
+    int position = -1;
+    boolean liked = false, disliked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,41 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 repeatBtn.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
         });
+
+        likeBtn.setOnClickListener(v -> {
+            if (liked) {
+                liked = false;
+                likeBtn.setImageResource(R.drawable.ic_like_off);
+                Utils.deleteFromTR(this, song);
+            } else {
+                if (disliked) {
+                    disliked = false;
+                    dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
+                    if (LRList.contains(song)) Utils.deleteFromLR(this, song);
+                }
+                liked = true;
+                likeBtn.setImageResource(R.drawable.ic_like_on);
+                Utils.saveToTR(this, song);
+            }
+            TRList = Utils.getTR(this);
+        });
+        dislikeBtn.setOnClickListener(v -> {
+            if (disliked) {
+                disliked = false;
+                dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
+                Utils.deleteFromLR(this, song);
+            } else {
+                if (liked) {
+                    liked = false;
+                    likeBtn.setImageResource(R.drawable.ic_like_off);
+                    if (TRList.contains(song)) Utils.deleteFromTR(this, song);
+                }
+                disliked = true;
+                dislikeBtn.setImageResource(R.drawable.ic_dislike_on);
+                Utils.saveToLR(this, song);
+            }
+            LRList = Utils.getLR(this);
+        });
     }
 
     private void setIDs() {
@@ -111,8 +150,10 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         nextBtn = findViewById(R.id.next);
         previousBtn = findViewById(R.id.prev);
         repeatBtn = findViewById(R.id.repeat);
+        likeBtn = findViewById(R.id.like_btn);
         shuffleBtn = findViewById(R.id.shuffle);
         playPause = findViewById(R.id.play_pause);
+        dislikeBtn = findViewById(R.id.dislike_btn);
 
         toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(view -> finish());
@@ -122,6 +163,9 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 Toast.makeText(Player.this, "Menu", Toast.LENGTH_SHORT).show();
             return true;
         });
+
+        TRList = Utils.getTR(this) == null ? new ArrayList<>() : Utils.getTR(this);
+        LRList = Utils.getLR(this) == null ? new ArrayList<>() : Utils.getLR(this);
     }
 
     private void getSong() {
@@ -143,6 +187,22 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         seekBar.setProgress(0);
         seekBar.setMax(mp.getDuration() / 1000f);
         setSongAttrs(song);
+
+        if (TRList.contains(song)) {
+            liked = true;
+            likeBtn.setImageResource(R.drawable.ic_like_on);
+        } else {
+            liked = false;
+            likeBtn.setImageResource(R.drawable.ic_like_off);
+        }
+
+        if (LRList.contains(song)) {
+            disliked = true;
+            dislikeBtn.setImageResource(R.drawable.ic_dislike_on);
+        } else {
+            disliked = false;
+            dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
+        }
     }
 
     private void bindSeekBar() {
@@ -330,6 +390,22 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                     seekBar.setCircleProgressColor(Color.parseColor(accent));
                 }
             });
+
+            if (TRList.contains(song)) {
+                liked = true;
+                likeBtn.setImageResource(R.drawable.ic_like_on);
+            } else {
+                liked = false;
+                likeBtn.setImageResource(R.drawable.ic_like_off);
+            }
+
+            if (LRList.contains(song)) {
+                disliked = true;
+                dislikeBtn.setImageResource(R.drawable.ic_dislike_on);
+            } else {
+                disliked = false;
+                dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
+            }
         }
     }
 

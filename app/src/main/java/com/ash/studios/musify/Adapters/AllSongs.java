@@ -33,7 +33,7 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
     @NonNull
     @Override
     public AllSongs.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.song_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override

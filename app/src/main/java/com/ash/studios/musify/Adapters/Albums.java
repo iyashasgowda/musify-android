@@ -32,7 +32,7 @@ public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
     @NonNull
     @Override
     public Albums.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.song_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
 
         holder.albumName.setText(album.getAlbum());
         holder.albumArtist.setText(album.getArtist());
-        holder.songsCount.setText(album.getSong_count() == 1 ? "1 Song" : album.getSong_count() + " Songs");
+        holder.songsCount.setText(album.getSong_count() == 1 ? "\u266B 1" : "\u266B " + album.getSong_count());
         holder.songsCount.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
         Glide.with(context.getApplicationContext())
                 .asBitmap()

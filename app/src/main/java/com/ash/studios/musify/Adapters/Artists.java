@@ -32,16 +32,16 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
     @NonNull
     @Override
     public Artists.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.song_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull Artists.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
 
+        holder.albumCount.setVisibility(View.GONE);
         holder.artistName.setText(artist.getArtist());
-        holder.songCount.setText(artist.getSong_count() == 1 ? "1 Song" : artist.getSong_count() + " Songs");
-        holder.albumCount.setText(artist.getAlbum_count() == 1 ? "1 Album" : artist.getAlbum_count() + " Albums");
+        holder.songCount.setText(artist.getSong_count() == 1 ? "\u266B 1" : "\u266B " + artist.getSong_count());
         holder.albumCount.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
@@ -67,8 +67,8 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
             super(itemView);
 
             artistName = itemView.findViewById(R.id.title);
-            songCount = itemView.findViewById(R.id.artist);
-            albumCount = itemView.findViewById(R.id.duration);
+            albumCount = itemView.findViewById(R.id.artist);
+            songCount = itemView.findViewById(R.id.duration);
             albumCover = itemView.findViewById(R.id.album_art);
         }
     }

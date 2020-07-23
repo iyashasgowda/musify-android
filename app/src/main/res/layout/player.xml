@@ -226,6 +226,38 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <ImageView
+            android:id="@+id/like_btn"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/black_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="@drawable/border_ripple"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_like_off" />
+
+        <ImageView
+            android:id="@+id/dislike_btn"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/black_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="@drawable/border_ripple"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_dislike_off" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

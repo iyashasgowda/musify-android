@@ -31,7 +31,7 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     @NonNull
     @Override
     public Genres.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.song_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
         Genre genre = genres.get(position);
 
         holder.genreName.setText(genre.getGenre());
-        holder.songCount.setText(genre.getSong_count() == 1 ? "1 Song" : genre.getSong_count() + " Songs");
+        holder.songCount.setText(genre.getSong_count() == 1 ? "\u266B 1" : "\u266B " + genre.getSong_count());
 
         Glide.with(context.getApplicationContext())
                 .asBitmap()

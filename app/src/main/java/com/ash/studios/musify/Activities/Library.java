@@ -13,8 +13,8 @@ import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 
 public class Library extends AppCompatActivity implements View.OnClickListener {
-    ImageView allSong, folders, albums, artists, genres, playlists, topRated, recentlyAdded;
-    String[] colors = new String[8];
+    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded;
+    String[] colors = new String[9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void setColors() {
-        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, recentlyAdded};
+        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded};
         for (int i = 0; i < icons.length; i++) {
             String col = Utils.getNewColor();
             colors[i] = col;
@@ -42,6 +42,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
         artists = findViewById(R.id.artists_icon);
         allSong = findViewById(R.id.all_song_icon);
         topRated = findViewById(R.id.top_rated_icon);
+        lowRated = findViewById(R.id.low_rated_icon);
         playlists = findViewById(R.id.playlists_icon);
         recentlyAdded = findViewById(R.id.recently_added_icon);
 
@@ -52,6 +53,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
         findViewById(R.id.genres).setOnClickListener(this);
         findViewById(R.id.play_lists).setOnClickListener(this);
         findViewById(R.id.top_rated).setOnClickListener(this);
+        findViewById(R.id.low_rated).setOnClickListener(this);
         findViewById(R.id.recently_added).setOnClickListener(this);
     }
 
@@ -95,9 +97,14 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
                 intent.putExtra("icon_color", colors[6]);
                 startActivity(intent);
                 break;
+            case R.id.low_rated:
+                intent.putExtra("list_type", "low_rated");
+                intent.putExtra("icon_color", colors[7]);
+                startActivity(intent);
+                break;
             case R.id.recently_added:
                 intent.putExtra("list_type", "recently_added");
-                intent.putExtra("icon_color", colors[7]);
+                intent.putExtra("icon_color", colors[8]);
                 startActivity(intent);
                 break;
         }

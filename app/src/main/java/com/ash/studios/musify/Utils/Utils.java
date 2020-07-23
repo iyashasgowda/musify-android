@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,6 +19,8 @@ import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
 import com.ash.studios.musify.Model.Song;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,10 +51,80 @@ public class Utils extends Application {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
+    public static ArrayList<Song> getTR(Context c) {
+        return new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("TOP_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+    }
+
+    public static ArrayList<Song> getLR(Context c) {
+        return new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("LOW_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+    }
+
     public static String getDuration(long duration) {
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+    }
+
+    public static void saveToTR(Context c, Song song) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Song> list = new Gson().fromJson(prefs.getString("TOP_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+
+        if (list != null) {
+            if (!list.contains(song)) list.add(song);
+            else return;
+        } else {
+            list = new ArrayList<>();
+            list.add(song);
+        }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("TOP_RATED", new Gson().toJson(list)).apply();
+    }
+
+    public static void saveToLR(Context c, Song song) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Song> list = new Gson().fromJson(prefs.getString("LOW_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+
+        if (list != null) {
+            if (!list.contains(song)) list.add(song);
+            else return;
+        } else {
+            list = new ArrayList<>();
+            list.add(song);
+        }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("LOW_RATED", new Gson().toJson(list)).apply();
+    }
+
+    public static void deleteFromTR(Context c, Song song) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Song> list = new Gson().fromJson(prefs.getString("TOP_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+
+        if (list != null) list.remove(song);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("TOP_RATED", new Gson().toJson(list)).apply();
+    }
+
+    public static void deleteFromLR(Context c, Song song) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Song> list = new Gson().fromJson(prefs.getString("LOW_RATED", null),
+                new TypeToken<ArrayList<Song>>() {
+                }.getType());
+
+        if (list != null) list.remove(song);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("LOW_RATED", new Gson().toJson(list)).apply();
     }
 
     public static ArrayList<Genre> getGenres(Context context) {
@@ -115,14 +189,15 @@ public class Utils extends Application {
                 String artist = c.getString(2);
                 int no_of_songs = c.getInt(3);
 
-                albums.add(
-                        new Album(
-                                album,
-                                artist,
-                                album_id,
-                                no_of_songs
-                        )
-                );
+                if (!album.equals("<unknown>"))
+                    albums.add(
+                            new Album(
+                                    album,
+                                    artist,
+                                    album_id,
+                                    no_of_songs
+                            )
+                    );
             }
             c.close();
         }
@@ -161,17 +236,19 @@ public class Utils extends Application {
                 long duration = c.getLong(5);
                 long album_id = c.getLong(6);
 
-                songs.add(
-                        new Song(
-                                id,
-                                data,
-                                title,
-                                album,
-                                artist,
-                                duration,
-                                album_id
-                        )
-                );
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
             }
             c.close();
         }
@@ -185,7 +262,6 @@ public class Utils extends Application {
         String[] projection = {
                 MediaStore.Audio.Artists._ID,
                 MediaStore.Audio.Artists.ARTIST,
-                MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
                 MediaStore.Audio.Artists.NUMBER_OF_TRACKS
         };
         Cursor c = context.getContentResolver().query(
@@ -200,18 +276,17 @@ public class Utils extends Application {
             while (c.moveToNext()) {
                 long artist_id = c.getLong(0);
                 String artist = c.getString(1);
-                int no_of_albums = c.getInt(2);
-                int no_of_songs = c.getInt(3);
+                int no_of_songs = c.getInt(2);
 
-                artists.add(
-                        new Artist(
-                                artist_id,
-                                artist,
-                                no_of_albums,
-                                no_of_songs,
-                                getArtistSongs(context, artist_id).get(0).getAlbum_id()
-                        )
-                );
+                if (!artist.equals("<unknown>"))
+                    artists.add(
+                            new Artist(
+                                    artist_id,
+                                    artist,
+                                    no_of_songs,
+                                    getArtistSongs(context, artist_id).get(0).getAlbum_id()
+                            )
+                    );
             }
             c.close();
         }
@@ -371,33 +446,33 @@ public class Utils extends Application {
         return songs;
     }
 
-    public static void fetchAllSongs(Context context) {
+    public static void fetchAllSongs(Context c) {
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                songs = getAllSongs(context);
+                songs = getAllSongs(c);
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                albums = getAlbums(context);
+                albums = getAlbums(c);
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                artists = getArtists(context);
+                artists = getArtists(c);
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                genres = getGenres(context);
+                genres = getGenres(c);
             }
         }.start();
     }
