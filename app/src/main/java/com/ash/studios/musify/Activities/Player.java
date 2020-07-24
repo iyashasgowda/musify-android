@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Activities;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,15 +13,15 @@ import android.provider.MediaStore;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.palette.graphics.Palette;
 
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.BtmSheet;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +38,9 @@ import static com.ash.studios.musify.Utils.Instance.repeat;
 import static com.ash.studios.musify.Utils.Instance.shuffle;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Instance.uri;
+import static com.ash.studios.musify.Utils.Utils.getAlbumArt;
+import static com.ash.studios.musify.Utils.Utils.getDialog;
+import static com.ash.studios.musify.Utils.Utils.getDuration;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Player extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
@@ -47,6 +51,7 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
     ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn, likeBtn, dislikeBtn;
 
     Song song;
+    Dialog dialog;
     ArrayList<Song> TRList, LRList;
     Handler handler = new Handler();
     Thread fabThread, prevThread, nextThread;
@@ -161,7 +166,7 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         toolbar.inflateMenu(R.menu.player);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.ic_options)
-                Toast.makeText(Player.this, "Menu", Toast.LENGTH_SHORT).show();
+                getSongDialog();
             return true;
         });
 
@@ -357,7 +362,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
 
             artist.setText(song.getArtist());
             duration.setText(Utils.getDuration(song.getDuration()));
-            duration.setTypeface(ResourcesCompat.getFont(this, R.font.josefin_sans_bold));
 
             Bitmap bitmap;
             try {
@@ -407,6 +411,43 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 disliked = false;
                 dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
             }
+
+            setDialogAttrs();
+        }
+    }
+
+    private void getSongDialog() {
+        dialog = getDialog(this, R.layout.player_dg);
+        setDialogAttrs();
+
+        ConstraintLayout SI = dialog.findViewById(R.id.info_btn);
+        ConstraintLayout DS = dialog.findViewById(R.id.delete_btn);
+        ConstraintLayout AA = dialog.findViewById(R.id.album_art_btn);
+        ConstraintLayout AP = dialog.findViewById(R.id.add_to_playlist_btn);
+
+        AP.setOnClickListener(ap -> {
+            BtmSheet btmSheet = new BtmSheet();
+            btmSheet.show(getSupportFragmentManager(), null);
+            dialog.dismiss();
+        });
+    }
+
+    private void setDialogAttrs() {
+        if (dialog != null) {
+            TextView dgTitle = dialog.findViewById(R.id.player_dialog_title);
+            TextView dgArtist = dialog.findViewById(R.id.player_dialog_artist);
+            TextView dgDuration = dialog.findViewById(R.id.player_dialog_duration);
+            ImageView dgAlbumArt = dialog.findViewById(R.id.player_dialog_album_art);
+
+            dgTitle.setSelected(true);
+            dgTitle.setText(song.getTitle());
+            dgArtist.setText(song.getArtist());
+            dgDuration.setText(getDuration(song.getDuration()));
+            Glide.with(getApplicationContext())
+                    .asBitmap()
+                    .load(getAlbumArt(song.getAlbum_id()))
+                    .placeholder(R.mipmap.icon)
+                    .into(dgAlbumArt);
         }
     }
 

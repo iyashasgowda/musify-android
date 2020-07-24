@@ -7,7 +7,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,11 +23,17 @@ import com.ash.studios.musify.Adapters.Albums;
 import com.ash.studios.musify.Adapters.AllSongs;
 import com.ash.studios.musify.Adapters.Artists;
 import com.ash.studios.musify.Adapters.Genres;
+import com.ash.studios.musify.Adapters.Playlists;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
+import com.google.android.material.appbar.AppBarLayout;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Utils.getDialog;
+import static com.ash.studios.musify.Utils.Utils.getLR;
+import static com.ash.studios.musify.Utils.Utils.getPlaylists;
+import static com.ash.studios.musify.Utils.Utils.getTR;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 @SuppressLint("SetTextI18n")
@@ -33,6 +41,7 @@ public class SongList extends AppCompatActivity {
     TextView title;
     RecyclerView rv;
     ProgressBar loader;
+    AppBarLayout appBar;
     ConstraintLayout backToLib;
     ImageView icon, shuffleAllBtn, playAllBtn, searchBtn, optionsBtn;
 
@@ -54,6 +63,7 @@ public class SongList extends AppCompatActivity {
     private void setIDs() {
         context = this;
         rv = findViewById(R.id.song_list);
+        appBar = findViewById(R.id.app_bar);
         icon = findViewById(R.id.activity_icon);
         backToLib = findViewById(R.id.lib_back);
         loader = findViewById(R.id.list_loader);
@@ -69,7 +79,7 @@ public class SongList extends AppCompatActivity {
         rv.setHasFixedSize(true);
 
         optionsBtn.setOnClickListener(v -> {
-            dialog = Utils.getOptionsDialog(context);
+            dialog = getDialog(context, R.layout.options_dg);
 
             TextView dialogName = dialog.findViewById(R.id.dialog_name);
             ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
@@ -87,7 +97,7 @@ public class SongList extends AppCompatActivity {
                 case "genres":
                     SF.setVisibility(View.GONE);
                     break;
-                case "play_lists":
+                case "playlists":
                     AN.setVisibility(View.VISIBLE);
                     break;
                 case "recently_added":
@@ -121,21 +131,44 @@ public class SongList extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).postDelayed(() ->
                                 rv.setAdapter(new Genres(context, Utils.getGenres(context), loader)), 10);
                         break;
-                    case "play_lists":
-                        //TODO:need to get playlists
+                    case "playlists":
+                        new Handler(Looper.getMainLooper()).postDelayed(() ->
+                                rv.setAdapter(new Playlists(context, Utils.getPlaylists(context), loader)), 10);
                         break;
                     case "top_rated":
                         new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader)), 10);
+                                rv.setAdapter(new AllSongs(context, getTR(context), loader)), 10);
                         break;
                     case "low_rated":
                         new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader)), 10);
+                                rv.setAdapter(new AllSongs(context, getLR(context), loader)), 10);
                         break;
                     case "recently_added":
                         //TODO:need to get recently added songs
                         break;
                 }
+            });
+            AN.setOnClickListener(an -> {
+                dialog.dismiss();
+                Dialog nameDialog = getDialog(this, R.layout.name_dg);
+
+                TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
+                TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
+                EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
+                plEditText.requestFocus();
+
+                cancel.setOnClickListener(c -> nameDialog.dismiss());
+                okBtn.setOnClickListener(ok -> {
+                    String playlistName = plEditText.getText().toString().trim();
+
+                    if (!TextUtils.isEmpty(playlistName)) {
+                        Utils.createNewPlaylist(context, playlistName);
+                        Playlists playlists = new Playlists(context, getPlaylists(context), loader);
+                        rv.setAdapter(playlists);
+                        playlists.notifyDataSetChanged();
+                        nameDialog.dismiss();
+                    }
+                });
             });
         });
     }
@@ -161,7 +194,7 @@ public class SongList extends AppCompatActivity {
                 case "genres":
                     getGenres(iconColor);
                     break;
-                case "play_lists":
+                case "playlists":
                     getPlayLists(iconColor);
                     break;
                 case "top_rated":
@@ -232,6 +265,8 @@ public class SongList extends AppCompatActivity {
         title.setText("Playlists");
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_playlist));
         icon.setColorFilter(Color.parseColor(color));
+
+        rv.setAdapter(new Playlists(context, getPlaylists(context), loader));
     }
 
     private void getTopRated(String color) {
@@ -239,7 +274,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader));
+        rv.setAdapter(new AllSongs(context, getTR(context), loader));
     }
 
     private void getLowRated(String color) {
@@ -247,7 +282,7 @@ public class SongList extends AppCompatActivity {
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_low_rated));
         icon.setColorFilter(Color.parseColor(color));
 
-        rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader));
+        rv.setAdapter(new AllSongs(context, getLR(context), loader));
     }
 
     private void getRecentlyAdded(String color) {
@@ -268,12 +303,15 @@ public class SongList extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        if (listType.equals("top_rated")) {
-            rv.setAdapter(new AllSongs(context, Utils.getTR(context), loader));
-            rv.scrollToPosition(lastPosition);
-        } else if (listType.equals("low_rated")) {
-            rv.setAdapter(new AllSongs(context, Utils.getLR(context), loader));
-            rv.scrollToPosition(lastPosition);
+        switch (listType) {
+            case "top_rated":
+                rv.setAdapter(new AllSongs(context, getTR(context), loader));
+                rv.scrollToPosition(lastPosition);
+                break;
+            case "low_rated":
+                rv.setAdapter(new AllSongs(context, getLR(context), loader));
+                rv.scrollToPosition(lastPosition);
+                break;
         }
         super.onResume();
     }
@@ -283,11 +321,5 @@ public class SongList extends AppCompatActivity {
         if (listType.equals("top_rated") || listType.equals("low_rated"))
             lastPosition = ((LinearLayoutManager) rv.getLayoutManager()).findFirstVisibleItemPosition();
         super.onPause();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 }

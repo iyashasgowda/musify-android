@@ -10,7 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Player;
@@ -45,7 +44,6 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
         holder.songName.setText(song.getTitle());
         holder.songArtist.setText(song.getArtist());
         holder.duration.setText(Utils.getDuration(song.getDuration()));
-        holder.duration.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(song.getAlbum_id()))

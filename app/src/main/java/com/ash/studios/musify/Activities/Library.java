@@ -19,8 +19,8 @@ import com.ash.studios.musify.R;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
+import static com.ash.studios.musify.Utils.Utils.getDialog;
 import static com.ash.studios.musify.Utils.Utils.getNewColor;
-import static com.ash.studios.musify.Utils.Utils.getOptionsDialog;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Library extends AppCompatActivity implements View.OnClickListener {
@@ -74,7 +74,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
 
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
         optionsBtn.setOnClickListener(v -> {
-            Dialog dialog = getOptionsDialog(context);
+            Dialog dialog = getDialog(context, R.layout.options_dg);
             ImageView icon = dialog.findViewById(R.id.dialog_icon);
             TextView title = dialog.findViewById(R.id.dialog_name);
 
@@ -121,7 +121,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.play_lists:
-                intent.putExtra("list_type", "play_lists");
+                intent.putExtra("list_type", "playlists");
                 intent.putExtra("icon_color", colors[5]);
                 startActivity(intent);
                 break;

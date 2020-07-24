@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+@SuppressLint("SetTextI18n")
 public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     public ArrayList<Genre> genres;
     private Context context;
@@ -40,9 +42,9 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     public void onBindViewHolder(@NonNull Genres.ViewHolder holder, int position) {
         Genre genre = genres.get(position);
 
+        holder.dummyText.setVisibility(View.GONE);
         holder.genreName.setText(genre.getGenre());
-        holder.songCount.setText(genre.getSong_count() == 1 ? "\u266B 1" : "\u266B " + genre.getSong_count());
-
+        holder.songCount.setText("\u266B " + genre.getSong_count());
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(genre.getAlbum_id()))
@@ -60,14 +62,15 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView genreName, songCount;
+        TextView genreName, songCount, dummyText;
         ImageView genreCover;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             genreName = itemView.findViewById(R.id.title);
-            songCount = itemView.findViewById(R.id.artist);
+            dummyText = itemView.findViewById(R.id.artist);
+            songCount = itemView.findViewById(R.id.duration);
             genreCover = itemView.findViewById(R.id.album_art);
         }
     }

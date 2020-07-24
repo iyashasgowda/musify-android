@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
+import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.google.gson.Gson;
@@ -75,27 +76,6 @@ public class Utils extends Application {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
-    public static Dialog getOptionsDialog(Context c) {
-        Dialog dialog = new Dialog(c);
-        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.dg_anim;
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.options_dg);
-        dialog.show();
-        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-
-        ScrollView scrollView = dialog.findViewById(R.id.dialog_scroll_view);
-        OverScrollDecoratorHelper.setUpOverScroll(scrollView);
-        return dialog;
-    }
-
     public static void saveToTR(Context c, Song song) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         ArrayList<Song> list = new Gson().fromJson(prefs.getString("TOP_RATED", null),
@@ -132,6 +112,27 @@ public class Utils extends Application {
         editor.putString("LOW_RATED", new Gson().toJson(list)).apply();
     }
 
+    public static Dialog getDialog(Context c, int layout) {
+        Dialog dialog = new Dialog(c);
+        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dg_anim;
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(layout);
+        dialog.show();
+        dialog.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+        ScrollView scrollView = dialog.findViewById(R.id.dialog_scroll_view);
+        if (scrollView != null) OverScrollDecoratorHelper.setUpOverScroll(scrollView);
+        return dialog;
+    }
+
     public static void deleteFromTR(Context c, Song song) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         ArrayList<Song> list = new Gson().fromJson(prefs.getString("TOP_RATED", null),
@@ -152,6 +153,12 @@ public class Utils extends Application {
         if (list != null) list.remove(song);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("LOW_RATED", new Gson().toJson(list)).apply();
+    }
+
+    public static ArrayList<Playlist> getPlaylists(Context c) {
+        return new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("PLAYLISTS", null),
+                new TypeToken<ArrayList<Playlist>>() {
+                }.getType());
     }
 
     public static ArrayList<Genre> getGenres(Context context) {
@@ -318,6 +325,26 @@ public class Utils extends Application {
             c.close();
         }
         return artists;
+    }
+
+    public static void createNewPlaylist(Context c, String name) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Playlist> list = new Gson().fromJson(prefs.getString("PLAYLISTS", null),
+                new TypeToken<ArrayList<Playlist>>() {
+                }.getType());
+
+        Playlist playlist = new Playlist(name, new ArrayList<>());
+
+        if (list != null) {
+            if (!list.contains(playlist)) list.add(playlist);
+            else return;
+        } else {
+            list = new ArrayList<>();
+            list.add(playlist);
+        }
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
     }
 
     public static ArrayList<Song> getGenreSongs(Context context, long genreId) {

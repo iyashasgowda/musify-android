@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Bunch;
@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+@SuppressLint("SetTextI18n")
 public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
     public ArrayList<Album> albums;
     private Context context;
@@ -43,8 +44,7 @@ public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
 
         holder.albumName.setText(album.getAlbum());
         holder.albumArtist.setText(album.getArtist());
-        holder.songsCount.setText(album.getSong_count() == 1 ? "\u266B 1" : "\u266B " + album.getSong_count());
-        holder.songsCount.setTypeface(ResourcesCompat.getFont(context, R.font.josefin_sans_bold));
+        holder.songsCount.setText("\u266B " + album.getSong_count());
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(album.getAlbum_id()))
