@@ -26,10 +26,12 @@ public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
     public ArrayList<Album> albums;
     private Context context;
 
-    public Albums(Context context, ArrayList<Album> albums, ProgressBar pb) {
+    public Albums(Context context, ArrayList<Album> albums, ProgressBar pb, TextView nf) {
         this.context = context;
         this.albums = albums;
         pb.setVisibility(View.GONE);
+
+        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

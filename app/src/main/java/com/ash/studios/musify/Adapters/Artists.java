@@ -26,10 +26,12 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
     public ArrayList<Artist> artists;
     private Context context;
 
-    public Artists(Context context, ArrayList<Artist> artists, ProgressBar pb) {
+    public Artists(Context context, ArrayList<Artist> artists, ProgressBar pb, TextView nf) {
         this.context = context;
         this.artists = artists;
         pb.setVisibility(View.GONE);
+
+        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

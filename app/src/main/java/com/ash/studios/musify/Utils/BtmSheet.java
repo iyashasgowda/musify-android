@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import static com.ash.studios.musify.Utils.Utils.getPlaylists;
 
 public class BtmSheet extends BottomSheetDialogFragment {
+    TextView NF;
     RecyclerView rv;
     Context context;
     ProgressBar loader;
@@ -38,7 +39,7 @@ public class BtmSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.playlist_st, container, false);
+        View v = inflater.inflate(R.layout.btm_sheet, container, false);
         setIDs(v);
 
         addNewBtn.setOnClickListener(btn -> {
@@ -55,7 +56,7 @@ public class BtmSheet extends BottomSheetDialogFragment {
 
                 if (!TextUtils.isEmpty(playlistName)) {
                     Utils.createNewPlaylist(context, playlistName);
-                    SheetLists playlists = new SheetLists(context, getPlaylists(context), loader);
+                    SheetLists playlists = new SheetLists(context, getPlaylists(context), loader, this, NF);
                     rv.setAdapter(playlists);
                     playlists.notifyDataSetChanged();
                     nameDialog.dismiss();
@@ -63,8 +64,7 @@ public class BtmSheet extends BottomSheetDialogFragment {
             });
         });
 
-        rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new SheetLists(context, getPlaylists(context), loader));
+        rv.setAdapter(new SheetLists(context, getPlaylists(context), loader, this, NF));
         return v;
     }
 
@@ -72,6 +72,12 @@ public class BtmSheet extends BottomSheetDialogFragment {
         context = v.getContext();
         rv = v.findViewById(R.id.sheet_rv);
         loader = v.findViewById(R.id.sheet_pb);
+        NF = v.findViewById(R.id.nothing_found);
         addNewBtn = v.findViewById(R.id.add_new_btn);
+
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(true);
+        rv.setLayoutManager(manager);
     }
 }

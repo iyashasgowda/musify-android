@@ -2,6 +2,7 @@ package com.ash.studios.musify.Adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ash.studios.musify.Activities.Bunch;
 import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -24,10 +27,12 @@ public class Playlists extends RecyclerView.Adapter<Playlists.ViewHolder> {
     private Context context;
     private ArrayList<Playlist> list;
 
-    public Playlists(Context context, ArrayList<Playlist> list, ProgressBar pb) {
+    public Playlists(Context context, ArrayList<Playlist> list, ProgressBar pb, TextView nf) {
         this.context = context;
         this.list = list;
         pb.setVisibility(View.GONE);
+
+        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull
@@ -46,9 +51,13 @@ public class Playlists extends RecyclerView.Adapter<Playlists.ViewHolder> {
         holder.playlistCount.setText("\u266B " + songs.size());
         if (playlist.getSongs().size() > 0)
             Glide.with(context.getApplicationContext())
-                    .asBitmap().load(playlist.getSongs().get(0).getAlbum_id())
+                    .asBitmap().load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
                     .placeholder(R.mipmap.icon)
                     .into(holder.playlistCover);
+
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Bunch.class)
+                .putExtra("TYPE", "PLAYLISTS")
+                .putExtra("CONTENT", playlist)));
     }
 
     @Override

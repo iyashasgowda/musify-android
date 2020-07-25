@@ -2,6 +2,7 @@ package com.ash.studios.musify.Activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -15,15 +16,18 @@ import com.ash.studios.musify.Adapters.AllSongs;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
+import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 @SuppressLint("SetTextI18n")
 public class Bunch extends AppCompatActivity {
-    TextView bunchTitle, goBackTo;
+    TextView bunchTitle, goBackTo, NF;
     ConstraintLayout goBackBtn;
     ProgressBar loader;
     ImageView coverArt;
@@ -42,6 +46,7 @@ public class Bunch extends AppCompatActivity {
     private void setIDs() {
         rv = findViewById(R.id.bunch_rv);
         loader = findViewById(R.id.bunch_pb);
+        NF = findViewById(R.id.nothing_found);
         coverArt = findViewById(R.id.cover_art);
         goBackTo = findViewById(R.id.go_back_to);
         goBackBtn = findViewById(R.id.go_back_btn);
@@ -49,6 +54,9 @@ public class Bunch extends AppCompatActivity {
 
         goBackBtn.setOnClickListener(v -> finish());
         rv.setLayoutManager(new LinearLayoutManager(this));
+        rv.setHasFixedSize(true);
+
+        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 
     private void setBunchAttrs() {
@@ -65,7 +73,15 @@ public class Bunch extends AppCompatActivity {
                 case "GENRES":
                     getGenreContent();
                     break;
+                case "PLAYLISTS":
+                    getPlaylistContent();
+                    break;
             }
+        }
+
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) {
+            NF.setVisibility(View.VISIBLE);
+            loader.setVisibility(View.GONE);
         }
     }
 
@@ -81,7 +97,7 @@ public class Bunch extends AppCompatActivity {
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getAlbumSongs(this, album.getAlbum_id()), loader));
+            rv.setAdapter(new AllSongs(this, Utils.getAlbumSongs(this, album.getAlbum_id()), loader, NF));
         }
     }
 
@@ -90,14 +106,14 @@ public class Bunch extends AppCompatActivity {
         Artist artist = (Artist) getIntent().getSerializableExtra("CONTENT");
 
         if (artist != null) {
-                       bunchTitle.setText(artist.getArtist());
+            bunchTitle.setText(artist.getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
                     .load(Utils.getAlbumArt(artist.getAlbum_id()))
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getArtistSongs(this, artist.getArtist_id()), loader));
+            rv.setAdapter(new AllSongs(this, Utils.getArtistSongs(this, artist.getArtist_id()), loader, NF));
         }
     }
 
@@ -113,7 +129,29 @@ public class Bunch extends AppCompatActivity {
                     .placeholder(R.mipmap.icon)
                     .into(coverArt);
 
-            rv.setAdapter(new AllSongs(this, Utils.getGenreSongs(this, genre.getGenre_id()), loader));
+            rv.setAdapter(new AllSongs(this, Utils.getGenreSongs(this, genre.getGenre_id()), loader, NF));
+        }
+    }
+
+    private void getPlaylistContent() {
+        goBackTo.setText("Playlists");
+        Playlist playlist = (Playlist) getIntent().getSerializableExtra("CONTENT");
+
+        if (playlist != null) {
+            bunchTitle.setText(playlist.getName());
+            if (playlist.getSongs().size() > 0)
+                Glide.with(getApplicationContext())
+                        .asBitmap()
+                        .load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
+                        .placeholder(R.mipmap.icon)
+                        .into(coverArt);
+            else {
+                Glide.with(getApplicationContext())
+                        .asBitmap()
+                        .load(R.mipmap.icon)
+                        .into(coverArt);
+            }
+            rv.setAdapter(new AllSongs(this, playlist.getSongs(), loader, NF));
         }
     }
 }

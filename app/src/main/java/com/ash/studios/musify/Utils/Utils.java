@@ -2,7 +2,6 @@ package com.ash.studios.musify.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Application;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 @SuppressLint("InlinedApi, DefaultLocale")
-public class Utils extends Application {
+public class Utils {
     public static ArrayList<Song> songs;
     public static ArrayList<Album> albums;
     public static ArrayList<Genre> genres;
@@ -183,14 +183,15 @@ public class Utils extends Application {
                 String genre = c.getString(1);
                 ArrayList<Song> songs = getGenreSongs(context, genres_id);
 
-                genres.add(
-                        new Genre(
-                                genres_id,
-                                genre,
-                                songs.get(0).getAlbum_id(),
-                                songs.size()
-                        )
-                );
+                if (songs.size() > 0)
+                    genres.add(
+                            new Genre(
+                                    genres_id,
+                                    genre,
+                                    songs.get(0).getAlbum_id(),
+                                    songs.size()
+                            )
+                    );
             }
             c.close();
         }
@@ -311,16 +312,18 @@ public class Utils extends Application {
                 long artist_id = c.getLong(0);
                 String artist = c.getString(1);
                 int no_of_songs = c.getInt(2);
+                ArrayList<Song> songs = getArtistSongs(context, artist_id);
 
-                if (!artist.equals("<unknown>"))
-                    artists.add(
-                            new Artist(
-                                    artist_id,
-                                    artist,
-                                    no_of_songs,
-                                    getArtistSongs(context, artist_id).get(0).getAlbum_id()
-                            )
-                    );
+                if (songs.size() > 0)
+                    if (!artist.equals("<unknown>"))
+                        artists.add(
+                                new Artist(
+                                        artist_id,
+                                        artist,
+                                        no_of_songs,
+                                        getArtistSongs(context, artist_id).get(0).getAlbum_id()
+                                )
+                        );
             }
             c.close();
         }
@@ -345,6 +348,88 @@ public class Utils extends Application {
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
+    }
+
+    public static ArrayList<Song> getRecentlyAdded(Context context) {
+        ArrayList<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM_ID
+        };
+        String selection = MediaStore.Audio.Media.DATE_ADDED + ">" + (System.currentTimeMillis() / 1000 - 1);
+
+        Cursor c = context.getContentResolver().query(
+                uri,
+                projection,
+                selection,
+                null,
+                "title asc"
+        );
+
+        if (c != null) {
+
+            while (c.moveToNext()) {
+                long id = c.getLong(0);
+                String data = c.getString(1);
+                String title = c.getString(2);
+                String album = c.getString(3);
+                String artist = c.getString(4);
+                long duration = c.getLong(5);
+                long album_id = c.getLong(6);
+
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
+            }
+            c.close();
+        }
+        return songs;
+    }
+
+    public static void songToPlaylist(Context c, int position, Song song) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Playlist> list = new Gson().fromJson(prefs.getString("PLAYLISTS", null),
+                new TypeToken<ArrayList<Playlist>>() {
+                }.getType());
+
+        //Clearing the list
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("PLAYLISTS");
+
+        //Checking if song already exist in any of the playlists
+        Playlist playlist = list.get(position);
+        if (playlist.getSongs().contains(song)) {
+            Toast.makeText(c, "Song already exist in that playlist", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //Removing the playlist before add a new one with song included
+        list.remove(position);
+
+        //Adding song to the playlist and playlist to the playlists
+        playlist.getSongs().add(song);
+        list.add(playlist);
+
+        //Saving back the playlists to the shared preference
+        editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
+        Toast.makeText(c, song.getTitle() + " added to the " + playlist.getName(), Toast.LENGTH_SHORT).show();
     }
 
     public static ArrayList<Song> getGenreSongs(Context context, long genreId) {
@@ -529,11 +614,5 @@ public class Utils extends Application {
                 genres = getGenres(c);
             }
         }.start();
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        fetchAllSongs(this);
     }
 }

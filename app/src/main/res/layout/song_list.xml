@@ -181,4 +181,16 @@
         android:indeterminate="true"
         android:indeterminateTint="@android:color/white" />
 
+    <TextView
+        android:id="@+id/nothing_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="128dp"
+        android:alpha="0.6"
+        android:text="Nothing was found :("
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

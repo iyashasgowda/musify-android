@@ -25,10 +25,12 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
     private Context context;
     public ArrayList<Song> allSongs;
 
-    public AllSongs(Context context, ArrayList<Song> allSongs, ProgressBar pb) {
+    public AllSongs(Context context, ArrayList<Song> allSongs, ProgressBar pb, TextView nf) {
         this.context = context;
         this.allSongs = allSongs;
         pb.setVisibility(View.GONE);
+
+        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

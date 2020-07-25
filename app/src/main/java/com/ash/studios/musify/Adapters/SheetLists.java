@@ -15,19 +15,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.BtmSheet;
+import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import static com.ash.studios.musify.Utils.Instance.song;
+import static com.ash.studios.musify.Utils.Utils.songToPlaylist;
+
 @SuppressLint("SetTextI18n")
 public class SheetLists extends RecyclerView.Adapter<SheetLists.ViewHolder> {
+    private BtmSheet sheet;
     private Context context;
     private ArrayList<Playlist> list;
 
-    public SheetLists(Context context, ArrayList<Playlist> list, ProgressBar pb) {
-        this.context = context;
+    public SheetLists(Context context, ArrayList<Playlist> list, ProgressBar pb, BtmSheet sheet, TextView nf) {
         this.list = list;
+        this.sheet = sheet;
+        this.context = context;
         pb.setVisibility(View.GONE);
+
+        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull
@@ -45,9 +54,14 @@ public class SheetLists extends RecyclerView.Adapter<SheetLists.ViewHolder> {
         holder.sheetPlCount.setText("\u266B " + songs.size());
         if (playlist.getSongs().size() > 0)
             Glide.with(context.getApplicationContext())
-                    .asBitmap().load(playlist.getSongs().get(0).getAlbum_id())
+                    .asBitmap().load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
                     .placeholder(R.mipmap.icon)
                     .into(holder.sheetPlCover);
+
+        holder.itemView.setOnClickListener(v -> {
+            songToPlaylist(context, position, song);
+            sheet.dismiss();
+        });
     }
 
     @Override

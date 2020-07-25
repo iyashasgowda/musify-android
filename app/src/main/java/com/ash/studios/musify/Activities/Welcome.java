@@ -19,8 +19,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
 
+import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Welcome extends AppCompatActivity {
@@ -46,10 +46,11 @@ public class Welcome extends AppCompatActivity {
     }
 
     private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
         } else {
+            fetchAllSongs(this);
             icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in_out));
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 startActivity(new Intent(Welcome.this, Library.class));
@@ -63,8 +64,8 @@ public class Welcome extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Utils.fetchAllSongs(this);
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fetchAllSongs(this);
                 holdOn.setVisibility(View.VISIBLE);
                 loader.setVisibility(View.VISIBLE);
                 icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in_out));
@@ -73,7 +74,7 @@ public class Welcome extends AppCompatActivity {
                     finish();
                 }, 1600);
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+                checkPermission();
                 Toast.makeText(this, "Storage permission required to read music files in your device..!", Toast.LENGTH_SHORT).show();
             }
         }

@@ -34,8 +34,10 @@ import java.util.Random;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import static com.ash.studios.musify.Utils.Instance.mp;
+import static com.ash.studios.musify.Utils.Instance.position;
 import static com.ash.studios.musify.Utils.Instance.repeat;
 import static com.ash.studios.musify.Utils.Instance.shuffle;
+import static com.ash.studios.musify.Utils.Instance.song;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Instance.uri;
 import static com.ash.studios.musify.Utils.Utils.getAlbumArt;
@@ -50,13 +52,11 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
     TextView title, artist, duration;
     ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn, likeBtn, dislikeBtn;
 
-    Song song;
     Dialog dialog;
     ArrayList<Song> TRList, LRList;
     Handler handler = new Handler();
     Thread fabThread, prevThread, nextThread;
 
-    int position = -1;
     boolean liked = false, disliked = false;
 
     @Override
@@ -95,7 +95,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 shuffleBtn.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
         });
-
         repeatBtn.setOnClickListener(view -> {
             if (repeat) {
                 repeat = false;
@@ -107,7 +106,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 repeatBtn.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
             }
         });
-
         likeBtn.setOnClickListener(v -> {
             if (liked) {
                 liked = false;
