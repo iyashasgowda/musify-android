@@ -29,9 +29,8 @@ public class Genres extends RecyclerView.Adapter<Genres.ViewHolder> {
     public Genres(Context context, ArrayList<Genre> genres, ProgressBar pb, TextView nf) {
         this.context = context;
         this.genres = genres;
-        pb.setVisibility(View.GONE);
-
-        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
+        if (pb != null) pb.setVisibility(View.GONE);
+        if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

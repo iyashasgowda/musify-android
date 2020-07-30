@@ -92,7 +92,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/bunch_shuffle_all_btn"
                     android:layout_width="56dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -108,7 +108,7 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/bunch_sequence_all_btn"
                     android:layout_width="56dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -119,12 +119,12 @@
                     android:paddingTop="11dp"
                     android:paddingBottom="11dp"
                     android:src="@drawable/ic_play_all"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toTopOf="@+id/imageView3" />
+                    app:layout_constraintBottom_toBottomOf="@+id/bunch_shuffle_all_btn"
+                    app:layout_constraintStart_toEndOf="@+id/bunch_shuffle_all_btn"
+                    app:layout_constraintTop_toTopOf="@+id/bunch_shuffle_all_btn" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/bunch_search_btn"
                     android:layout_width="56dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -135,26 +135,26 @@
                     android:paddingTop="9dp"
                     android:paddingBottom="9dp"
                     android:src="@drawable/ic_search"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                    app:layout_constraintStart_toEndOf="@+id/imageView4"
-                    app:layout_constraintTop_toTopOf="@+id/imageView4" />
+                    app:layout_constraintBottom_toBottomOf="@+id/bunch_sequence_all_btn"
+                    app:layout_constraintStart_toEndOf="@+id/bunch_sequence_all_btn"
+                    app:layout_constraintTop_toTopOf="@+id/bunch_sequence_all_btn" />
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/bunch_option_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="28dp"
                     android:background="@drawable/black_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="@drawable/border_ripple"
                     android:padding="6dp"
                     android:src="@drawable/ic_more"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/bunch_search_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/imageView5" />
+                    app:layout_constraintStart_toEndOf="@+id/bunch_search_btn"
+                    app:layout_constraintTop_toTopOf="@+id/bunch_search_btn" />
 
                 <TextView
                     android:id="@+id/bunch_title"
@@ -172,7 +172,7 @@
                     android:paddingBottom="6dp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/imageView3"
+                    app:layout_constraintBottom_toTopOf="@+id/bunch_shuffle_all_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent" />

@@ -3,6 +3,7 @@ package com.ash.studios.musify.Activities;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Instance.position;
+import static com.ash.studios.musify.Utils.Instance.repeat;
 import static com.ash.studios.musify.Utils.Instance.shuffle;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Instance.uri;
@@ -69,6 +71,7 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         setUpUI(this);
 
         setIDs();
+        setListTitle();
     }
 
     private void setIDs() {
@@ -84,7 +87,8 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         optionsBtn = findViewById(R.id.options_btn);
         playAllBtn = findViewById(R.id.play_all_btn);
         shuffleAllBtn = findViewById(R.id.shuffle_all_btn);
-        setListTitle();
+        listType = getIntent().getStringExtra("list_type");
+        iconColor = getIntent().getStringExtra("icon_color");
 
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.setHasFixedSize(true);
@@ -92,37 +96,42 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         backToLib.setOnClickListener(v -> finish());
+        searchBtn.setOnClickListener(v -> startActivity(new Intent(this, Search.class).putExtra("search_type", listType)));
         shuffleAllBtn.setOnClickListener(v -> {
             switch (listType) {
                 case "all_songs":
-                    startMediaPlayer((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
-                    break;
-                case "folders":
-
-                    break;
-                case "albums":
-
-                    break;
-                case "artists":
-
-                    break;
-                case "genres":
-
-                    break;
-                case "playlists":
-
+                    shufflePlay((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
                     break;
                 case "top_rated":
                     if (Utils.getTR(context) != null)
-                        startMediaPlayer(Utils.getTR(context));
+                        shufflePlay(Utils.getTR(context));
                     break;
                 case "low_rated":
                     if (Utils.getLR(context) != null)
-                        startMediaPlayer(Utils.getLR(context));
+                        shufflePlay(Utils.getLR(context));
                     break;
                 case "recently_added":
                     if (Utils.getRecentlyAdded(context) != null)
-                        startMediaPlayer(Utils.getRecentlyAdded(context));
+                        shufflePlay(Utils.getRecentlyAdded(context));
+                    break;
+            }
+        });
+        playAllBtn.setOnClickListener(v -> {
+            switch (listType) {
+                case "all_songs":
+                    sequencePlay((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
+                    break;
+                case "top_rated":
+                    if (Utils.getTR(context) != null)
+                        sequencePlay(Utils.getTR(context));
+                    break;
+                case "low_rated":
+                    if (Utils.getLR(context) != null)
+                        sequencePlay(Utils.getLR(context));
+                    break;
+                case "recently_added":
+                    if (Utils.getRecentlyAdded(context) != null)
+                        sequencePlay(Utils.getRecentlyAdded(context));
                     break;
             }
         });
@@ -196,36 +205,45 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
                                 rv.setAdapter(new AllSongs(context, Utils.getRecentlyAdded(context), loader, NF)), 10);
                         break;
                 }
-                if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) disableBtns();
+                new Handler(Looper.myLooper()).postDelayed(() -> {
+                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                        disableBtns();
+                }, 20);
             });
             AN.setOnClickListener(an -> {
                 dialog.dismiss();
-                Dialog nameDialog = getDialog(this, R.layout.name_dg);
 
-                TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
-                TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
-                EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
-                plEditText.requestFocus();
+                if (listType.equals("playlists")) {
+                    Dialog nameDialog = getDialog(this, R.layout.name_dg);
+                    TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
+                    TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
+                    EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
+                    plEditText.requestFocus();
 
-                cancel.setOnClickListener(c -> nameDialog.dismiss());
-                okBtn.setOnClickListener(ok -> {
-                    String playlistName = plEditText.getText().toString().trim();
+                    cancel.setOnClickListener(c -> nameDialog.dismiss());
+                    okBtn.setOnClickListener(ok -> {
+                        String playlistName = plEditText.getText().toString().trim();
 
-                    if (!TextUtils.isEmpty(playlistName)) {
-                        Utils.createNewPlaylist(context, playlistName);
-                        Playlists playlists = new Playlists(context, getPlaylists(context), loader, NF);
-                        rv.setAdapter(playlists);
-                        playlists.notifyDataSetChanged();
-                        nameDialog.dismiss();
-                    }
-                });
+                        if (!TextUtils.isEmpty(playlistName)) {
+                            Utils.createNewPlaylist(context, playlistName);
+                            Playlists playlists = new Playlists(context, getPlaylists(context), loader, NF);
+                            rv.setAdapter(playlists);
+                            playlists.notifyDataSetChanged();
+                            nameDialog.dismiss();
+                        }
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+                            searchBtn.setAlpha(1f);
+                            NF.setVisibility(View.GONE);
+                            searchBtn.setOnClickListener(sb -> startActivity(new Intent(this, Search.class).putExtra("search_type", listType)));
+                        }
+                    });
+                }
             });
         });
     }
 
     private void setListTitle() {
-        listType = getIntent().getStringExtra("list_type");
-        iconColor = getIntent().getStringExtra("icon_color");
         if (listType != null) {
 
             switch (listType) {
@@ -277,7 +295,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_folders));
         icon.setColorFilter(Color.parseColor(color));
 
+        playAllBtn.setAlpha(0.4f);
         shuffleAllBtn.setAlpha(0.4f);
+        playAllBtn.setOnClickListener(null);
         shuffleAllBtn.setOnClickListener(null);
     }
 
@@ -286,8 +306,10 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_album));
         icon.setColorFilter(Color.parseColor(color));
 
-
-        shuffleAllBtn.setVisibility(View.GONE);
+        playAllBtn.setAlpha(0.4f);
+        shuffleAllBtn.setAlpha(0.4f);
+        playAllBtn.setOnClickListener(null);
+        shuffleAllBtn.setOnClickListener(null);
 
         if (Utils.albums == null || Utils.albums.size() == 0)
             new Handler(Looper.getMainLooper()).postDelayed(() ->
@@ -300,7 +322,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic));
         icon.setColorFilter(Color.parseColor(color));
 
+        playAllBtn.setAlpha(0.4f);
         shuffleAllBtn.setAlpha(0.4f);
+        playAllBtn.setOnClickListener(null);
         shuffleAllBtn.setOnClickListener(null);
 
         if (Utils.artists == null || Utils.artists.size() == 0)
@@ -314,7 +338,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_genres));
         icon.setColorFilter(Color.parseColor(color));
 
+        playAllBtn.setAlpha(0.4f);
         shuffleAllBtn.setAlpha(0.4f);
+        playAllBtn.setOnClickListener(null);
         shuffleAllBtn.setOnClickListener(null);
 
         if (Utils.genres == null || Utils.genres.size() == 0)
@@ -328,7 +354,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_playlist));
         icon.setColorFilter(Color.parseColor(color));
 
+        playAllBtn.setAlpha(0.4f);
         shuffleAllBtn.setAlpha(0.4f);
+        playAllBtn.setOnClickListener(null);
         shuffleAllBtn.setOnClickListener(null);
 
         rv.setAdapter(new Playlists(context, getPlaylists(context), loader, NF));
@@ -358,10 +386,22 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         rv.setAdapter(new AllSongs(context, Utils.getRecentlyAdded(context), loader, NF));
     }
 
-    private void startMediaPlayer(ArrayList<Song> list) {
+    private void shufflePlay(ArrayList<Song> list) {
         songs = list;
         shuffle = true;
+        repeat = false;
         position = new Random().nextInt((songs.size() - 1) + 1);
+
+        engine = new Engine(this);
+        engine.startPlayer();
+        mp.setOnCompletionListener(this);
+    }
+
+    private void sequencePlay(ArrayList<Song> list) {
+        songs = list;
+        shuffle = false;
+        repeat = false;
+        position = 0;
 
         engine = new Engine(this);
         engine.startPlayer();
@@ -384,10 +424,12 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
             case "top_rated":
                 rv.setAdapter(new AllSongs(context, getTR(context), loader, NF));
                 rv.scrollToPosition(lastPosition);
+                if (rv.getAdapter().getItemCount() == 0) disableBtns();
                 break;
             case "low_rated":
                 rv.setAdapter(new AllSongs(context, getLR(context), loader, NF));
                 rv.scrollToPosition(lastPosition);
+                if (rv.getAdapter().getItemCount() == 0) disableBtns();
                 break;
         }
         super.onResume();

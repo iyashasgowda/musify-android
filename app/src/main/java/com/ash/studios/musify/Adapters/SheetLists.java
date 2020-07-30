@@ -34,9 +34,8 @@ public class SheetLists extends RecyclerView.Adapter<SheetLists.ViewHolder> {
         this.list = list;
         this.sheet = sheet;
         this.context = context;
-        pb.setVisibility(View.GONE);
-
-        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
+        if (pb != null) pb.setVisibility(View.GONE);
+        if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

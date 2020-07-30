@@ -30,9 +30,8 @@ public class Playlists extends RecyclerView.Adapter<Playlists.ViewHolder> {
     public Playlists(Context context, ArrayList<Playlist> list, ProgressBar pb, TextView nf) {
         this.context = context;
         this.list = list;
-        pb.setVisibility(View.GONE);
-
-        if (getItemCount() == 0) nf.setVisibility(View.VISIBLE);
+        if (pb != null) pb.setVisibility(View.GONE);
+        if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull

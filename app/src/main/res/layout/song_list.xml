@@ -153,16 +153,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="4dp"
                     android:background="@drawable/border_bg"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="@drawable/border_ripple"
                     android:padding="6dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/search_btn"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toEndOf="@+id/search_btn"
+                    app:layout_constraintTop_toTopOf="@+id/search_btn"
                     app:srcCompat="@drawable/ic_more" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

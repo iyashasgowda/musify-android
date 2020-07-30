@@ -41,7 +41,7 @@ public class Utils {
     public static ArrayList<Artist> artists;
 
     public static String getNewColor() {
-        return String.format("#%06X", new Random().nextInt(0xFFFFFF + 1));
+        return String.format("#%06X", new Random().nextInt((0xFFFFFF - 0x777777) + 1) + 0x777777);
     }
 
     public static Uri getAlbumArt(long id) {
