@@ -61,8 +61,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
     Engine engine;
     Dialog dialog;
     Context context;
-    int lastPosition = 0;
     String listType, iconColor;
+
+    int lastPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         setUpUI(this);
 
         setIDs();
-        setListTitle();
+        getData();
     }
 
     private void setIDs() {
@@ -96,154 +97,13 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         backToLib.setOnClickListener(v -> finish());
+        playAllBtn.setOnClickListener(v -> sequenceAndPlay());
+        shuffleAllBtn.setOnClickListener(v -> shuffleAndPlay());
+        optionsBtn.setOnClickListener(v -> openOptionsDialog());
         searchBtn.setOnClickListener(v -> startActivity(new Intent(this, Search.class).putExtra("search_type", listType)));
-        shuffleAllBtn.setOnClickListener(v -> {
-            switch (listType) {
-                case "all_songs":
-                    shufflePlay((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
-                    break;
-                case "top_rated":
-                    if (Utils.getTR(context) != null)
-                        shufflePlay(Utils.getTR(context));
-                    break;
-                case "low_rated":
-                    if (Utils.getLR(context) != null)
-                        shufflePlay(Utils.getLR(context));
-                    break;
-                case "recently_added":
-                    if (Utils.getRecentlyAdded(context) != null)
-                        shufflePlay(Utils.getRecentlyAdded(context));
-                    break;
-            }
-        });
-        playAllBtn.setOnClickListener(v -> {
-            switch (listType) {
-                case "all_songs":
-                    sequencePlay((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
-                    break;
-                case "top_rated":
-                    if (Utils.getTR(context) != null)
-                        sequencePlay(Utils.getTR(context));
-                    break;
-                case "low_rated":
-                    if (Utils.getLR(context) != null)
-                        sequencePlay(Utils.getLR(context));
-                    break;
-                case "recently_added":
-                    if (Utils.getRecentlyAdded(context) != null)
-                        sequencePlay(Utils.getRecentlyAdded(context));
-                    break;
-            }
-        });
-        optionsBtn.setOnClickListener(v -> {
-            dialog = getDialog(context, R.layout.options_dg);
-
-            TextView dialogName = dialog.findViewById(R.id.dialog_name);
-            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
-            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
-            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
-            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
-            ConstraintLayout AN = dialog.findViewById(R.id.add_new);
-            ConstraintLayout CL = dialog.findViewById(R.id.clear_list);
-
-            dialogName.setText(title.getText());
-            dialogIcon.setImageDrawable(icon.getDrawable());
-
-            switch (listType) {
-                case "artists":
-                case "genres":
-                    SF.setVisibility(View.GONE);
-                    break;
-                case "playlists":
-                    AN.setVisibility(View.VISIBLE);
-                    break;
-                case "recently_added":
-                    CL.setVisibility(View.VISIBLE);
-                    break;
-            }
-
-            RM.setOnClickListener(rm -> {
-                dialog.dismiss();
-                rv.setAdapter(null);
-                NF.setVisibility(View.GONE);
-                loader.setVisibility(View.VISIBLE);
-
-                switch (listType) {
-                    case "all_songs":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context), loader, NF)), 10);
-                        break;
-                    case "folders":
-                        //TODO:need to get all song folders
-                        break;
-                    case "albums":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new Albums(context, Utils.getAlbums(context), loader, NF)), 10);
-                        break;
-                    case "artists":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new Artists(context, Utils.getArtists(context), loader, NF)), 10);
-                        break;
-                    case "genres":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new Genres(context, Utils.getGenres(context), loader, NF)), 10);
-                        break;
-                    case "playlists":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new Playlists(context, Utils.getPlaylists(context), loader, NF)), 10);
-                        break;
-                    case "top_rated":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, getTR(context), loader, NF)), 10);
-                        break;
-                    case "low_rated":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, getLR(context), loader, NF)), 10);
-                        break;
-                    case "recently_added":
-                        new Handler(Looper.getMainLooper()).postDelayed(() ->
-                                rv.setAdapter(new AllSongs(context, Utils.getRecentlyAdded(context), loader, NF)), 10);
-                        break;
-                }
-                new Handler(Looper.myLooper()).postDelayed(() -> {
-                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
-                        disableBtns();
-                }, 20);
-            });
-            AN.setOnClickListener(an -> {
-                dialog.dismiss();
-
-                if (listType.equals("playlists")) {
-                    Dialog nameDialog = getDialog(this, R.layout.name_dg);
-                    TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
-                    TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
-                    EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
-                    plEditText.requestFocus();
-
-                    cancel.setOnClickListener(c -> nameDialog.dismiss());
-                    okBtn.setOnClickListener(ok -> {
-                        String playlistName = plEditText.getText().toString().trim();
-
-                        if (!TextUtils.isEmpty(playlistName)) {
-                            Utils.createNewPlaylist(context, playlistName);
-                            Playlists playlists = new Playlists(context, getPlaylists(context), loader, NF);
-                            rv.setAdapter(playlists);
-                            playlists.notifyDataSetChanged();
-                            nameDialog.dismiss();
-                        }
-
-                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-                            searchBtn.setAlpha(1f);
-                            NF.setVisibility(View.GONE);
-                            searchBtn.setOnClickListener(sb -> startActivity(new Intent(this, Search.class).putExtra("search_type", listType)));
-                        }
-                    });
-                }
-            });
-        });
     }
 
-    private void setListTitle() {
+    private void getData() {
         if (listType != null) {
 
             switch (listType) {
@@ -277,6 +137,153 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
             }
         }
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) disableBtns();
+    }
+
+    private void shuffleAndPlay() {
+        switch (listType) {
+            case "all_songs":
+                startShufflePlr((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
+                break;
+            case "top_rated":
+                if (Utils.getTR(context) != null)
+                    startShufflePlr(Utils.getTR(context));
+                break;
+            case "low_rated":
+                if (Utils.getLR(context) != null)
+                    startShufflePlr(Utils.getLR(context));
+                break;
+            case "recently_added":
+                if (Utils.getRecentlyAdded(context) != null)
+                    startShufflePlr(Utils.getRecentlyAdded(context));
+                break;
+        }
+    }
+
+    private void sequenceAndPlay() {
+        switch (listType) {
+            case "all_songs":
+                startSequencePlr((Utils.songs == null || Utils.songs.size() == 0) ? Utils.getAllSongs(context) : Utils.songs);
+                break;
+            case "top_rated":
+                if (Utils.getTR(context) != null)
+                    startSequencePlr(Utils.getTR(context));
+                break;
+            case "low_rated":
+                if (Utils.getLR(context) != null)
+                    startSequencePlr(Utils.getLR(context));
+                break;
+            case "recently_added":
+                if (Utils.getRecentlyAdded(context) != null)
+                    startSequencePlr(Utils.getRecentlyAdded(context));
+                break;
+        }
+    }
+
+    private void openOptionsDialog() {
+        dialog = getDialog(context, R.layout.options_dg);
+
+        TextView dialogName = dialog.findViewById(R.id.dialog_name);
+        ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+        ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
+        ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+        ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+        ConstraintLayout AN = dialog.findViewById(R.id.add_new);
+        ConstraintLayout CL = dialog.findViewById(R.id.clear_list);
+
+        dialogName.setText(title.getText());
+        dialogIcon.setImageDrawable(icon.getDrawable());
+
+        switch (listType) {
+            case "artists":
+            case "genres":
+                SF.setVisibility(View.GONE);
+                break;
+            case "playlists":
+                AN.setVisibility(View.VISIBLE);
+                break;
+            case "recently_added":
+                CL.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        RM.setOnClickListener(rm -> {
+            dialog.dismiss();
+            rv.setAdapter(null);
+            NF.setVisibility(View.GONE);
+            loader.setVisibility(View.VISIBLE);
+
+            switch (listType) {
+                case "all_songs":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new AllSongs(context, Utils.getAllSongs(context), loader, NF)), 10);
+                    break;
+                case "folders":
+                    //TODO:need to get all song folders
+                    break;
+                case "albums":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new Albums(context, Utils.getAlbums(context), loader, NF)), 10);
+                    break;
+                case "artists":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new Artists(context, Utils.getArtists(context), loader, NF)), 10);
+                    break;
+                case "genres":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new Genres(context, Utils.getGenres(context), loader, NF)), 10);
+                    break;
+                case "playlists":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new Playlists(context, Utils.getPlaylists(context), loader, NF)), 10);
+                    break;
+                case "top_rated":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new AllSongs(context, getTR(context), loader, NF)), 10);
+                    break;
+                case "low_rated":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new AllSongs(context, getLR(context), loader, NF)), 10);
+                    break;
+                case "recently_added":
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            rv.setAdapter(new AllSongs(context, Utils.getRecentlyAdded(context), loader, NF)), 10);
+                    break;
+            }
+            new Handler(Looper.myLooper()).postDelayed(() -> {
+                if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                    disableBtns();
+            }, 20);
+        });
+        AN.setOnClickListener(an -> {
+            dialog.dismiss();
+
+            if (listType.equals("playlists")) {
+                Dialog nameDialog = getDialog(this, R.layout.name_dg);
+                TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
+                TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
+                EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
+                plEditText.requestFocus();
+
+                cancel.setOnClickListener(c -> nameDialog.dismiss());
+                okBtn.setOnClickListener(ok -> {
+                    String playlistName = plEditText.getText().toString().trim();
+
+                    if (!TextUtils.isEmpty(playlistName)) {
+                        Utils.createNewPlaylist(context, playlistName);
+                        Playlists playlists = new Playlists(context, getPlaylists(context), loader, NF);
+                        rv.setAdapter(playlists);
+                        playlists.notifyDataSetChanged();
+                        nameDialog.dismiss();
+                    }
+
+                    if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+                        searchBtn.setAlpha(1f);
+                        NF.setVisibility(View.GONE);
+                        searchBtn.setOnClickListener(sb -> startActivity(new Intent(this, Search.class).putExtra("search_type", listType)));
+                    }
+                });
+            }
+        });
     }
 
     private void getAllSongs(String color) {
@@ -386,7 +393,7 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         rv.setAdapter(new AllSongs(context, Utils.getRecentlyAdded(context), loader, NF));
     }
 
-    private void shufflePlay(ArrayList<Song> list) {
+    private void startShufflePlr(ArrayList<Song> list) {
         songs = list;
         shuffle = true;
         repeat = false;
@@ -397,7 +404,7 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
         mp.setOnCompletionListener(this);
     }
 
-    private void sequencePlay(ArrayList<Song> list) {
+    private void startSequencePlr(ArrayList<Song> list) {
         songs = list;
         shuffle = false;
         repeat = false;

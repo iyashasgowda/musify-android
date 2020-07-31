@@ -61,11 +61,11 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
     String type;
     Engine engine;
     Context context;
-    ArrayList<Song> songs;
     ArrayList<Genre> genres;
     ArrayList<Album> albums;
     ArrayList<Artist> artists;
     ArrayList<Playlist> playlists;
+    ArrayList<Song> songs, bunchSongs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
         setUpUI(this);
 
         setIDs();
+        getListForSearch();
     }
 
     private void setIDs() {
@@ -85,7 +86,7 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
         optionBtn = findViewById(R.id.search_option);
         shuffleBtn = findViewById(R.id.search_shuffle);
         sequenceBtn = findViewById(R.id.search_sequence);
-        getListForSearch();
+        type = getIntent().getStringExtra("search_type");
 
         rv.setLayoutManager(new LinearLayoutManager(context));
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
@@ -202,6 +203,15 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
 
                             updateSongs(tempRA);
                             break;
+
+                        case "custom_search":
+                            ArrayList<Song> tempCustoms = new ArrayList<>();
+                            for (Song s : bunchSongs)
+                                if (s.getTitle().toLowerCase().contains(editable.toString().toLowerCase()))
+                                    tempCustoms.add(s);
+
+                            updateSongs(tempCustoms);
+                            break;
                     }
                 else hideBtnAndAdapter();
             }
@@ -257,7 +267,6 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
     }
 
     private void getListForSearch() {
-        type = getIntent().getStringExtra("search_type");
         if (type != null) {
 
             switch (type) {
@@ -296,6 +305,10 @@ public class Search extends AppCompatActivity implements MediaPlayer.OnCompletio
                 case "recently_added":
                     searchType.setText("Recently Added");
                     songs = Utils.getRecentlyAdded(context);
+                    break;
+                case "custom_search":
+                    searchType.setText(getIntent().getStringExtra("bunch_title"));
+                    bunchSongs = (ArrayList<Song>) getIntent().getSerializableExtra("bunch_list");
                     break;
             }
         }

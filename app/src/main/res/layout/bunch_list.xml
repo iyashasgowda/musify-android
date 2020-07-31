@@ -166,6 +166,7 @@
                     android:background="@drawable/black_bg"
                     android:ellipsize="end"
                     android:lines="1"
+                    android:maxEms="20"
                     android:paddingStart="12dp"
                     android:paddingTop="6dp"
                     android:paddingEnd="12dp"

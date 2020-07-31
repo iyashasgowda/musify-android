@@ -121,7 +121,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/delete_btn"
+                        android:id="@+id/delete_song_btn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -168,7 +168,7 @@
                         android:foreground="@drawable/ripple"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/delete_btn">
+                        app:layout_constraintTop_toBottomOf="@+id/delete_song_btn">
 
                         <ImageView
                             android:id="@+id/imageView14"

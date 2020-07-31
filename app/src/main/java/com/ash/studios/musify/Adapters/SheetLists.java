@@ -12,10 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ash.studios.musify.BtmSheets.PlaylistSheet;
 import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.BtmSheet;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -26,11 +26,11 @@ import static com.ash.studios.musify.Utils.Utils.songToPlaylist;
 
 @SuppressLint("SetTextI18n")
 public class SheetLists extends RecyclerView.Adapter<SheetLists.ViewHolder> {
-    private BtmSheet sheet;
     private Context context;
+    private PlaylistSheet sheet;
     private ArrayList<Playlist> list;
 
-    public SheetLists(Context context, ArrayList<Playlist> list, ProgressBar pb, BtmSheet sheet, TextView nf) {
+    public SheetLists(Context context, ArrayList<Playlist> list, ProgressBar pb, PlaylistSheet sheet, TextView nf) {
         this.list = list;
         this.sheet = sheet;
         this.context = context;

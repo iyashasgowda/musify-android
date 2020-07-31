@@ -19,9 +19,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.palette.graphics.Palette;
 
+import com.ash.studios.musify.BtmSheets.PlaylistSheet;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.BtmSheet;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -409,7 +409,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 disliked = false;
                 dislikeBtn.setImageResource(R.drawable.ic_dislike_off);
             }
-
             setDialogAttrs();
         }
     }
@@ -419,13 +418,13 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         setDialogAttrs();
 
         ConstraintLayout SI = dialog.findViewById(R.id.info_btn);
-        ConstraintLayout DS = dialog.findViewById(R.id.delete_btn);
         ConstraintLayout AA = dialog.findViewById(R.id.album_art_btn);
+        ConstraintLayout DS = dialog.findViewById(R.id.delete_song_btn);
         ConstraintLayout AP = dialog.findViewById(R.id.add_to_playlist_btn);
 
         AP.setOnClickListener(ap -> {
-            BtmSheet btmSheet = new BtmSheet();
-            btmSheet.show(getSupportFragmentManager(), null);
+            PlaylistSheet playlistSheet = new PlaylistSheet();
+            playlistSheet.show(getSupportFragmentManager(), null);
             dialog.dismiss();
         });
     }

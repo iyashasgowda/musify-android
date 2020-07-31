@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -51,6 +52,7 @@ public class Bunch extends AppCompatActivity implements MediaPlayer.OnCompletion
     Artist artist;
     String bunchType;
     Playlist playlist;
+    boolean selectionMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,38 @@ public class Bunch extends AppCompatActivity implements MediaPlayer.OnCompletion
 
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
+        searchBtn.setOnClickListener(v -> {
+            switch (bunchType) {
+                case "ALBUMS":
+                    if (album != null)
+                        startActivity(new Intent(this, Search.class)
+                                .putExtra("bunch_title", album.getAlbum())
+                                .putExtra("search_type", "custom_search")
+                                .putExtra("bunch_list", Utils.getAlbumSongs(this, album.getAlbum_id())));
+                    break;
+                case "ARTISTS":
+                    if (artist != null)
+                        startActivity(new Intent(this, Search.class)
+                                .putExtra("bunch_title", artist.getArtist())
+                                .putExtra("search_type", "custom_search")
+                                .putExtra("bunch_list", Utils.getArtistSongs(this, artist.getArtist_id())));
+                    break;
+                case "GENRES":
+                    if (genre != null)
+                        startActivity(new Intent(this, Search.class)
+                                .putExtra("bunch_title", genre.getGenre())
+                                .putExtra("search_type", "custom_search")
+                                .putExtra("bunch_list", Utils.getGenreSongs(this, genre.getGenre_id())));
+                    break;
+                case "PLAYLISTS":
+                    if (playlist != null && playlist.getSongs().size() > 0)
+                        startActivity(new Intent(this, Search.class)
+                                .putExtra("bunch_title", playlist.getName())
+                                .putExtra("search_type", "custom_search")
+                                .putExtra("bunch_list", playlist.getSongs()));
+                    break;
+            }
+        });
         shuffleAllBtn.setOnClickListener(v -> {
             switch (bunchType) {
                 case "ALBUMS":

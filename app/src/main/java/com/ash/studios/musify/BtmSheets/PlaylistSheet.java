@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.BtmSheets;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -19,11 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Adapters.SheetLists;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import static com.ash.studios.musify.Utils.Utils.getPlaylists;
 
-public class BtmSheet extends BottomSheetDialogFragment {
+public class PlaylistSheet extends BottomSheetDialogFragment {
     TextView NF;
     RecyclerView rv;
     Context context;
