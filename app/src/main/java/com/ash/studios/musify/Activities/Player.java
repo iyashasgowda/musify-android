@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Activities;
 
 import android.app.Dialog;
+import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,12 +14,14 @@ import android.provider.MediaStore;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.palette.graphics.Palette;
 
+import com.ash.studios.musify.BtmSheets.InfoSheet;
 import com.ash.studios.musify.BtmSheets.PlaylistSheet;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
@@ -422,10 +425,36 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         ConstraintLayout DS = dialog.findViewById(R.id.delete_song_btn);
         ConstraintLayout AP = dialog.findViewById(R.id.add_to_playlist_btn);
 
+        SI.setOnClickListener(si -> {
+            dialog.dismiss();
+            InfoSheet infoSheet = new InfoSheet(song);
+            infoSheet.show(getSupportFragmentManager(), null);
+        });
         AP.setOnClickListener(ap -> {
+            dialog.dismiss();
             PlaylistSheet playlistSheet = new PlaylistSheet();
             playlistSheet.show(getSupportFragmentManager(), null);
+        });
+        DS.setOnClickListener(ds -> {
             dialog.dismiss();
+            Dialog delDialog = Utils.getDialog(this, R.layout.delete_dg);
+            TextView cancel = delDialog.findViewById(R.id.close_del_dg_btn);
+            TextView delete = delDialog.findViewById(R.id.del_song_btn);
+
+            cancel.setOnClickListener(c -> delDialog.dismiss());
+            delete.setOnClickListener(d -> {
+                delDialog.dismiss();
+                Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songs.get(position).getId());
+
+                try {
+                    getContentResolver().delete(uri, null, null);
+                    songs.remove(position);
+                    nextBtnClicked();
+                    Toast.makeText(this, "Song deleted from this device :)", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "Couldn't delete the song :(", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 

@@ -428,6 +428,9 @@ public class SongList extends AppCompatActivity implements MediaPlayer.OnComplet
     @Override
     protected void onResume() {
         switch (listType) {
+            case "all_songs":
+                if (rv.getAdapter() != null) rv.getAdapter().notifyDataSetChanged();
+                break;
             case "top_rated":
                 rv.setAdapter(new AllSongs(context, getTR(context), loader, NF));
                 rv.scrollToPosition(lastPosition);

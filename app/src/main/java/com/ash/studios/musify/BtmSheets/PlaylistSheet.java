@@ -40,7 +40,7 @@ public class PlaylistSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.btm_sheet, container, false);
+        View v = inflater.inflate(R.layout.pl_sheet, container, false);
         setIDs(v);
 
         addNewBtn.setOnClickListener(btn -> {

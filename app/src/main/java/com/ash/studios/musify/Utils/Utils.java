@@ -249,6 +249,10 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -268,8 +272,12 @@ public class Utils {
                 String title = c.getString(2);
                 String album = c.getString(3);
                 String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                String year = c.getString(5);
+                String track = c.getString(6);
+                String composer = c.getString(7);
+                String album_artist = c.getString(8);
+                long duration = c.getLong(9);
+                long album_id = c.getLong(10);
 
                 if (title != null && album != null && artist != null)
                     if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
@@ -280,6 +288,10 @@ public class Utils {
                                         title,
                                         album,
                                         artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
                                         duration,
                                         album_id
                                 )
@@ -360,6 +372,10 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -381,8 +397,12 @@ public class Utils {
                 String title = c.getString(2);
                 String album = c.getString(3);
                 String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                String year = c.getString(5);
+                String track = c.getString(6);
+                String composer = c.getString(7);
+                String album_artist = c.getString(8);
+                long duration = c.getLong(9);
+                long album_id = c.getLong(10);
 
                 if (title != null && album != null && artist != null)
                     if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
@@ -393,6 +413,10 @@ public class Utils {
                                         title,
                                         album,
                                         artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
                                         duration,
                                         album_id
                                 )
@@ -442,6 +466,10 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -461,20 +489,30 @@ public class Utils {
                 String title = c.getString(2);
                 String album = c.getString(3);
                 String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                String year = c.getString(5);
+                String track = c.getString(6);
+                String composer = c.getString(7);
+                String album_artist = c.getString(8);
+                long duration = c.getLong(9);
+                long album_id = c.getLong(10);
 
-                songs.add(
-                        new Song(
-                                id,
-                                data,
-                                title,
-                                album,
-                                artist,
-                                duration,
-                                album_id
-                        )
-                );
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
             }
             c.close();
         }
@@ -494,6 +532,10 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -513,20 +555,30 @@ public class Utils {
                 String title = c.getString(2);
                 String album = c.getString(3);
                 String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                String year = c.getString(5);
+                String track = c.getString(6);
+                String composer = c.getString(7);
+                String album_artist = c.getString(8);
+                long duration = c.getLong(9);
+                long album_id = c.getLong(10);
 
-                songs.add(
-                        new Song(
-                                id,
-                                data,
-                                title,
-                                album,
-                                artist,
-                                duration,
-                                album_id
-                        )
-                );
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
             }
             c.close();
         }
@@ -546,6 +598,10 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
@@ -565,20 +621,30 @@ public class Utils {
                 String title = c.getString(2);
                 String album = c.getString(3);
                 String artist = c.getString(4);
-                long duration = c.getLong(5);
-                long album_id = c.getLong(6);
+                String year = c.getString(5);
+                String track = c.getString(6);
+                String composer = c.getString(7);
+                String album_artist = c.getString(8);
+                long duration = c.getLong(9);
+                long album_id = c.getLong(10);
 
-                songs.add(
-                        new Song(
-                                id,
-                                data,
-                                title,
-                                album,
-                                artist,
-                                duration,
-                                album_id
-                        )
-                );
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
             }
             c.close();
         }
