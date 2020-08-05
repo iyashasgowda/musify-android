@@ -184,27 +184,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="6dp"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textAlignment="center"
-            android:textColor="#EEFFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/artist"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
             android:id="@+id/artist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -236,7 +215,7 @@
             android:foreground="@drawable/border_ripple"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/title"
+            app:layout_constraintBottom_toTopOf="@+id/title_scroll_view"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_like_off" />
 
@@ -252,9 +231,36 @@
             android:foreground="@drawable/border_ripple"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/title"
+            app:layout_constraintBottom_toBottomOf="@+id/like_btn"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/like_btn"
             app:srcCompat="@drawable/ic_dislike_off" />
+
+        <HorizontalScrollView
+            android:id="@+id/title_scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintBottom_toTopOf="@+id/artist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#EEFFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

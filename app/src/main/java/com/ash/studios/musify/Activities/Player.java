@@ -11,7 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +77,7 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
             @Override
             public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
                 if (mp != null && fromUser) mp.seekTo((int) progress * 1000);
+                if (mp != null) duration.setText(getDuration(mp.getCurrentPosition()));
             }
 
             @Override
@@ -298,9 +303,11 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         if (mp.isPlaying()) {
             playPause.setImageResource(R.drawable.ic_play);
             mp.pause();
+            blinkingTimeAnim();
         } else {
             playPause.setImageResource(R.drawable.ic_pause);
             mp.start();
+            if (duration.getAnimation() != null) duration.getAnimation().cancel();
         }
         seekBar.setMax(mp.getDuration() / 1000f);
         bindSeekBar();
@@ -359,10 +366,8 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
     private void setSongAttrs(Song song) {
         if (song != null) {
             title.setText(song.getTitle());
-            title.setSelected(true);
-
+            movingTitleAnim(song.getTitle());
             artist.setText(song.getArtist());
-            duration.setText(Utils.getDuration(song.getDuration()));
 
             Bitmap bitmap;
             try {
@@ -396,7 +401,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                     seekBar.setCircleProgressColor(Color.parseColor(accent));
                 }
             });
-
             if (TRList.contains(song)) {
                 liked = true;
                 likeBtn.setImageResource(R.drawable.ic_like_on);
@@ -404,7 +408,6 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                 liked = false;
                 likeBtn.setImageResource(R.drawable.ic_like_off);
             }
-
             if (LRList.contains(song)) {
                 disliked = true;
                 dislikeBtn.setImageResource(R.drawable.ic_dislike_on);
@@ -425,6 +428,7 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         ConstraintLayout DS = dialog.findViewById(R.id.delete_song_btn);
         ConstraintLayout AP = dialog.findViewById(R.id.add_to_playlist_btn);
 
+        AA.setOnClickListener(v -> Toast.makeText(this, "In development", Toast.LENGTH_SHORT).show());
         SI.setOnClickListener(si -> {
             dialog.dismiss();
             InfoSheet infoSheet = new InfoSheet(song);
@@ -475,6 +479,26 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
                     .placeholder(R.mipmap.icon)
                     .into(dgAlbumArt);
         }
+    }
+
+    private void blinkingTimeAnim() {
+        Animation blink = new AlphaAnimation(0.0f, 1.0f);
+        blink.setRepeatCount(Animation.INFINITE);
+        blink.setRepeatMode(Animation.REVERSE);
+        blink.setStartOffset(600);
+        blink.setDuration(300);
+        duration.startAnimation(blink);
+    }
+
+    private void movingTitleAnim(String content) {
+        if (content.length() > 23) {
+            TranslateAnimation slide = new TranslateAnimation(content.length() * 10, -content.length() * 10, 0, 0);
+            slide.setInterpolator(new LinearInterpolator());
+            slide.setDuration(content.length() * 250);
+            slide.setRepeatCount(Animation.INFINITE);
+            slide.setRepeatMode(Animation.REVERSE);
+            title.startAnimation(slide);
+        } else if (title.getAnimation() != null) title.getAnimation().cancel();
     }
 
     @Override
