@@ -1,11 +1,7 @@
 package com.ash.studios.musify.Adapters;
 
-import android.app.Dialog;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,36 +12,36 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Player;
+import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
+public class AllSongAdapter extends RecyclerView.Adapter<AllSongAdapter.ViewHolder> {
+    public ArrayList<Song> list;
     private Context context;
-    public ArrayList<Song> allSongs;
 
-    public AllSongs(Context context, ArrayList<Song> allSongs, ProgressBar pb, TextView nf) {
+    public AllSongAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
+        this.list = list;
         this.context = context;
-        this.allSongs = allSongs;
+
         if (pb != null) pb.setVisibility(View.GONE);
         if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull
     @Override
-    public AllSongs.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AllSongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AllSongs.ViewHolder holder, int position) {
-        Song song = allSongs.get(position);
+    public void onBindViewHolder(@NonNull AllSongAdapter.ViewHolder holder, int position) {
+        Song song = list.get(position);
 
         holder.songName.setText(song.getTitle());
         holder.songArtist.setText(song.getArtist());
@@ -57,36 +53,59 @@ public class AllSongs extends RecyclerView.Adapter<AllSongs.ViewHolder> {
                 .into(holder.albumCover);
 
         holder.itemView.setOnClickListener(v -> {
-            Instance.songs = allSongs;
-            context.startActivity(new Intent(context, Player.class).putExtra("position", position));
+            Instance.songs = list;
+            Instance.position = position;
+            ((IControl) context).onStartPlayer();
+            Instance.mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         });
+
         holder.itemView.setOnLongClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.delete_dg);
+            /*Dialog dialog = Utils.getDialog(context, R.layout.delete_dg);
             TextView cancel = dialog.findViewById(R.id.close_del_dg_btn);
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();
+
+                int temp = 0;
+                if (Instance.songs.get(Instance.position).getId() == song.getId()) {
+
+                    if (Instance.position != Instance.songs.size() - 1) temp = Instance.position;
+
+                    if (Instance.songs.size() > 1) new Engine(context).playNextSong();
+                    else if (Instance.mp != null) {
+                        Instance.mp.stop();
+                        Instance.mp.reset();
+                    }
+                    ((IControl) context).onSongDeleted();
+                }
+
                 Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, allSongs.get(position).getId());
 
                 try {
+                    //searchAndDelete(context, song);
                     context.getContentResolver().delete(uri, null, null);
                     allSongs.remove(position);
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, allSongs.size());
-                    Snackbar.make(v, "Song deleted :)", Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Song deleted :)", Toast.LENGTH_SHORT).show();
+                    Instance.position = temp;
+                    Instance.songs.remove(Instance.position);
                 } catch (Exception e) {
-                    Snackbar.make(v, "Couldn't delete the song :(", Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Couldn't delete the song :(", Toast.LENGTH_SHORT).show();
                 }
             });
+
+            if (allSongs.size() == 0) nf.setVisibility(View.VISIBLE);*/
             return true;
         });
     }
 
     @Override
     public int getItemCount() {
-        return allSongs == null ? 0 : allSongs.size();
+        return list == null ? 0 : list.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -14,7 +14,6 @@ public class Instance {
     public static boolean shuffle;
 
     public static Uri uri;
-    public static Song song;
     public static MediaPlayer mp;
-    public static ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<Song> songs;
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context=".Activities.Search"
+    tools:context=".Activities.SearchList.CategorySearch"
     tools:ignore="UnusedAttribute,HardcodedText,ContentDescription,Autofill,LabelFor">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -179,5 +179,15 @@
             app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/snippet"
+        layout="@layout/snippet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="48dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

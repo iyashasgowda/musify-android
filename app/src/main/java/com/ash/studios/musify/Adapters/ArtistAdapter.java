@@ -1,6 +1,5 @@
 package com.ash.studios.musify.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Bunch;
+import com.ash.studios.musify.Activities.Categories.BunchList;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
@@ -21,40 +20,41 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-@SuppressLint("SetTextI18n")
-public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
-    public ArrayList<Artist> artists;
+public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
+    private ArrayList<Artist> artists;
     private Context context;
 
-    public Artists(Context context, ArrayList<Artist> artists, ProgressBar pb, TextView nf) {
-        this.context = context;
+    public ArtistAdapter(Context context, ArrayList<Artist> artists, ProgressBar pb, TextView nf) {
         this.artists = artists;
+        this.context = context;
+
         if (pb != null) pb.setVisibility(View.GONE);
         if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull
     @Override
-    public Artists.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
+    public ArtistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ArtistAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Artists.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ArtistAdapter.ViewHolder holder, int position) {
         Artist artist = artists.get(position);
 
         holder.dummyText.setVisibility(View.GONE);
         holder.artistName.setText(artist.getArtist());
-        holder.songCount.setText("\u266B " + artist.getSong_count());
+        holder.songCount.setText(new StringBuilder("\u266B ").append(artist.getSong_count()));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(artist.getAlbum_id()))
                 .placeholder(R.mipmap.icon)
-                .into(holder.albumCover);
+                .into(holder.artistCover);
 
-        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Bunch.class)
-                .putExtra("TYPE", "ARTISTS")
-                .putExtra("CONTENT", artist)));
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)
+                .putExtra("list_from", "Artists")
+                .putExtra("list_name", artist.getArtist())
+                .putExtra("list", Utils.getArtistSongs(context, artist.getArtist_id()))));
     }
 
     @Override
@@ -64,15 +64,15 @@ public class Artists extends RecyclerView.Adapter<Artists.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView artistName, dummyText, songCount;
-        ImageView albumCover;
+        ImageView artistCover;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            dummyText = itemView.findViewById(R.id.artist);
             artistName = itemView.findViewById(R.id.title);
+            dummyText = itemView.findViewById(R.id.artist);
             songCount = itemView.findViewById(R.id.duration);
-            albumCover = itemView.findViewById(R.id.album_art);
+            artistCover = itemView.findViewById(R.id.album_art);
         }
     }
 }

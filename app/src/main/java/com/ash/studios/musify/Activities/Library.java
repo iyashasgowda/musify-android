@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,9 +13,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.ash.studios.musify.Activities.Categories.AlbumList;
+import com.ash.studios.musify.Activities.Categories.AllSongList;
+import com.ash.studios.musify.Activities.Categories.ArtistList;
+import com.ash.studios.musify.Activities.Categories.GenreList;
+import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.Engine;
+import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.Utils;
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
@@ -23,11 +36,14 @@ import static com.ash.studios.musify.Utils.Utils.getDialog;
 import static com.ash.studios.musify.Utils.Utils.getNewColor;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
-public class Library extends AppCompatActivity implements View.OnClickListener {
-    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded, optionsBtn;
+public class Library extends AppCompatActivity implements View.OnClickListener, MediaPlayer.OnCompletionListener {
+    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded, optionsBtn, snipArt, snipBtn;
     String[] colors = new String[9];
+    TextView snipTitle, snipArtist;
     ScrollView scrollView;
+    CardView snippet;
     Context context;
+    Engine engine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +66,8 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
 
     private void setIds() {
         context = this;
+        engine = new Engine(context);
+        snippet = findViewById(R.id.snippet);
         albums = findViewById(R.id.albums_icon);
         genres = findViewById(R.id.genres_icon);
         folders = findViewById(R.id.folders_icon);
@@ -61,6 +79,11 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
         scrollView = findViewById(R.id.library_scroll_view);
         optionsBtn = findViewById(R.id.library_options_btn);
         recentlyAdded = findViewById(R.id.recently_added_icon);
+
+        snipTitle = findViewById(R.id.snip_title);
+        snipBtn = findViewById(R.id.snip_play_btn);
+        snipArt = findViewById(R.id.snip_album_art);
+        snipArtist = findViewById(R.id.snip_artist);
 
         findViewById(R.id.all_songs).setOnClickListener(this);
         findViewById(R.id.folders).setOnClickListener(this);
@@ -78,7 +101,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
             ImageView icon = dialog.findViewById(R.id.dialog_icon);
             TextView title = dialog.findViewById(R.id.dialog_name);
 
-            title.setText("Library");
+            title.setText(new StringBuilder("Library"));
             icon.setImageResource(R.drawable.ic_library);
             icon.setColorFilter(Color.parseColor(getNewColor()), PorterDuff.Mode.SRC_IN);
 
@@ -88,58 +111,96 @@ public class Library extends AppCompatActivity implements View.OnClickListener {
                 dialog.dismiss();
             });
         });
+
+        snipTitle.setSelected(true);
+        ArrayList<Song> savedList = Utils.getCurrentList(context);
+        if (savedList != null) {
+            Instance.songs = savedList;
+            Instance.position = Utils.getCurrentPosition(context);
+            updateSnippet();
+        }
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+
+        snipBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snipBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                } else {
+                    snipBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                }
+            } else {
+                engine.startPlayer();
+                snipBtn.setImageResource(R.drawable.ic_pause);
+            }
+        });
+        snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
+    }
+
+    private void updateSnippet() {
+        snippet.setVisibility(View.VISIBLE);
+        snipTitle.setText(Instance.songs.get(Instance.position).getTitle());
+        snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
+        Glide.with(getApplicationContext())
+                .asBitmap()
+                .placeholder(R.mipmap.icon)
+                .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
+                .into(snipArt);
+        if (Instance.mp != null && Instance.mp.isPlaying())
+            snipBtn.setImageResource(R.drawable.ic_pause);
+        else snipBtn.setImageResource(R.drawable.ic_play_small);
     }
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(context, SongList.class);
-
         switch (view.getId()) {
             case R.id.all_songs:
-                intent.putExtra("list_type", "all_songs");
-                intent.putExtra("icon_color", colors[0]);
-                startActivity(intent);
+                startActivity(new Intent(context, AllSongList.class).putExtra("icon_color", colors[0]));
                 break;
             case R.id.folders:
-                intent.putExtra("list_type", "folders");
-                intent.putExtra("icon_color", colors[1]);
-                startActivity(intent);
+                //TODO
                 break;
             case R.id.albums:
-                intent.putExtra("list_type", "albums");
-                intent.putExtra("icon_color", colors[2]);
-                startActivity(intent);
+                startActivity(new Intent(context, AlbumList.class).putExtra("icon_color", colors[2]));
                 break;
             case R.id.artists:
-                intent.putExtra("list_type", "artists");
-                intent.putExtra("icon_color", colors[3]);
-                startActivity(intent);
+                startActivity(new Intent(context, ArtistList.class).putExtra("icon_color", colors[3]));
                 break;
             case R.id.genres:
-                intent.putExtra("list_type", "genres");
-                intent.putExtra("icon_color", colors[4]);
-                startActivity(intent);
+                startActivity(new Intent(context, GenreList.class).putExtra("icon_color", colors[4]));
                 break;
             case R.id.play_lists:
-                intent.putExtra("list_type", "playlists");
-                intent.putExtra("icon_color", colors[5]);
-                startActivity(intent);
+                //TODO
                 break;
             case R.id.top_rated:
-                intent.putExtra("list_type", "top_rated");
-                intent.putExtra("icon_color", colors[6]);
-                startActivity(intent);
+                //TODO
                 break;
             case R.id.low_rated:
-                intent.putExtra("list_type", "low_rated");
-                intent.putExtra("icon_color", colors[7]);
-                startActivity(intent);
+                //TODO
                 break;
             case R.id.recently_added:
-                intent.putExtra("list_type", "recently_added");
-                intent.putExtra("icon_color", colors[8]);
-                startActivity(intent);
+                //TODO
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Instance.songs != null) updateSnippet();
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        engine.playNextSong();
+        if (Instance.mp != null) {
+            Instance.mp = MediaPlayer.create(getApplicationContext(), Instance.uri);
+            Instance.mp.start();
+            Instance.mp.setOnCompletionListener(this);
+        }
+        Utils.putCurrentPosition(context, Instance.position);
+        updateSnippet();
     }
 }

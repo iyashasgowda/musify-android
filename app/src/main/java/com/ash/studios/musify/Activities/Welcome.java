@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.Utils;
 
 import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
@@ -28,6 +31,7 @@ public class Welcome extends AppCompatActivity {
     ProgressBar loader;
     TextView holdOn;
     ImageView icon;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class Welcome extends AppCompatActivity {
     }
 
     private void setIDs() {
+        context = this;
         icon = findViewById(R.id.icon);
         loader = findViewById(R.id.pb);
         holdOn = findViewById(R.id.hold_on);
@@ -50,10 +55,12 @@ public class Welcome extends AppCompatActivity {
                 ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
         } else {
-            fetchAllSongs(this);
-            icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in_out));
+            fetchAllSongs(context);
+            Instance.repeat = Utils.getRepStatus(context);
+            Instance.shuffle = Utils.getShflStatus(context);
+            icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_out));
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                startActivity(new Intent(Welcome.this, Library.class));
+                startActivity(new Intent(context, Library.class));
                 finish();
             }, 1600);
         }
@@ -65,17 +72,17 @@ public class Welcome extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fetchAllSongs(this);
+                fetchAllSongs(context);
                 holdOn.setVisibility(View.VISIBLE);
                 loader.setVisibility(View.VISIBLE);
-                icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in_out));
+                icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_out));
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    startActivity(new Intent(Welcome.this, Library.class));
+                    startActivity(new Intent(context, Library.class));
                     finish();
                 }, 1600);
             } else {
                 checkPermission();
-                Toast.makeText(this, "Storage permission required to read music files in your device..!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Storage permission required to read music files in your device..!", Toast.LENGTH_SHORT).show();
             }
         }
     }

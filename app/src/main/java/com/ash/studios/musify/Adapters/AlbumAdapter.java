@@ -1,6 +1,5 @@
 package com.ash.studios.musify.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Bunch;
+import com.ash.studios.musify.Activities.Categories.BunchList;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
@@ -21,40 +20,41 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-@SuppressLint("SetTextI18n")
-public class Albums extends RecyclerView.Adapter<Albums.ViewHolder> {
-    public ArrayList<Album> albums;
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
+    private ArrayList<Album> albums;
     private Context context;
 
-    public Albums(Context context, ArrayList<Album> albums, ProgressBar pb, TextView nf) {
-        this.context = context;
+    public AlbumAdapter(Context context, ArrayList<Album> albums, ProgressBar pb, TextView nf) {
         this.albums = albums;
+        this.context = context;
+
         if (pb != null) pb.setVisibility(View.GONE);
         if (nf != null && getItemCount() == 0) nf.setVisibility(View.VISIBLE);
     }
 
     @NonNull
     @Override
-    public Albums.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
+    public AlbumAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new AlbumAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Albums.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AlbumAdapter.ViewHolder holder, int position) {
         Album album = albums.get(position);
 
         holder.albumName.setText(album.getAlbum());
         holder.albumArtist.setText(album.getArtist());
-        holder.songsCount.setText("\u266B " + album.getSong_count());
+        holder.songsCount.setText(new StringBuilder("\u266B ").append(album.getSong_count()));
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(album.getAlbum_id()))
                 .placeholder(R.mipmap.icon)
                 .into(holder.albumCover);
 
-        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, Bunch.class)
-                .putExtra("TYPE", "ALBUMS")
-                .putExtra("CONTENT", album)));
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)
+                .putExtra("list_from", "Albums")
+                .putExtra("list_name", album.getAlbum())
+                .putExtra("list", Utils.getAlbumSongs(context, album.getAlbum_id()))));
     }
 
     @Override
