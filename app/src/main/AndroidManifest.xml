@@ -49,6 +49,9 @@
             android:name=".Activities.Categories.BunchList"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Activities.Categories.PlayList"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activities.Player"
             android:screenOrientation="portrait" />
         <activity

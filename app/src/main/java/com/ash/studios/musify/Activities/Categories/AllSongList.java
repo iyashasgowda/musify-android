@@ -60,40 +60,46 @@ public class AllSongList extends AppCompatActivity implements MediaPlayer.OnComp
         setIDs();
         backToLib.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> startActivity(new Intent(context, CategorySearch.class)
-                .putExtra("cat_key", 0).putExtra("cat_name", "All Songs")));
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 0).putExtra("cat_name", "All Songs"));
+        });
 
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                shufflePlay.setOnClickListener(v -> {
-                    Instance.shuffle = true;
-                    Instance.songs = Utils.songs;
-                    Utils.putShflStatus(context, true);
-                    Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                    shufflePlay.setOnClickListener(v -> {
+                        Instance.shuffle = true;
+                        Instance.songs = Utils.songs;
+                        Utils.putShflStatus(context, true);
+                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                    engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(AllSongList.this);
-                    updateSnippet();
-                    Toast.makeText(context, "Shuffle all available songs", Toast.LENGTH_SHORT).show();
-                });
+                        engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(AllSongList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                sequencePlay.setOnClickListener(v -> {
-                    Instance.shuffle = false;
-                    Instance.songs = Utils.songs;
-                    Utils.putShflStatus(context, false);
-                    Instance.position = 0;
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                    sequencePlay.setOnClickListener(v -> {
+                        Instance.shuffle = false;
+                        Instance.songs = Utils.songs;
+                        Utils.putShflStatus(context, false);
+                        Instance.position = 0;
 
-                    engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(AllSongList.this);
-                    updateSnippet();
-                });
+                        engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(AllSongList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
@@ -150,7 +156,7 @@ public class AllSongList extends AppCompatActivity implements MediaPlayer.OnComp
                     rv.setAdapter(new AllSongAdapter(context, Utils.getAllSongs(context), loader, NF)), 10);
         else rv.setAdapter(new AllSongAdapter(context, Utils.songs, loader, NF));
 
-        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() == 0) hideAttributes();
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 

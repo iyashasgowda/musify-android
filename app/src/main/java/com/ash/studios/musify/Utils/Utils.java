@@ -93,6 +93,7 @@ public class Utils {
                 delFrmPlaylist(ctx, i, song);
     }
 
+
     //Save and retrieve current played song position
     public static void putCurrentPosition(Context c, int pos) {
         c.getSharedPreferences("CURRENT_POS", MODE_PRIVATE)
@@ -103,6 +104,7 @@ public class Utils {
         return c.getSharedPreferences("CURRENT_POS", MODE_PRIVATE)
                 .getInt("current_position", 0);
     }
+
 
     //Save and retrieve shuffle status
     public static void putShflStatus(Context c, boolean shfl) {
@@ -115,6 +117,7 @@ public class Utils {
                 .getBoolean("shuffle_status", false);
     }
 
+
     //Save and retrieve repeat status
     public static void putRepStatus(Context c, boolean rep) {
         c.getSharedPreferences("REPEAT_STATUS", MODE_PRIVATE)
@@ -125,6 +128,7 @@ public class Utils {
         return c.getSharedPreferences("REPEAT_STATUS", MODE_PRIVATE)
                 .getBoolean("repeat_status", false);
     }
+
 
     //Save and retrieve current played song list
     public static void putCurrentList(Context c, ArrayList<Song> songs) {
@@ -139,6 +143,7 @@ public class Utils {
                         .getString("current_list", null), new TypeToken<ArrayList<Song>>() {
                 }.getType());
     }
+
 
     //Get all songs and songs with categories
     public static ArrayList<Song> getAllSongs(Context c) {
@@ -267,6 +272,7 @@ public class Utils {
         return songs;
     }
 
+
     //Save, fetch and delete top-rated
     public static ArrayList<Song> getTR(Context c) {
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("TOP_RATED", null),
@@ -304,6 +310,7 @@ public class Utils {
         editor.putString("TOP_RATED", new Gson().toJson(list)).apply();
     }
 
+
     //Save, fetch and delete low-rated
     public static ArrayList<Song> getLR(Context c) {
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("LOW_RATED", null),
@@ -340,6 +347,7 @@ public class Utils {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("LOW_RATED", new Gson().toJson(list)).apply();
     }
+
 
     //Get category based songs
     public static ArrayList<Song> getGenreSongs(Context c, long genreId) {
@@ -537,6 +545,7 @@ public class Utils {
         return songs;
     }
 
+
     //Save, update and delete playlists
     public static void createNewPlaylist(Context c, String name) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
@@ -607,6 +616,7 @@ public class Utils {
             editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
         }
     }
+
 
     //Get categories
     public static ArrayList<Album> getAlbums(Context c) {
@@ -798,6 +808,7 @@ public class Utils {
         return songs;
     }
 
+
     //Retrieve categories from storage
     private static ArrayList<Album> getAlbumsFromStorage(Context c) {
         return new Gson()
@@ -819,6 +830,7 @@ public class Utils {
                         .getString("genre_list", null), new TypeToken<ArrayList<Genre>>() {
                 }.getType());
     }
+
 
     //Save categories to storage
     private static void putAlbumsToStorage(Context c, ArrayList<Album> list) {

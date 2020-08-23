@@ -60,40 +60,47 @@ public class AlbumList extends AppCompatActivity implements MediaPlayer.OnComple
         setIDs();
         backToLib.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> startActivity(new Intent(context, CategorySearch.class)
-                .putExtra("cat_key", 2).putExtra("cat_name", "Albums")));
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 2).putExtra("cat_name", "Albums"));
+        });
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                shufflePlay.setOnClickListener(v -> {
-                    Instance.shuffle = true;
-                    Instance.songs = Utils.getAllSongsByCategory(context, "album asc");
-                    Utils.putShflStatus(context, true);
-                    Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                    if (Instance.songs.size() > 0) engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(AlbumList.this);
-                    updateSnippet();
-                    Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                });
+                    shufflePlay.setOnClickListener(v -> {
+                        Instance.shuffle = true;
+                        Instance.songs = Utils.getAllSongsByCategory(context, "album asc");
+                        Utils.putShflStatus(context, true);
+                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+
+                        if (Instance.songs.size() > 0) engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(AlbumList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                sequencePlay.setOnClickListener(v -> {
-                    Instance.shuffle = false;
-                    Instance.songs = Utils.getAllSongsByCategory(context, "album asc");
-                    Utils.putShflStatus(context, false);
-                    Instance.position = 0;
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                    if (Instance.songs.size() > 0) engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(AlbumList.this);
-                    updateSnippet();
-                    Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                });
+                    sequencePlay.setOnClickListener(v -> {
+                        Instance.shuffle = false;
+                        Instance.songs = Utils.getAllSongsByCategory(context, "album asc");
+                        Utils.putShflStatus(context, false);
+                        Instance.position = 0;
+
+                        if (Instance.songs.size() > 0) engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(AlbumList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
@@ -150,7 +157,7 @@ public class AlbumList extends AppCompatActivity implements MediaPlayer.OnComple
                     rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF)), 10);
         else rv.setAdapter(new AlbumAdapter(context, Utils.albums, loader, NF));
 
-        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() == 0) hideAttributes();
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 
@@ -183,12 +190,6 @@ public class AlbumList extends AppCompatActivity implements MediaPlayer.OnComple
     }
 
     @Override
-    public void onStartPlayer() {
-        engine.startPlayer();
-        updateSnippet();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (Instance.songs != null) updateSnippet();
@@ -197,6 +198,12 @@ public class AlbumList extends AppCompatActivity implements MediaPlayer.OnComple
             rv.getAdapter().notifyDataSetChanged();
             if (rv.getAdapter().getItemCount() == 0) hideAttributes();
         }
+    }
+
+    @Override
+    public void onStartPlayer() {
+        engine.startPlayer();
+        updateSnippet();
     }
 
     @Override

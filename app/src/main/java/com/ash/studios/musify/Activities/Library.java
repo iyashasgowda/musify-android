@@ -20,6 +20,7 @@ import com.ash.studios.musify.Activities.Categories.AlbumList;
 import com.ash.studios.musify.Activities.Categories.AllSongList;
 import com.ash.studios.musify.Activities.Categories.ArtistList;
 import com.ash.studios.musify.Activities.Categories.GenreList;
+import com.ash.studios.musify.Activities.Categories.PlayList;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Engine;
@@ -37,8 +38,8 @@ import static com.ash.studios.musify.Utils.Utils.getNewColor;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Library extends AppCompatActivity implements View.OnClickListener, MediaPlayer.OnCompletionListener {
-    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded, optionsBtn, snipArt, snipBtn;
-    String[] colors = new String[9];
+    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, optionsBtn, snipArt, snipBtn;
+    String[] colors = new String[8];
     TextView snipTitle, snipArtist;
     ScrollView scrollView;
     CardView snippet;
@@ -56,7 +57,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
     }
 
     private void setColors() {
-        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, lowRated, recentlyAdded};
+        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, lowRated};
         for (int i = 0; i < icons.length; i++) {
             String col = getNewColor();
             colors[i] = col;
@@ -78,7 +79,6 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
         playlists = findViewById(R.id.playlists_icon);
         scrollView = findViewById(R.id.library_scroll_view);
         optionsBtn = findViewById(R.id.library_options_btn);
-        recentlyAdded = findViewById(R.id.recently_added_icon);
 
         snipTitle = findViewById(R.id.snip_title);
         snipBtn = findViewById(R.id.snip_play_btn);
@@ -93,7 +93,6 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
         findViewById(R.id.play_lists).setOnClickListener(this);
         findViewById(R.id.top_rated).setOnClickListener(this);
         findViewById(R.id.low_rated).setOnClickListener(this);
-        findViewById(R.id.recently_added).setOnClickListener(this);
 
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
         optionsBtn.setOnClickListener(v -> {
@@ -171,15 +170,12 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
                 startActivity(new Intent(context, GenreList.class).putExtra("icon_color", colors[4]));
                 break;
             case R.id.play_lists:
-                //TODO
+                startActivity(new Intent(context, PlayList.class).putExtra("icon_color", colors[5]));
                 break;
             case R.id.top_rated:
                 //TODO
                 break;
             case R.id.low_rated:
-                //TODO
-                break;
-            case R.id.recently_added:
                 //TODO
                 break;
         }

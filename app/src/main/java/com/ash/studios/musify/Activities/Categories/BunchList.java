@@ -57,41 +57,46 @@ public class BunchList extends AppCompatActivity implements MediaPlayer.OnComple
         setIDs();
         goBackBtn.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> startActivity(new Intent(context, BunchSearch.class)
-                .putExtra("list_name", listName)
-                .putExtra("list", list)));
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, BunchSearch.class)
+                        .putExtra("list_name", listName)
+                        .putExtra("list", list));
+        });
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                shuffleAllBtn.setOnClickListener(v -> {
-                    Instance.shuffle = true;
-                    Instance.songs = list;
-                    Utils.putShflStatus(context, true);
-                    Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                    shuffleAllBtn.setOnClickListener(v -> {
+                        Instance.shuffle = true;
+                        Instance.songs = list;
+                        Utils.putShflStatus(context, true);
+                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                    engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(BunchList.this);
-                    updateSnippet();
-                    Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                });
+                        engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(BunchList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                sequenceAllBtn.setOnClickListener(v -> {
-                    Instance.shuffle = false;
-                    Instance.songs = list;
-                    Utils.putShflStatus(context, false);
-                    Instance.position = 0;
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                    sequenceAllBtn.setOnClickListener(v -> {
+                        Instance.shuffle = false;
+                        Instance.songs = list;
+                        Utils.putShflStatus(context, false);
+                        Instance.position = 0;
 
-                    engine.startPlayer();
-                    Instance.mp.setOnCompletionListener(BunchList.this);
-                    updateSnippet();
-                    Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                });
+                        engine.startPlayer();
+                        Instance.mp.setOnCompletionListener(BunchList.this);
+                        updateSnippet();
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    });
             }
         }.start();
         new Thread() {
@@ -152,7 +157,7 @@ public class BunchList extends AppCompatActivity implements MediaPlayer.OnComple
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
         rv.setAdapter(new AllSongAdapter(context, list, loader, NF));
-        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() == 0) hideAttributes();
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 

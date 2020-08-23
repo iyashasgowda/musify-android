@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.palette.graphics.Palette;
 
 import com.ash.studios.musify.BtmSheets.InfoSheet;
+import com.ash.studios.musify.BtmSheets.PlaylistSheet;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Engine;
@@ -296,7 +297,8 @@ public class Player extends AppCompatActivity implements MediaPlayer.OnCompletio
         });
         AP.setOnClickListener(ap -> {
             dialog.dismiss();
-            Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+            PlaylistSheet playlistSheet = new PlaylistSheet();
+            playlistSheet.show(getSupportFragmentManager(), null);
         });
         DS.setOnClickListener(ds -> {
             dialog.dismiss();

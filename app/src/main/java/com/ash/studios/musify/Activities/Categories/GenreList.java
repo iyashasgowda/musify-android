@@ -63,60 +63,67 @@ public class GenreList extends AppCompatActivity implements MediaPlayer.OnComple
         setIDs();
         backToLib.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> startActivity(new Intent(context, CategorySearch.class)
-                .putExtra("cat_key", 4).putExtra("cat_name", "Genres")));
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 4).putExtra("cat_name", "Genres"));
+        });
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                shufflePlay.setOnClickListener(v -> {
-                    Instance.shuffle = true;
-                    Utils.putShflStatus(context, true);
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                    new Thread(() -> {
-                        ArrayList<Song> list = new ArrayList<>();
-                        for (Genre genre : Utils.genres)
-                            list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                    shufflePlay.setOnClickListener(v -> {
+                        Instance.shuffle = true;
+                        Utils.putShflStatus(context, true);
 
-                        shufflePlay.post(() -> {
-                            Instance.songs = list;
-                            Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                        new Thread(() -> {
+                            ArrayList<Song> list = new ArrayList<>();
+                            for (Genre genre : Utils.genres)
+                                list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
 
-                            if (Instance.songs.size() > 0) engine.startPlayer();
-                            Instance.mp.setOnCompletionListener(GenreList.this);
+                            shufflePlay.post(() -> {
+                                Instance.songs = list;
+                                Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                            updateSnippet();
-                            Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                        });
-                    }).start();
-                });
+                                if (Instance.songs.size() > 0) engine.startPlayer();
+                                Instance.mp.setOnCompletionListener(GenreList.this);
+
+                                updateSnippet();
+                                Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                            });
+                        }).start();
+                    });
             }
         }.start();
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                sequencePlay.setOnClickListener(v -> {
-                    Instance.shuffle = false;
-                    Utils.putShflStatus(context, false);
+                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                    new Thread(() -> {
-                        ArrayList<Song> list = new ArrayList<>();
-                        for (Genre genre : Utils.genres)
-                            list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                    sequencePlay.setOnClickListener(v -> {
+                        Instance.shuffle = false;
+                        Utils.putShflStatus(context, false);
 
-                        sequencePlay.post(() -> {
-                            Instance.songs = list;
-                            Instance.position = 0;
+                        new Thread(() -> {
+                            ArrayList<Song> list = new ArrayList<>();
+                            for (Genre genre : Utils.genres)
+                                list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
 
-                            if (Instance.songs.size() > 0) engine.startPlayer();
-                            Instance.mp.setOnCompletionListener(GenreList.this);
+                            sequencePlay.post(() -> {
+                                Instance.songs = list;
+                                Instance.position = 0;
 
-                            updateSnippet();
-                            Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                        });
-                    }).start();
-                });
+                                if (Instance.songs.size() > 0) engine.startPlayer();
+                                Instance.mp.setOnCompletionListener(GenreList.this);
+
+                                updateSnippet();
+                                Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                            });
+                        }).start();
+                    });
             }
         }.start();
         new Thread() {
@@ -173,7 +180,7 @@ public class GenreList extends AppCompatActivity implements MediaPlayer.OnComple
             new Handler(Looper.getMainLooper()).postDelayed(() ->
                     rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF)), 10);
         else rv.setAdapter(new GenreAdapter(context, Utils.genres, loader, NF));
-        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() == 0) hideAttributes();
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 

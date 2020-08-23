@@ -29,8 +29,8 @@
                     android:id="@+id/library"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="40dp"
                     android:text="Library"
                     android:textColor="@android:color/white"
                     android:textSize="30sp"
@@ -322,9 +322,11 @@
                     android:id="@+id/low_rated"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="150dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="@drawable/ripple"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/top_rated">
@@ -353,45 +355,6 @@
                         app:layout_constraintBottom_toBottomOf="@+id/low_rated_icon"
                         app:layout_constraintStart_toEndOf="@+id/low_rated_icon"
                         app:layout_constraintTop_toTopOf="@+id/low_rated_icon" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/recently_added"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="100dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/ripple"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/low_rated">
-
-                    <ImageView
-                        android:id="@+id/recently_added_icon"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:alpha="0.6"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_added" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="Recently Added"
-                        android:textColor="@android:color/white"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/recently_added_icon"
-                        app:layout_constraintStart_toEndOf="@+id/recently_added_icon"
-                        app:layout_constraintTop_toTopOf="@+id/recently_added_icon" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

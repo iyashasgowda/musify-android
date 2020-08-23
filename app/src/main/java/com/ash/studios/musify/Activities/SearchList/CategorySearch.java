@@ -26,6 +26,7 @@ import com.ash.studios.musify.Adapters.AlbumAdapter;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
 import com.ash.studios.musify.Adapters.ArtistAdapter;
 import com.ash.studios.musify.Adapters.GenreAdapter;
+import com.ash.studios.musify.Adapters.PlaylistAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
@@ -217,15 +218,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
                             updateSongs(tempLR);
                             break;
-
-                        case 8:
-                            ArrayList<Song> tempRA = new ArrayList<>();
-                            for (Song s : Utils.getRecentlyAdded(context))
-                                if (s.getTitle().toLowerCase().contains(editable.toString().toLowerCase()))
-                                    tempRA.add(s);
-
-                            updateSongs(tempRA);
-                            break;
                     }
                 } else hideBtnAndAdapter();
             }
@@ -246,18 +238,19 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     private void updateAlbums(ArrayList<Album> list) {
         rv.setAdapter(new AlbumAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-            shuffleBtn.setAlpha(1f);
-            sequenceBtn.setAlpha(1f);
 
             new Thread(() -> {
                 ArrayList<Song> albumSongs = new ArrayList<>();
                 for (Album album : list)
                     albumSongs.addAll(Utils.getAlbumSongs(context, album.getAlbum_id()));
 
-                shuffleBtn.post(() -> {
-                    shuffleBtn.setOnClickListener(v -> shufflePlay(albumSongs));
-                    sequenceBtn.setOnClickListener(v -> sequencePlay(albumSongs));
-                });
+                if (albumSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+                        shuffleBtn.setAlpha(1f);
+                        sequenceBtn.setAlpha(1f);
+                        shuffleBtn.setOnClickListener(v -> shufflePlay(albumSongs));
+                        sequenceBtn.setOnClickListener(v -> sequencePlay(albumSongs));
+                    });
             }).start();
         } else hideBtnAndAdapter();
     }
@@ -265,18 +258,19 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     private void updateArtists(ArrayList<Artist> list) {
         rv.setAdapter(new ArtistAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-            shuffleBtn.setAlpha(1f);
-            sequenceBtn.setAlpha(1f);
 
             new Thread(() -> {
                 ArrayList<Song> artistSongs = new ArrayList<>();
                 for (Artist artist : list)
                     artistSongs.addAll(Utils.getArtistSongs(context, artist.getArtist_id()));
 
-                shuffleBtn.post(() -> {
-                    shuffleBtn.setOnClickListener(v -> shufflePlay(artistSongs));
-                    sequenceBtn.setOnClickListener(v -> sequencePlay(artistSongs));
-                });
+                if (artistSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+                        shuffleBtn.setAlpha(1f);
+                        sequenceBtn.setAlpha(1f);
+                        shuffleBtn.setOnClickListener(v -> shufflePlay(artistSongs));
+                        sequenceBtn.setOnClickListener(v -> sequencePlay(artistSongs));
+                    });
             }).start();
         } else hideBtnAndAdapter();
     }
@@ -284,25 +278,41 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     private void updateGenres(ArrayList<Genre> list) {
         rv.setAdapter(new GenreAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-            shuffleBtn.setAlpha(1f);
-            sequenceBtn.setAlpha(1f);
 
             new Thread(() -> {
                 ArrayList<Song> genreSongs = new ArrayList<>();
                 for (Genre genre : list)
                     genreSongs.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
 
-                shuffleBtn.post(() -> {
-                    shuffleBtn.setOnClickListener(v -> shufflePlay(genreSongs));
-                    sequenceBtn.setOnClickListener(v -> sequencePlay(genreSongs));
-                });
+                if (genreSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+                        shuffleBtn.setAlpha(1f);
+                        sequenceBtn.setAlpha(1f);
+                        shuffleBtn.setOnClickListener(v -> shufflePlay(genreSongs));
+                        sequenceBtn.setOnClickListener(v -> sequencePlay(genreSongs));
+                    });
             }).start();
         } else hideBtnAndAdapter();
     }
 
     private void updatePlaylists(ArrayList<Playlist> list) {
-        //rv.setAdapter(new Playlists(context, tempPlaylists, null, null));
-        hideBtn();
+        rv.setAdapter(new PlaylistAdapter(context, list, null, null));
+        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+            new Thread(() -> {
+                ArrayList<Song> playlistSongs = new ArrayList<>();
+                for (Playlist playlist : list)
+                    playlistSongs.addAll(playlist.getSongs());
+
+                if (playlistSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+                        shuffleBtn.setAlpha(1f);
+                        sequenceBtn.setAlpha(1f);
+                        shuffleBtn.setOnClickListener(v -> shufflePlay(playlistSongs));
+                        sequenceBtn.setOnClickListener(v -> sequencePlay(playlistSongs));
+                    });
+            }).start();
+        } else hideBtnAndAdapter();
     }
 
     private void hideBtn() {
@@ -369,7 +379,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
         if (rv.getAdapter() != null) {
             rv.getAdapter().notifyDataSetChanged();
-
             if (rv.getAdapter().getItemCount() == 0) hideBtn();
         }
     }
