@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/textView16"
+                        android:id="@+id/del_dg_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -44,7 +44,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView17"
+                        android:id="@+id/del_dg_body"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -55,7 +55,7 @@
                         android:textColor="@android:color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                        app:layout_constraintTop_toBottomOf="@+id/del_dg_title" />
 
                     <TextView
                         android:id="@+id/del_song_btn"
@@ -95,7 +95,7 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/del_song_btn"
-                        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                        app:layout_constraintTop_toBottomOf="@+id/del_dg_body" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

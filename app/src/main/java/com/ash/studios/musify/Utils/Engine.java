@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
@@ -35,6 +36,7 @@ public class Engine {
         mp = MediaPlayer.create(context, uri);
         mp.start();
 
+        context.startService(new Intent(context, MusicService.class));
         setCurrentPlayBack();
     }
 
@@ -72,6 +74,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
+        context.startService(new Intent(context, MusicService.class));
         setCurrentPlayBack();
     }
 
@@ -116,6 +119,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
+        context.startService(new Intent(context, MusicService.class));
         setCurrentPlayBack();
     }
 

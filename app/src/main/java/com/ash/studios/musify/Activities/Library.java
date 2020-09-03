@@ -20,7 +20,9 @@ import com.ash.studios.musify.Activities.Categories.AlbumList;
 import com.ash.studios.musify.Activities.Categories.AllSongList;
 import com.ash.studios.musify.Activities.Categories.ArtistList;
 import com.ash.studios.musify.Activities.Categories.GenreList;
+import com.ash.studios.musify.Activities.Categories.LRList;
 import com.ash.studios.musify.Activities.Categories.PlayList;
+import com.ash.studios.musify.Activities.Categories.TRList;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Engine;
@@ -173,10 +175,10 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
                 startActivity(new Intent(context, PlayList.class).putExtra("icon_color", colors[5]));
                 break;
             case R.id.top_rated:
-                //TODO
+                startActivity(new Intent(context, TRList.class).putExtra("icon_color", colors[6]));
                 break;
             case R.id.low_rated:
-                //TODO
+                startActivity(new Intent(context, LRList.class).putExtra("icon_color", colors[7]));
                 break;
         }
     }

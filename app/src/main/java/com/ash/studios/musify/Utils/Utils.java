@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -278,6 +279,8 @@ public class Utils {
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("TOP_RATED", null),
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
+
+        Collections.reverse(list);
         return list == null ? new ArrayList<>() : list;
     }
 
@@ -316,6 +319,7 @@ public class Utils {
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("LOW_RATED", null),
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
+        Collections.reverse(list);
         return list == null ? new ArrayList<>() : list;
     }
 
