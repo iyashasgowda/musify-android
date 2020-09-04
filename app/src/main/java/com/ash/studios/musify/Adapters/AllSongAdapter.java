@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Interfaces.IControl;
+import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
@@ -55,7 +55,7 @@ public class AllSongAdapter extends RecyclerView.Adapter<AllSongAdapter.ViewHold
         holder.itemView.setOnClickListener(v -> {
             Instance.songs = list;
             Instance.position = position;
-            ((IControl) context).onStartPlayer();
+            ((IService) context).onStartService();
             Instance.mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         });
 

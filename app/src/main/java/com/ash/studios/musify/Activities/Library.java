@@ -23,10 +23,15 @@ import com.ash.studios.musify.Activities.Categories.GenreList;
 import com.ash.studios.musify.Activities.Categories.LRList;
 import com.ash.studios.musify.Activities.Categories.PlayList;
 import com.ash.studios.musify.Activities.Categories.TRList;
+import com.ash.studios.musify.Interfaces.IControl;
+import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.App;
+import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -34,12 +39,14 @@ import java.util.ArrayList;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
 import static com.ash.studios.musify.Utils.Utils.getDialog;
 import static com.ash.studios.musify.Utils.Utils.getNewColor;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
-public class Library extends AppCompatActivity implements View.OnClickListener, MediaPlayer.OnCompletionListener {
+public class Library extends AppCompatActivity implements
+        View.OnClickListener, MediaPlayer.OnCompletionListener, IService, IControl {
     ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, optionsBtn, snipArt, snipBtn;
     String[] colors = new String[8];
     TextView snipTitle, snipArtist;
@@ -127,9 +134,11 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
                 if (Instance.mp.isPlaying()) {
                     snipBtn.setImageResource(R.drawable.ic_play_small);
                     Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
                 } else {
                     snipBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
                 engine.startPlayer();
@@ -186,6 +195,7 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
     }
@@ -199,6 +209,51 @@ public class Library extends AppCompatActivity implements View.OnClickListener, 
             Instance.mp.setOnCompletionListener(this);
         }
         Utils.putCurrentPosition(context, Instance.position);
+        updateSnippet();
+    }
+
+    @Override
+    public void onStartService() {
+    }
+
+    @Override
+    public void onStopService() {
+        if (Instance.mp != null) {
+            Instance.mp.stop();
+            Instance.mp.release();
+            Instance.mp = null;
+        }
+        snipBtn.setImageResource(R.drawable.ic_play_small);
+        stopService(new Intent(context, MusicService.class));
+    }
+
+    @Override
+    public void onPrevClicked() {
+        engine.playPrevSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onNextClicked() {
+        engine.playNextSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onPlayClicked() {
+        if (Instance.mp != null) mp.start();
+        else {
+            engine.startPlayer();
+            mp.setOnCompletionListener(Library.this);
+        }
+        updateSnippet();
+    }
+
+    @Override
+    public void onPauseClicked() {
+        if (Instance.mp != null) Instance.mp.pause();
         updateSnippet();
     }
 }

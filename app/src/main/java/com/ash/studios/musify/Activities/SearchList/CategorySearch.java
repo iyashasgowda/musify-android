@@ -28,14 +28,18 @@ import com.ash.studios.musify.Adapters.ArtistAdapter;
 import com.ash.studios.musify.Adapters.GenreAdapter;
 import com.ash.studios.musify.Adapters.PlaylistAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
+import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
 import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.App;
+import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -44,10 +48,11 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
-public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl {
+public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn;
     TextView searchType, snipTitle, snipArtist;
     EditText searchText;
@@ -98,9 +103,11 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                         if (Instance.mp.isPlaying()) {
                             snipPlayBtn.setImageResource(R.drawable.ic_play_small);
                             Instance.mp.pause();
+                            stopService(new Intent(context, MusicService.class));
                         } else {
                             snipPlayBtn.setImageResource(R.drawable.ic_pause);
                             Instance.mp.start();
+                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                         }
                     } else {
                         engine.startPlayer();
@@ -375,6 +382,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     @Override
     protected void onResume() {
         super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
         if (rv.getAdapter() != null) {
@@ -384,9 +392,50 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     @Override
-    public void onStartPlayer() {
+    public void onStartService() {
         engine.startPlayer();
         updateSnippet();
+    }
+
+    @Override
+    public void onPrevClicked() {
+        engine.playPrevSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onNextClicked() {
+        engine.playNextSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onPlayClicked() {
+        if (Instance.mp != null) mp.start();
+        else {
+            engine.startPlayer();
+            mp.setOnCompletionListener(CategorySearch.this);
+        }
+        updateSnippet();
+    }
+
+    @Override
+    public void onPauseClicked() {
+        if (Instance.mp != null) Instance.mp.pause();
+        updateSnippet();
+    }
+
+    @Override
+    public void onStopService() {
+        if (Instance.mp != null) {
+            Instance.mp.stop();
+            Instance.mp.release();
+            Instance.mp = null;
+        }
+        snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+        stopService(new Intent(context, MusicService.class));
     }
 
     @Override

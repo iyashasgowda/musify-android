@@ -1,5 +1,11 @@
 package com.ash.studios.musify.Interfaces;
 
 public interface IControl {
-    void onStartPlayer();
+    void onPrevClicked();
+
+    void onNextClicked();
+
+    void onPlayClicked();
+
+    void onPauseClicked();
 }

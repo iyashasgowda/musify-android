@@ -36,7 +36,7 @@ public class Engine {
         mp = MediaPlayer.create(context, uri);
         mp.start();
 
-        context.startService(new Intent(context, MusicService.class));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
         setCurrentPlayBack();
     }
 
@@ -74,7 +74,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
-        context.startService(new Intent(context, MusicService.class));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
         setCurrentPlayBack();
     }
 
@@ -119,7 +119,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
-        context.startService(new Intent(context, MusicService.class));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
         setCurrentPlayBack();
     }
 

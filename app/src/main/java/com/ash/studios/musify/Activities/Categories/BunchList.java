@@ -20,10 +20,14 @@ import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Activities.SearchList.BunchSearch;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
+import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.App;
+import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -32,10 +36,12 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
-public class BunchList extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl {
+public class BunchList extends AppCompatActivity implements
+        MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView coverArt, shuffleAllBtn, sequenceAllBtn, searchBtn, optionBtn, snippetArt, snippetPlayBtn;
     TextView bunchTitle, goBackTo, NF, snippetTitle, snippetArtist;
     ConstraintLayout goBackBtn;
@@ -108,9 +114,11 @@ public class BunchList extends AppCompatActivity implements MediaPlayer.OnComple
                         if (Instance.mp.isPlaying()) {
                             snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
                             Instance.mp.pause();
+                            stopService(new Intent(context, MusicService.class));
                         } else {
                             snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                             Instance.mp.start();
+                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                         }
                     } else {
                         engine.startPlayer();
@@ -190,14 +198,56 @@ public class BunchList extends AppCompatActivity implements MediaPlayer.OnComple
     }
 
     @Override
-    public void onStartPlayer() {
+    public void onStartService() {
         engine.startPlayer();
         updateSnippet();
     }
 
     @Override
+    public void onPrevClicked() {
+        engine.playPrevSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onNextClicked() {
+        engine.playNextSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+    }
+
+    @Override
+    public void onPlayClicked() {
+        if (Instance.mp != null) mp.start();
+        else {
+            engine.startPlayer();
+            mp.setOnCompletionListener(BunchList.this);
+        }
+        updateSnippet();
+    }
+
+    @Override
+    public void onPauseClicked() {
+        if (Instance.mp != null) Instance.mp.pause();
+        updateSnippet();
+    }
+
+    @Override
+    public void onStopService() {
+        if (Instance.mp != null) {
+            Instance.mp.stop();
+            Instance.mp.release();
+            Instance.mp = null;
+        }
+        snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+        stopService(new Intent(context, MusicService.class));
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
         if (rv.getAdapter() != null) {

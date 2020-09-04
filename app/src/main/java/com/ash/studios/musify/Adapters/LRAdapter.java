@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Categories.LRList;
-import com.ash.studios.musify.Interfaces.IControl;
+import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
@@ -59,7 +59,7 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> {
         holder.itemView.setOnClickListener(v -> {
             Instance.songs = list;
             Instance.position = position;
-            ((IControl) context).onStartPlayer();
+            ((IService) context).onStartService();
             Instance.mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         });
 

@@ -3,10 +3,20 @@ package com.ash.studios.musify.Utils;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 
 public class App extends Application {
+    private Context currentContext = null;
     public static final String CHANNEL_ID = "Musify";
+
+    public Context getCurrentContext() {
+        return currentContext;
+    }
+
+    public void setCurrentContext(Context currentContext) {
+        this.currentContext = currentContext;
+    }
 
     @Override
     public void onCreate() {
