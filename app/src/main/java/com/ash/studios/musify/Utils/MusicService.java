@@ -91,6 +91,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         PendingIntent nextPending = PendingIntent.getService(context, 0, nextIntent, 0);
 
         Song song = Instance.songs.get(Instance.position);
+        StringBuilder count = new StringBuilder().append(Instance.position + 1).append("/").append(Instance.songs.size());
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
@@ -107,6 +108,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
                 .setContentTitle(song.getTitle())
                 .setContentText(song.getArtist())
+                .setSubText(count)
 
                 .setContentIntent(mainPending)
                 .build();
@@ -132,6 +134,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         PendingIntent nextPending = PendingIntent.getService(context, 2, nextIntent, 0);
 
         Song song = Instance.songs.get(Instance.position);
+        StringBuilder count = new StringBuilder().append(Instance.position + 1).append("/").append(Instance.songs.size());
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
@@ -148,6 +151,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
                 .setContentTitle(song.getTitle())
                 .setContentText(song.getArtist())
+                .setSubText(count)
 
                 .setContentIntent(mainPending)
                 .build();
@@ -171,7 +175,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
         } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
         }
         return bitmap;
     }

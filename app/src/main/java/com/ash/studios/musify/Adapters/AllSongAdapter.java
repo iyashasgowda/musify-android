@@ -49,7 +49,7 @@ public class AllSongAdapter extends RecyclerView.Adapter<AllSongAdapter.ViewHold
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(song.getAlbum_id()))
-                .placeholder(R.mipmap.icon)
+                .placeholder(R.mipmap.ic_abstract)
                 .into(holder.albumCover);
 
         holder.itemView.setOnClickListener(v -> {

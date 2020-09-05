@@ -69,64 +69,60 @@ public class BunchList extends AppCompatActivity implements
                         .putExtra("list_name", listName)
                         .putExtra("list", list));
         });
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    shuffleAllBtn.setOnClickListener(v -> {
-                        Instance.shuffle = true;
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                shuffleAllBtn.setOnClickListener(v -> {
+                    if (list.size() > 0) {
                         Instance.songs = list;
-                        Utils.putShflStatus(context, true);
+                        Instance.shuffle = true;
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                         engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(BunchList.this);
+                        mp.setOnCompletionListener(BunchList.this);
+
                         updateSnippet();
+                        Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    sequenceAllBtn.setOnClickListener(v -> {
-                        Instance.shuffle = false;
+                    } else
+                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
+                });
+        }).start();
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                sequenceAllBtn.setOnClickListener(v -> {
+                    if (list.size() > 0) {
                         Instance.songs = list;
-                        Utils.putShflStatus(context, false);
+                        Instance.shuffle = false;
                         Instance.position = 0;
 
                         engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(BunchList.this);
+                        mp.setOnCompletionListener(BunchList.this);
+
                         updateSnippet();
+                        Utils.putShflStatus(context, false);
                         Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snippetPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
-                        engine.startPlayer();
-                        snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
+                    } else
+                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
                 });
+        }).start();
+        new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
+        })).start();
     }
 
     @SuppressWarnings("unchecked")
@@ -159,7 +155,7 @@ public class BunchList extends AppCompatActivity implements
         goBackTo.setText(getIntent().getStringExtra("list_from"));
         if (list.size() > 0) Glide.with(getApplicationContext())
                 .asBitmap().load(Utils.getAlbumArt(list.get(0).getAlbum_id()))
-                .placeholder(R.mipmap.icon)
+                .placeholder(R.mipmap.ic_abstract)
                 .into(coverArt);
 
         if (Instance.songs != null) updateSnippet();
@@ -176,7 +172,7 @@ public class BunchList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 

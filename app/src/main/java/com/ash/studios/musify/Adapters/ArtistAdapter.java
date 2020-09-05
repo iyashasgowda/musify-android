@@ -48,7 +48,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(artist.getAlbum_id()))
-                .placeholder(R.mipmap.icon)
+                .placeholder(R.mipmap.ic_abstract)
                 .into(holder.artistCover);
 
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)

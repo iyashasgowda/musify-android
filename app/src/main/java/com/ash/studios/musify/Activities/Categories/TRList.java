@@ -69,65 +69,60 @@ public class TRList extends AppCompatActivity implements
                 startActivity(new Intent(context, CategorySearch.class)
                         .putExtra("cat_key", 6).putExtra("cat_name", "Top Rated"));
         });
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    shufflePlay.setOnClickListener(v -> {
+                shufflePlay.setOnClickListener(v -> {
+                    if (Utils.getTR(context).size() > 0) {
                         Instance.shuffle = true;
                         Instance.songs = Utils.getTR(context);
-                        Utils.putShflStatus(context, true);
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                         engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(TRList.this);
+                        mp.setOnCompletionListener(TRList.this);
+
                         updateSnippet();
+                        Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    sequencePlay.setOnClickListener(v -> {
+                    } else
+                        Toast.makeText(context, "No songs found in the Top-Rated :(", Toast.LENGTH_SHORT).show();
+                });
+        }).start();
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                sequencePlay.setOnClickListener(v -> {
+                    if (Utils.getTR(context).size() > 0) {
                         Instance.shuffle = false;
                         Instance.songs = Utils.getTR(context);
-                        Utils.putShflStatus(context, false);
                         Instance.position = 0;
 
                         engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(TRList.this);
+                        mp.setOnCompletionListener(TRList.this);
+
                         updateSnippet();
+                        Utils.putShflStatus(context, false);
                         Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snippetPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
-                        engine.startPlayer();
-                        snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
+                    } else
+                        Toast.makeText(context, "No songs found in the Top-Rated :(", Toast.LENGTH_SHORT).show();
                 });
+        }).start();
+        new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
+        })).start();
     }
 
     private void setIDs() {
@@ -169,7 +164,7 @@ public class TRList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 
@@ -196,6 +191,7 @@ public class TRList extends AppCompatActivity implements
         ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        rv.setAdapter(new TRAdapter(context, Utils.getTR(context), loader, NF));
         if (rv.getAdapter() != null) {
             rv.getAdapter().notifyDataSetChanged();
             if (rv.getAdapter().getItemCount() == 0) hideAttributes();

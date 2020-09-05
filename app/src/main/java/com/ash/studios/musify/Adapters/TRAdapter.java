@@ -53,7 +53,7 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> {
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(song.getAlbum_id()))
-                .placeholder(R.mipmap.icon)
+                .placeholder(R.mipmap.ic_abstract)
                 .into(holder.albumCover);
 
         holder.itemView.setOnClickListener(v -> {
@@ -71,7 +71,7 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> {
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             title.setText(new StringBuilder("Remove song?"));
-            body.setText(new StringBuilder("Selected song will be removed from the Top-Rated."));
+            body.setText(new StringBuilder("Selected song will be removed from the Top-Rated"));
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();

@@ -1,7 +1,6 @@
 package com.ash.studios.musify.Activities;
 
 import android.app.Dialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -210,7 +209,7 @@ public class Player extends AppCompatActivity implements
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Utils.getAlbumArt(song.getAlbum_id()));
             } catch (IOException e) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
             }
 
             Glide.with(getApplicationContext()).load(bitmap).into(albumArt);
@@ -322,7 +321,8 @@ public class Player extends AppCompatActivity implements
     }
 
     private void deleteSong() {
-        Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Instance.songs.get(Instance.position).getId());
+        Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+        /*Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Instance.songs.get(Instance.position).getId());
         try {
             //searchAndDelete(this, song);
             getContentResolver().delete(uri, null, null);
@@ -344,7 +344,7 @@ public class Player extends AppCompatActivity implements
             Toast.makeText(context, "Song deleted from this device :)", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "Couldn't delete the song :(", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     private void setDialogAttrs() {
@@ -361,7 +361,7 @@ public class Player extends AppCompatActivity implements
             Glide.with(getApplicationContext())
                     .asBitmap()
                     .load(Utils.getAlbumArt(song.getAlbum_id()))
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .into(dgAlbumArt);
         }
     }

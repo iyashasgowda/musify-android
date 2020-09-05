@@ -154,7 +154,7 @@ public class Library extends AppCompatActivity implements
         snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
         Glide.with(getApplicationContext())
                 .asBitmap()
-                .placeholder(R.mipmap.icon)
+                .placeholder(R.mipmap.ic_abstract)
                 .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                 .into(snipArt);
         if (Instance.mp != null && Instance.mp.isPlaying())

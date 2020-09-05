@@ -71,94 +71,26 @@ public class PlayList extends AppCompatActivity implements
         setUpUI(this);
 
         setIDs();
+        showAttributes();
         backToLib.setOnClickListener(v -> finish());
         optionsBtn.setOnClickListener(v -> openOptionsDialog());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> {
-            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 5).putExtra("cat_name", "Playlists"));
-        });
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-
-                    shufflePlay.setOnClickListener(v -> {
-                        Instance.shuffle = true;
-                        Utils.putShflStatus(context, true);
-
-                        new Thread(() -> {
-                            ArrayList<Song> list = new ArrayList<>();
-                            for (Playlist playlist : Utils.getPlaylists(context))
-                                list.addAll(playlist.getSongs());
-
-                            shufflePlay.post(() -> {
-                                Instance.songs = list;
-                                Instance.position = new Random().nextInt((songs.size() - 1) + 1);
-
-                                if (Instance.songs.size() > 0) engine.startPlayer();
-                                Instance.mp.setOnCompletionListener(PlayList.this);
-
-                                updateSnippet();
-                                Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                            });
-                        }).start();
-                    });
+        new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-
-                    sequencePlay.setOnClickListener(v -> {
-                        Instance.shuffle = false;
-                        Utils.putShflStatus(context, false);
-
-                        new Thread(() -> {
-                            ArrayList<Song> list = new ArrayList<>();
-                            for (Playlist playlist : Utils.getPlaylists(context))
-                                list.addAll(playlist.getSongs());
-
-                            shufflePlay.post(() -> {
-                                Instance.songs = list;
-                                Instance.position = 0;
-
-                                if (Instance.songs.size() > 0) engine.startPlayer();
-                                Instance.mp.setOnCompletionListener(PlayList.this);
-
-                                updateSnippet();
-                                Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                            });
-                        }).start();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snippetPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
-                        engine.startPlayer();
-                        snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
-                });
-            }
-        }.start();
+        })).start();
     }
 
     private void setIDs() {
@@ -203,7 +135,9 @@ public class PlayList extends AppCompatActivity implements
         ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
         ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
         ConstraintLayout AN = dialog.findViewById(R.id.add_new);
+        ConstraintLayout ST = dialog.findViewById(R.id.settings);
 
+        ST.setVisibility(View.GONE);
         AN.setVisibility(View.VISIBLE);
         dialogName.setText(title.getText());
         dialogIcon.setImageDrawable(icon.getDrawable());
@@ -285,7 +219,7 @@ public class PlayList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 
@@ -302,10 +236,75 @@ public class PlayList extends AppCompatActivity implements
         ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF));
         if (rv.getAdapter() != null) {
             rv.getAdapter().notifyDataSetChanged();
             if (rv.getAdapter().getItemCount() == 0) hideAttributes();
+            else showAttributes();
         }
+    }
+
+    private void showAttributes() {
+        searchBtn.setAlpha(1f);
+        shufflePlay.setAlpha(1f);
+        sequencePlay.setAlpha(1f);
+        NF.setVisibility(View.GONE);
+
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 5).putExtra("cat_name", "Playlists"));
+        });
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                shufflePlay.setOnClickListener(v -> new Thread(() -> {
+                    ArrayList<Song> list = new ArrayList<>();
+                    for (Playlist playlist : Utils.getPlaylists(context))
+                        list.addAll(playlist.getSongs());
+
+                    shufflePlay.post(() -> {
+                        if (list.size() > 0) {
+                            Instance.songs = list;
+                            Instance.shuffle = true;
+                            Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+
+                            engine.startPlayer();
+                            mp.setOnCompletionListener(PlayList.this);
+
+                            updateSnippet();
+                            Utils.putShflStatus(context, true);
+                            Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(context, "No songs found in any playlist :(", Toast.LENGTH_SHORT).show();
+                    });
+                }).start());
+        }).start();
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                sequencePlay.setOnClickListener(v -> new Thread(() -> {
+                    ArrayList<Song> list = new ArrayList<>();
+                    for (Playlist playlist : Utils.getPlaylists(context))
+                        list.addAll(playlist.getSongs());
+
+                    sequencePlay.post(() -> {
+                        if (list.size() > 0) {
+                            Instance.songs = list;
+                            Instance.position = 0;
+                            Instance.shuffle = false;
+
+                            if (songs.size() > 0) engine.startPlayer();
+                            mp.setOnCompletionListener(PlayList.this);
+
+                            updateSnippet();
+                            Utils.putShflStatus(context, false);
+                            Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(context, "No songs found in any playlist :(", Toast.LENGTH_SHORT).show();
+                    });
+                }).start());
+        }).start();
     }
 
     @Override
@@ -366,5 +365,4 @@ public class PlayList extends AppCompatActivity implements
         Utils.putCurrentPosition(context, Instance.position);
         updateSnippet();
     }
-
 }

@@ -26,6 +26,7 @@ import com.ash.studios.musify.Activities.SearchList.CategorySearch;
 import com.ash.studios.musify.Adapters.ArtistAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
+import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.App;
 import com.ash.studios.musify.Utils.Constants;
@@ -36,6 +37,7 @@ import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
@@ -71,64 +73,62 @@ public class ArtistList extends AppCompatActivity implements
                 startActivity(new Intent(context, CategorySearch.class)
                         .putExtra("cat_key", 3).putExtra("cat_name", "Artists"));
         });
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    shufflePlay.setOnClickListener(v -> {
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                shufflePlay.setOnClickListener(v -> {
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist asc");
+                    if (list.size() > 0) {
+                        Instance.songs = list;
                         Instance.shuffle = true;
-                        Instance.songs = Utils.getAllSongsByCategory(context, "artist asc");
-                        Utils.putShflStatus(context, true);
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                        if (Instance.songs.size() > 0) engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(ArtistList.this);
+                        engine.startPlayer();
+                        mp.setOnCompletionListener(ArtistList.this);
+
                         updateSnippet();
+                        Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                    sequencePlay.setOnClickListener(v -> {
+                    } else
+                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
+                });
+        }).start();
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                sequencePlay.setOnClickListener(v -> {
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist asc");
+                    if (list.size() > 0) {
+                        Instance.songs = list;
                         Instance.shuffle = false;
-                        Instance.songs = Utils.getAllSongsByCategory(context, "artist asc");
-                        Utils.putShflStatus(context, false);
                         Instance.position = 0;
 
-                        if (Instance.songs.size() > 0) engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(ArtistList.this);
-                        updateSnippet();
-                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                    });
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snippetPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
                         engine.startPlayer();
-                        snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
+                        mp.setOnCompletionListener(ArtistList.this);
+
+                        updateSnippet();
+                        Utils.putShflStatus(context, false);
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
                 });
+        }).start();
+        new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
+        })).start();
     }
 
     private void setIDs() {
@@ -184,7 +184,7 @@ public class ArtistList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 

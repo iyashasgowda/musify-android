@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Categories.LRList;
+import com.ash.studios.musify.Activities.Categories.PLBunchList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
@@ -24,11 +24,13 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> {
+public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> {
     public ArrayList<Song> list;
     private Context context;
+    private int pos;
 
-    public LRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
+    public PLBunchAdapter(Context context, ArrayList<Song> list, int pos, ProgressBar pb, TextView nf) {
+        this.pos = pos;
         this.list = list;
         this.context = context;
 
@@ -38,13 +40,12 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> {
 
     @NonNull
     @Override
-    public LRAdapter.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LRAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
-
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PLBunchAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LRAdapter.VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         Song song = list.get(position);
 
         holder.songName.setText(song.getTitle());
@@ -71,7 +72,7 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> {
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             title.setText(new StringBuilder("Remove song?"));
-            body.setText(new StringBuilder("Selected song will be removed from the Low-Rated"));
+            body.setText(new StringBuilder("Selected song will be removed from the playlist"));
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();
@@ -79,10 +80,10 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> {
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
-                Utils.deleteFromLR(context, song);
+                Utils.delFrmPlaylist(context, pos, song);
                 if (getItemCount() == 0) {
-                    ((LRList) context).finish();
-                    Toast.makeText(context, "No songs in the Low-Rated", Toast.LENGTH_SHORT).show();
+                    ((PLBunchList) context).finish();
+                    Toast.makeText(context, "No songs in the playlist", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

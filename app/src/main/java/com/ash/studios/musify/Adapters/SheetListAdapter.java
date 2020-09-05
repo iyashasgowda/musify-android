@@ -50,7 +50,7 @@ public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.VH> 
         if (playlist.getSongs().size() > 0)
             Glide.with(context.getApplicationContext())
                     .asBitmap().load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .into(holder.sheetPlCover);
 
         holder.itemView.setOnClickListener(v -> {

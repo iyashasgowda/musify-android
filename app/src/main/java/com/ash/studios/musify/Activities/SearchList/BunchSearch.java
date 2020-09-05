@@ -41,11 +41,10 @@ import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl, IService {
-    ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn;
+    ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn, close;
     TextView searchType, snipTitle, snipArtist;
     EditText searchText;
     CardView snippet;
-    ImageView close;
     RecyclerView rv;
 
     Engine engine;
@@ -59,29 +58,24 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
         setUpUI(this);
 
         setIDs();
+        close.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snipPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snipPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snipPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
-                        engine.startPlayer();
-                        snipPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
-                });
+        new Thread(() -> snipPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snipPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snipPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
+        })).start();
     }
 
     @SuppressWarnings("unchecked")
@@ -184,7 +178,7 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
             snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snipArt);
 

@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Categories.BunchList;
+import com.ash.studios.musify.Activities.Categories.PLBunchList;
+import com.ash.studios.musify.Activities.Categories.PlayList;
 import com.ash.studios.musify.Model.Playlist;
 import com.ash.studios.musify.Model.Song;
 import com.ash.studios.musify.R;
@@ -49,13 +52,42 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> {
         if (playlist.getSongs().size() > 0)
             Glide.with(context.getApplicationContext())
                     .asBitmap().load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .into(holder.playlistCover);
 
-        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)
-                .putExtra("list_from", "Playlists")
-                .putExtra("list_name", playlist.getName())
-                .putExtra("list", songs)));
+        holder.itemView.setOnClickListener(v -> {
+            if (playlist.getSongs().size() > 0)
+                context.startActivity(new Intent(context, PLBunchList.class)
+                        .putExtra("position", position)
+                        .putExtra("playlist", playlist));
+            else
+                Toast.makeText(context, "No songs in that playlist :(", Toast.LENGTH_SHORT).show();
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            Dialog dialog = Utils.getDialog(context, R.layout.delete_dg);
+            TextView title = dialog.findViewById(R.id.del_dg_title);
+            TextView body = dialog.findViewById(R.id.del_dg_body);
+            TextView cancel = dialog.findViewById(R.id.close_del_dg_btn);
+            TextView delete = dialog.findViewById(R.id.del_song_btn);
+
+            title.setText(new StringBuilder("Remove playlist?"));
+            body.setText(new StringBuilder("Selected playlist will be removed from this playlists"));
+            cancel.setOnClickListener(c -> dialog.dismiss());
+            delete.setOnClickListener(d -> {
+                dialog.dismiss();
+
+                list.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+                Utils.deletePlaylist(context, playlist);
+                if (getItemCount() == 0) {
+                    ((PlayList) context).finish();
+                    Toast.makeText(context, "No playlist found.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return true;
+        });
     }
 
     @Override

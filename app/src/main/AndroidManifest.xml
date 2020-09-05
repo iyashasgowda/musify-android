@@ -39,6 +39,9 @@
             android:name=".Activities.Categories.AllSongList"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Activities.Categories.PLBunchList"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activities.Categories.ArtistList"
             android:screenOrientation="portrait" />
         <activity

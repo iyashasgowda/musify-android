@@ -53,11 +53,10 @@ import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl, IService {
-    ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn;
+    ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn, close;
     TextView searchType, snipTitle, snipArtist;
     EditText searchText;
     CardView snippet;
-    ImageView close;
     RecyclerView rv;
 
     int type;
@@ -94,28 +93,22 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
             });
         });
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                snipPlayBtn.setOnClickListener(v -> {
-                    if (Instance.mp != null) {
-                        if (Instance.mp.isPlaying()) {
-                            snipPlayBtn.setImageResource(R.drawable.ic_play_small);
-                            Instance.mp.pause();
-                            stopService(new Intent(context, MusicService.class));
-                        } else {
-                            snipPlayBtn.setImageResource(R.drawable.ic_pause);
-                            Instance.mp.start();
-                            startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
-                        }
-                    } else {
-                        engine.startPlayer();
-                        snipPlayBtn.setImageResource(R.drawable.ic_pause);
-                    }
-                });
+        new Thread(() -> snipPlayBtn.setOnClickListener(v -> {
+            if (Instance.mp != null) {
+                if (Instance.mp.isPlaying()) {
+                    snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    Instance.mp.pause();
+                    stopService(new Intent(context, MusicService.class));
+                } else {
+                    snipPlayBtn.setImageResource(R.drawable.ic_pause);
+                    Instance.mp.start();
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                }
+            } else {
+                engine.startPlayer();
+                snipPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        }.start();
+        })).start();
     }
 
     private void setIDs() {
@@ -247,76 +240,99 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
+
                 ArrayList<Song> albumSongs = new ArrayList<>();
                 for (Album album : list)
                     albumSongs.addAll(Utils.getAlbumSongs(context, album.getAlbum_id()));
 
                 if (albumSongs.size() > 0)
                     shuffleBtn.post(() -> {
-                        shuffleBtn.setAlpha(1f);
-                        sequenceBtn.setAlpha(1f);
-                        shuffleBtn.setOnClickListener(v -> shufflePlay(albumSongs));
-                        sequenceBtn.setOnClickListener(v -> sequencePlay(albumSongs));
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(albumSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(albumSongs));
+                        } else hideBtnAndAdapter();
                     });
             }).start();
         } else hideBtnAndAdapter();
     }
 
     private void updateArtists(ArrayList<Artist> list) {
+
         rv.setAdapter(new ArtistAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
+
                 ArrayList<Song> artistSongs = new ArrayList<>();
                 for (Artist artist : list)
                     artistSongs.addAll(Utils.getArtistSongs(context, artist.getArtist_id()));
 
                 if (artistSongs.size() > 0)
                     shuffleBtn.post(() -> {
-                        shuffleBtn.setAlpha(1f);
-                        sequenceBtn.setAlpha(1f);
-                        shuffleBtn.setOnClickListener(v -> shufflePlay(artistSongs));
-                        sequenceBtn.setOnClickListener(v -> sequencePlay(artistSongs));
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(artistSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(artistSongs));
+                        } else hideBtnAndAdapter();
                     });
             }).start();
         } else hideBtnAndAdapter();
     }
 
     private void updateGenres(ArrayList<Genre> list) {
+
         rv.setAdapter(new GenreAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
+
                 ArrayList<Song> genreSongs = new ArrayList<>();
                 for (Genre genre : list)
                     genreSongs.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
 
                 if (genreSongs.size() > 0)
                     shuffleBtn.post(() -> {
-                        shuffleBtn.setAlpha(1f);
-                        sequenceBtn.setAlpha(1f);
-                        shuffleBtn.setOnClickListener(v -> shufflePlay(genreSongs));
-                        sequenceBtn.setOnClickListener(v -> sequencePlay(genreSongs));
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(genreSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(genreSongs));
+                        } else hideBtnAndAdapter();
                     });
             }).start();
         } else hideBtnAndAdapter();
     }
 
     private void updatePlaylists(ArrayList<Playlist> list) {
+
         rv.setAdapter(new PlaylistAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
+
                 ArrayList<Song> playlistSongs = new ArrayList<>();
                 for (Playlist playlist : list)
                     playlistSongs.addAll(playlist.getSongs());
 
                 if (playlistSongs.size() > 0)
                     shuffleBtn.post(() -> {
-                        shuffleBtn.setAlpha(1f);
-                        sequenceBtn.setAlpha(1f);
-                        shuffleBtn.setOnClickListener(v -> shufflePlay(playlistSongs));
-                        sequenceBtn.setOnClickListener(v -> sequencePlay(playlistSongs));
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(playlistSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(playlistSongs));
+                        } else hideBtnAndAdapter();
                     });
             }).start();
         } else hideBtnAndAdapter();
@@ -337,7 +353,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
             snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.icon)
+                    .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snipArt);
 

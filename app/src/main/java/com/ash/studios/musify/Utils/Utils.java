@@ -188,7 +188,7 @@ public class Utils {
                 long album_id = cursor.getLong(10);
 
                 if (title != null && album != null && artist != null)
-                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                    if (!title.equals("<unknown>"))
                         songs.add(
                                 new Song(
                                         id,
@@ -251,7 +251,7 @@ public class Utils {
                 long album_id = cursor.getLong(10);
 
                 if (title != null && album != null && artist != null)
-                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
+                    if (!title.equals("<unknown>"))
                         songs.add(
                                 new Song(
                                         id,
@@ -619,6 +619,18 @@ public class Utils {
             list.add(playlist);
             editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
         }
+    }
+
+    public static void deletePlaylist(Context c, Playlist pl) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        ArrayList<Playlist> list = new Gson().fromJson(prefs.getString("PLAYLISTS", null),
+                new TypeToken<ArrayList<Playlist>>() {
+                }.getType());
+
+        if (list != null) list.remove(pl);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
     }
 
 
