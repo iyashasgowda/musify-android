@@ -7,6 +7,9 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +21,8 @@ import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.palette.graphics.Palette;
+
 import com.ash.studios.musify.Model.Album;
 import com.ash.studios.musify.Model.Artist;
 import com.ash.studios.musify.Model.Genre;
@@ -27,6 +32,7 @@ import com.ash.studios.musify.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -46,9 +52,11 @@ public class Utils {
     public static String getNewColor() {
         return String.format("#%06X", new Random().nextInt((0xFFFFFF - 0x777777) + 1) + 0x777777);
     }
+
     public static Uri getAlbumArt(long id) {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), id);
     }
+
     public static void setUpUI(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
@@ -58,11 +66,13 @@ public class Utils {
         });
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
+
     public static String getDuration(long duration) {
         return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
+
     public static Dialog getDialog(Context c, int layout) {
         Dialog dialog = new Dialog(c);
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
@@ -82,6 +92,36 @@ public class Utils {
         ScrollView scrollView = dialog.findViewById(R.id.dialog_scroll_view);
         if (scrollView != null) OverScrollDecoratorHelper.setUpOverScroll(scrollView);
         return dialog;
+    }
+
+    public static int[] getSecondaryColors(Context c, Uri uri) {
+        Bitmap bitmap;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), uri);
+        } catch (IOException e) {
+            bitmap = BitmapFactory.decodeResource(c.getResources(), R.mipmap.ic_abstract);
+        }
+
+        Palette palette = Palette.from(bitmap).generate();
+        Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
+        Palette.Swatch muted = palette.getDarkMutedSwatch();
+        Palette.Swatch dominant = palette.getDominantSwatch();
+
+        int[] colors = new int[2];
+        if (vibrant != null) {
+            colors[0] = vibrant.getRgb();
+            colors[1] = vibrant.getBodyTextColor();
+        } else if (muted != null) {
+            colors[0] = muted.getRgb();
+            colors[1] = muted.getBodyTextColor();
+        } else if (dominant != null) {
+            colors[0] = dominant.getRgb();
+            colors[1] = dominant.getBodyTextColor();
+        } else {
+            colors[0] = Color.parseColor("#202020");
+            colors[1] = Color.WHITE;
+        }
+        return colors;
     }
 
     public static void searchAndDelete(Context ctx, Song song) {
@@ -280,8 +320,9 @@ public class Utils {
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
 
+        if (list == null) list = new ArrayList<>();
         Collections.reverse(list);
-        return list == null ? new ArrayList<>() : list;
+        return list;
     }
 
     public static void saveToTR(Context c, Song song) {
@@ -319,8 +360,10 @@ public class Utils {
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("LOW_RATED", null),
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
+
+        if (list == null) list = new ArrayList<>();
         Collections.reverse(list);
-        return list == null ? new ArrayList<>() : list;
+        return list;
     }
 
     public static void saveToLR(Context c, Song song) {
@@ -759,122 +802,10 @@ public class Utils {
                 }.getType());
     }
 
-    public static ArrayList<Song> getRecentlyAdded(Context c) {
-        ArrayList<Song> songs = new ArrayList<>();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.YEAR,
-                MediaStore.Audio.Media.TRACK,
-                MediaStore.Audio.Media.COMPOSER,
-                MediaStore.Audio.Media.ALBUM_ARTIST,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ALBUM_ID
-        };
-        String selection = MediaStore.Audio.Media.DATE_ADDED + ">" + (System.currentTimeMillis() / 1000 - 1);
-
-        Cursor cursor = c.getContentResolver().query(
-                uri,
-                projection,
-                selection,
-                null,
-                "title asc"
-        );
-
-        if (cursor != null) {
-
-            while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
-                String data = cursor.getString(1);
-                String title = cursor.getString(2);
-                String album = cursor.getString(3);
-                String artist = cursor.getString(4);
-                String year = cursor.getString(5);
-                String track = cursor.getString(6);
-                String composer = cursor.getString(7);
-                String album_artist = cursor.getString(8);
-                long duration = cursor.getLong(9);
-                long album_id = cursor.getLong(10);
-
-                if (title != null && album != null && artist != null)
-                    if (!title.equals("<unknown>") && !album.equals("<unknown>") && !artist.equals("<unknown>"))
-                        songs.add(
-                                new Song(
-                                        id,
-                                        data,
-                                        title,
-                                        album,
-                                        artist,
-                                        year,
-                                        track,
-                                        composer,
-                                        album_artist,
-                                        duration,
-                                        album_id
-                                )
-                        );
-            }
-            cursor.close();
-        }
-        return songs;
-    }
-
-
-    //Retrieve categories from storage
-    private static ArrayList<Album> getAlbumsFromStorage(Context c) {
-        return new Gson()
-                .fromJson(c.getSharedPreferences("ALBUM_LIST", MODE_PRIVATE)
-                        .getString("album_list", null), new TypeToken<ArrayList<Album>>() {
-                }.getType());
-    }
-
-    private static ArrayList<Artist> getArtistFromStorage(Context c) {
-        return new Gson()
-                .fromJson(c.getSharedPreferences("ARTIST_LIST", MODE_PRIVATE)
-                        .getString("artist_list", null), new TypeToken<ArrayList<Artist>>() {
-                }.getType());
-    }
-
-    private static ArrayList<Genre> getGenreFromStorage(Context c) {
-        return new Gson()
-                .fromJson(c.getSharedPreferences("GENRE_LIST", MODE_PRIVATE)
-                        .getString("genre_list", null), new TypeToken<ArrayList<Genre>>() {
-                }.getType());
-    }
-
-
-    //Save categories to storage
-    private static void putAlbumsToStorage(Context c, ArrayList<Album> list) {
-        c.getSharedPreferences("ALBUM_LIST", MODE_PRIVATE)
-                .edit().putString("album_list", new Gson()
-                .toJson(list)).apply();
-    }
-
-    private static void putArtistsToStorage(Context c, ArrayList<Artist> list) {
-        c.getSharedPreferences("ARTIST_LIST", MODE_PRIVATE)
-                .edit().putString("artist_list", new Gson()
-                .toJson(list)).apply();
-    }
-
-    private static void putGenresToStorage(Context c, ArrayList<Genre> list) {
-        c.getSharedPreferences("GENRE_LIST", MODE_PRIVATE)
-                .edit().putString("genre_list", new Gson()
-                .toJson(list)).apply();
-    }
-
     public static void fetchAllSongs(Context c) {
         new Thread(() -> songs = getAllSongs(c)).start();
-        new Thread(() -> genres = getGenreFromStorage(c)).start();
-        new Thread(() -> albums = getAlbumsFromStorage(c)).start();
-        new Thread(() -> artists = getArtistFromStorage(c)).start();
-
-        new Thread(() -> putAlbumsToStorage(c, getAlbums(c))).start();
-        new Thread(() -> putGenresToStorage(c, getGenres(c))).start();
-        new Thread(() -> putArtistsToStorage(c, getArtists(c))).start();
+        new Thread(() -> genres = getGenres(c)).start();
+        new Thread(() -> albums = getAlbums(c)).start();
+        new Thread(() -> artists = getArtists(c)).start();
     }
 }

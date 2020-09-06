@@ -2,6 +2,7 @@ package com.ash.studios.musify.Activities.SearchList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Editable;
@@ -181,6 +182,12 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
                     .placeholder(R.mipmap.ic_abstract)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snipArt);
+
+            int[] accents = Utils.getSecondaryColors(context, Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()));
+            snippet.setCardBackgroundColor(accents[0]);
+            snipTitle.setTextColor(accents[1]);
+            snipArtist.setTextColor(accents[1]);
+            snipPlayBtn.setColorFilter(accents[1], PorterDuff.Mode.SRC_IN);
 
             if (Instance.mp != null && Instance.mp.isPlaying())
                 snipPlayBtn.setImageResource(R.drawable.ic_pause);

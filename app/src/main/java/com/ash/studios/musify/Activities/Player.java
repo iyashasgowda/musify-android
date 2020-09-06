@@ -1,6 +1,7 @@
 package com.ash.studios.musify.Activities;
 
 import android.app.Dialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -134,6 +135,7 @@ public class Player extends AppCompatActivity implements
                 liked = true;
                 likeBtn.setImageResource(R.drawable.ic_like_on);
                 Utils.saveToTR(this, song);
+                Toast.makeText(context, song.getTitle() + " added to the Top-Rated", Toast.LENGTH_SHORT).show();
             }
         });
         dislikeBtn.setOnClickListener(v -> {
@@ -150,6 +152,7 @@ public class Player extends AppCompatActivity implements
                 disliked = true;
                 dislikeBtn.setImageResource(R.drawable.ic_dislike_on);
                 Utils.saveToLR(this, song);
+                Toast.makeText(context, song.getTitle() + " added to the Low-Rated", Toast.LENGTH_SHORT).show();
             }
         });
         repeatBtn.setOnClickListener(view -> {
@@ -221,14 +224,10 @@ public class Player extends AppCompatActivity implements
                 if (palette != null) {
                     String accent = "#000000", accentLight = "#80212121";
                     Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
-                    Palette.Swatch dominant = palette.getDarkVibrantSwatch();
 
                     if (vibrant != null) {
                         accent = "#" + String.format("%06X", (0xFFFFFF & vibrant.getRgb()));
                         accentLight = "#80" + String.format("%06X", (0xFFFFFF & vibrant.getRgb()));
-                    } else if (dominant != null) {
-                        accent = "#" + String.format("%06X", (0xFFFFFF & dominant.getRgb()));
-                        accentLight = "#80" + String.format("%06X", (0xFFFFFF & dominant.getRgb()));
                     }
 
                     seekBar.setPointerColor(Color.parseColor(accent));
@@ -322,7 +321,7 @@ public class Player extends AppCompatActivity implements
 
     private void deleteSong() {
         Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
-        /*Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Instance.songs.get(Instance.position).getId());
+        Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Instance.songs.get(Instance.position).getId());
         try {
             //searchAndDelete(this, song);
             getContentResolver().delete(uri, null, null);
@@ -344,7 +343,7 @@ public class Player extends AppCompatActivity implements
             Toast.makeText(context, "Song deleted from this device :)", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "Couldn't delete the song :(", Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     private void setDialogAttrs() {
@@ -364,39 +363,6 @@ public class Player extends AppCompatActivity implements
                     .placeholder(R.mipmap.ic_abstract)
                     .into(dgAlbumArt);
         }
-    }
-
-    private void fabThreadFun() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-
-                playPause.setOnClickListener(v -> playPauseSong());
-            }
-        }.start();
-    }
-
-    private void nextThreadFun() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-
-                nextBtn.setOnClickListener(v -> playNext());
-            }
-        }.start();
-    }
-
-    private void prevThreadFun() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-
-                previousBtn.setOnClickListener(v -> playPrev());
-            }
-        }.start();
     }
 
     private void blinkingTimeAnim() {
@@ -471,9 +437,10 @@ public class Player extends AppCompatActivity implements
 
     @Override
     protected void onResume() {
-        fabThreadFun();
-        prevThreadFun();
-        nextThreadFun();
+        new Thread(() -> nextBtn.setOnClickListener(v -> playNext())).start();
+        new Thread(() -> playPause.setOnClickListener(v -> playPauseSong())).start();
+        new Thread(() -> previousBtn.setOnClickListener(v -> playPrev())).start();
+
         ((App) getApplicationContext()).setCurrentContext(context);
         super.onResume();
     }

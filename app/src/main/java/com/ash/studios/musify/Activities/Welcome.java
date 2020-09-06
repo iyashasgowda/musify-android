@@ -7,10 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +26,10 @@ import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Welcome extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
-    ProgressBar loader;
-    TextView holdOn;
     ImageView icon;
-    Context context;
 
+    Context context;
+    TextView appName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +43,7 @@ public class Welcome extends AppCompatActivity {
     private void setIDs() {
         context = this;
         icon = findViewById(R.id.icon);
-        loader = findViewById(R.id.pb);
-        holdOn = findViewById(R.id.hold_on);
+        appName = findViewById(R.id.app_name);
     }
 
     private void checkPermission() {
@@ -58,11 +54,12 @@ public class Welcome extends AppCompatActivity {
             fetchAllSongs(context);
             Instance.repeat = Utils.getRepStatus(context);
             Instance.shuffle = Utils.getShflStatus(context);
-            icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_out));
+            appName.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
+            icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 startActivity(new Intent(context, Library.class));
                 finish();
-            }, 1600);
+            }, 1800);
         }
     }
 
@@ -73,13 +70,12 @@ public class Welcome extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchAllSongs(context);
-                holdOn.setVisibility(View.VISIBLE);
-                loader.setVisibility(View.VISIBLE);
-                icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in_out));
+                appName.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
+                icon.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     startActivity(new Intent(context, Library.class));
                     finish();
-                }, 1600);
+                }, 1800);
             } else {
                 checkPermission();
                 Toast.makeText(context, "Storage permission required to read music files in your device..!", Toast.LENGTH_SHORT).show();

@@ -187,9 +187,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="128dp"
-        android:alpha="0.6"
+        android:alpha="0.4"
         android:text="Nothing was found :("
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         android:visibility="gone" />
 

@@ -157,6 +157,13 @@ public class Library extends AppCompatActivity implements
                 .placeholder(R.mipmap.ic_abstract)
                 .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                 .into(snipArt);
+
+        int[] accents = Utils.getSecondaryColors(context, Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()));
+        snippet.setCardBackgroundColor(accents[0]);
+        snipTitle.setTextColor(accents[1]);
+        snipArtist.setTextColor(accents[1]);
+        snipBtn.setColorFilter(accents[1], PorterDuff.Mode.SRC_IN);
+
         if (Instance.mp != null && Instance.mp.isPlaying())
             snipBtn.setImageResource(R.drawable.ic_pause);
         else snipBtn.setImageResource(R.drawable.ic_play_small);
