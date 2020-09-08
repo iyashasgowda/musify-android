@@ -23,14 +23,14 @@ import com.ash.studios.musify.Activities.SearchList.BunchSearch;
 import com.ash.studios.musify.Adapters.PLBunchAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Model.Playlist;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Playlist;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.Utils.App;
 import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 

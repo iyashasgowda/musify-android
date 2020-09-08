@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.BtmSheets.PlaylistSheet;
-import com.ash.studios.musify.Model.Playlist;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.BottomSheets.PlaylistSheet;
+import com.ash.studios.musify.Models.Playlist;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;

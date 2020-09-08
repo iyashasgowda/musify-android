@@ -23,11 +23,12 @@ import android.widget.Toast;
 
 import androidx.palette.graphics.Palette;
 
-import com.ash.studios.musify.Model.Album;
-import com.ash.studios.musify.Model.Artist;
-import com.ash.studios.musify.Model.Genre;
-import com.ash.studios.musify.Model.Playlist;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Album;
+import com.ash.studios.musify.Models.Artist;
+import com.ash.studios.musify.Models.Genre;
+import com.ash.studios.musify.Models.Playlist;
+import com.ash.studios.musify.Models.Song;
+import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -41,10 +42,12 @@ import java.util.concurrent.TimeUnit;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.ash.studios.musify.Utils.Constants.ALBUMS_SORT;
+import static com.ash.studios.musify.Utils.Constants.ALL_SONGS_SORT;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils {
-    public static ArrayList<Song> songs;
+    public static ArrayList<Year> years;
     public static ArrayList<Album> albums;
     public static ArrayList<Genre> genres;
     public static ArrayList<Artist> artists;
@@ -125,7 +128,6 @@ public class Utils {
     }
 
     public static void searchAndDelete(Context ctx, Song song) {
-        songs.remove(song);
         if (getTR(ctx) != null && getTR(ctx).contains(song)) deleteFromTR(ctx, song);
         if (getLR(ctx) != null && getLR(ctx).contains(song)) deleteFromLR(ctx, song);
         ArrayList<Playlist> playlists = getPlaylists(ctx) == null ? new ArrayList<>() : getPlaylists(ctx);
@@ -188,6 +190,9 @@ public class Utils {
 
     //Get all songs and songs with categories
     public static ArrayList<Song> getAllSongs(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(ALL_SONGS_SORT, MODE_PRIVATE);
+        String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+        String sort_by = prefs.getString("sort_by", "title");
         ArrayList<Song> songs = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -209,7 +214,7 @@ public class Utils {
                 projection,
                 null,
                 null,
-                "title asc"
+                sort_by + " " + order_by
         );
 
         if (cursor != null) {
@@ -676,9 +681,11 @@ public class Utils {
         editor.putString("PLAYLISTS", new Gson().toJson(list)).apply();
     }
 
-
     //Get categories
     public static ArrayList<Album> getAlbums(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(ALBUMS_SORT, MODE_PRIVATE);
+        String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+        String sort_by = prefs.getString("sort_by", "album");
         ArrayList<Album> albums = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -693,7 +700,7 @@ public class Utils {
                 projection,
                 null,
                 null,
-                "album asc"
+                sort_by + " " + order_by
         );
 
         if (cursor != null) {
@@ -802,10 +809,46 @@ public class Utils {
                 }.getType());
     }
 
+    public static ArrayList<Year> getYears(Context c) {
+        ArrayList<Song> list = getAllSongsByCategory(c, "year desc");
+        ArrayList<Year> years = new ArrayList<>();
+
+        ArrayList<String> yearsList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+
+            if (!yearsList.contains(list.get(i).getYear())) {
+                String presentYear = list.get(i).getYear();
+                yearsList.add(presentYear);
+
+                ArrayList<Song> songsList = new ArrayList<>();
+                for (int j = i; j < list.size(); j++) {
+
+                    if (list.get(j).getYear() != null && list.get(j).getYear().equals(presentYear)) {
+                        songsList.add(list.get(j));
+                    } else {
+                        i = j;
+                        break;
+                    }
+                }
+
+                Bitmap bitmap;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(),
+                            Utils.getAlbumArt(songsList.get(0).getAlbum_id()));
+                } catch (Exception e) {
+                    bitmap = BitmapFactory.decodeResource(c.getResources(), R.mipmap.ic_abstract);
+                }
+                if (songsList.size() > 0)
+                    years.add(new Year(presentYear, bitmap, songsList));
+            }
+        }
+        return years;
+    }
+
     public static void fetchAllSongs(Context c) {
-        new Thread(() -> songs = getAllSongs(c)).start();
         new Thread(() -> genres = getGenres(c)).start();
         new Thread(() -> albums = getAlbums(c)).start();
         new Thread(() -> artists = getArtists(c)).start();
+        new Thread(() -> years = getYears(c)).start();
     }
 }

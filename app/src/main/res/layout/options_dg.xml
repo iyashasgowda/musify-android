@@ -188,7 +188,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginEnd="16dp"
-                                android:text="Listing options"
+                                android:text="List options"
                                 android:textColor="@android:color/white"
                                 android:textSize="16sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/imageView10"

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.Services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -21,8 +21,13 @@ import androidx.core.app.NotificationCompat;
 import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Utils.App;
+import com.ash.studios.musify.Utils.Constants;
+import com.ash.studios.musify.Utils.Engine;
+import com.ash.studios.musify.Utils.Instance;
+import com.ash.studios.musify.Utils.Utils;
 
 import static com.ash.studios.musify.Utils.App.CHANNEL_ID;
 
@@ -51,6 +56,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 break;
             case Constants.ACTION.STOP_SERVICE:
                 ((IService) ((App) getApplicationContext()).getCurrentContext()).onStopService();
+                stopSelf();
                 break;
             case Constants.ACTION.PREV:
                 ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPrevClicked();
@@ -159,6 +165,16 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
     }
 
+    private Bitmap getBitmap(Uri uri) {
+        Bitmap bitmap;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+        } catch (Exception e) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
+        }
+        return bitmap;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -168,16 +184,6 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private Bitmap getBitmap(Uri uri) {
-        Bitmap bitmap;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-        } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
-        }
-        return bitmap;
     }
 
     @Override

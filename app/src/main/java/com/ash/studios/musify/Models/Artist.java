@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Model;
+package com.ash.studios.musify.Models;
 
 import androidx.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BtmSheets;
+package com.ash.studios.musify.BottomSheets;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 

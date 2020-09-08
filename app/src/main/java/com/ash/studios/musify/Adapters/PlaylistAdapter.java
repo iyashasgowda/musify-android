@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Categories.PLBunchList;
 import com.ash.studios.musify.Activities.Categories.PlayList;
-import com.ash.studios.musify.Model.Playlist;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Playlist;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;

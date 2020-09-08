@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Activities.Categories.TRList;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import com.ash.studios.musify.Services.MusicService;
+
 import java.util.Random;
 
 import static com.ash.studios.musify.Utils.Instance.mp;

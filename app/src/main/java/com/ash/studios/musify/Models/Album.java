@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Model;
+package com.ash.studios.musify.Models;
 
 import androidx.annotation.NonNull;
 
@@ -10,9 +10,6 @@ public class Album implements Serializable {
     private String artist;
     private long album_id;
     private int song_count;
-
-    public Album() {
-    }
 
     public Album(String album, String artist, long album_id, int song_count) {
         this.album = album;

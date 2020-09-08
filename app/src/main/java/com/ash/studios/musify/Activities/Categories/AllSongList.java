@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Activities.Categories;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,14 +26,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Activities.SearchList.CategorySearch;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
+import com.ash.studios.musify.BottomSheets.AllSongsSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.Utils.App;
 import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -57,7 +59,6 @@ public class AllSongList extends AppCompatActivity implements
 
     Engine engine;
     Context context;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,44 +73,40 @@ public class AllSongList extends AppCompatActivity implements
                 startActivity(new Intent(context, CategorySearch.class)
                         .putExtra("cat_key", 0).putExtra("cat_name", "All Songs"));
         });
-        new Thread(() -> {
+        new Thread(() -> shufflePlay.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                shufflePlay.setOnClickListener(v -> {
-                    if (Utils.songs.size() > 0) {
-                        Instance.shuffle = true;
-                        Instance.songs = Utils.songs;
-                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                if (Utils.getAllSongs(context).size() > 0) {
+                    Instance.shuffle = true;
+                    Instance.songs = Utils.getAllSongs(context);
+                    Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                        engine.startPlayer();
-                        mp.setOnCompletionListener(AllSongList.this);
+                    engine.startPlayer();
+                    mp.setOnCompletionListener(AllSongList.this);
 
-                        updateSnippet();
-                        Utils.putShflStatus(context, true);
-                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                    } else
-                        Toast.makeText(context, "No songs found to play :(", Toast.LENGTH_SHORT).show();
-                });
-        }).start();
-        new Thread(() -> {
+                    updateSnippet();
+                    Utils.putShflStatus(context, true);
+                    Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(context, "No songs found to play :(", Toast.LENGTH_SHORT).show();
+        })).start();
+        new Thread(() -> sequencePlay.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
-                sequencePlay.setOnClickListener(v -> {
-                    if (Utils.songs.size() > 0) {
-                        Instance.shuffle = false;
-                        Instance.songs = Utils.songs;
-                        Instance.position = 0;
+                if (Utils.getAllSongs(context).size() > 0) {
+                    Instance.shuffle = false;
+                    Instance.songs = Utils.getAllSongs(context);
+                    Instance.position = 0;
 
-                        engine.startPlayer();
-                        Instance.mp.setOnCompletionListener(AllSongList.this);
+                    engine.startPlayer();
+                    Instance.mp.setOnCompletionListener(AllSongList.this);
 
-                        updateSnippet();
-                        Utils.putShflStatus(context, false);
-                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                    } else
-                        Toast.makeText(context, "No songs found to play :(", Toast.LENGTH_SHORT).show();
-                });
-        }).start();
+                    updateSnippet();
+                    Utils.putShflStatus(context, false);
+                    Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(context, "No songs found to play :(", Toast.LENGTH_SHORT).show();
+        })).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
@@ -126,6 +123,41 @@ public class AllSongList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
+        optionsBtn.setOnClickListener(v -> {
+            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
+
+            TextView dialogName = dialog.findViewById(R.id.dialog_name);
+            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
+            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout ST = dialog.findViewById(R.id.settings);
+
+            dialogName.setText(title.getText());
+            dialogIcon.setImageDrawable(icon.getDrawable());
+
+            ST.setVisibility(View.GONE);
+            SF.setOnClickListener(sf -> {
+                dialog.dismiss();
+                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+            });
+            RM.setOnClickListener(rm -> {
+                dialog.dismiss();
+
+                rv.setAdapter(null);
+                loader.setVisibility(View.VISIBLE);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    rv.setAdapter(new AllSongAdapter(context, Utils.getAllSongs(context), loader, NF));
+                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                        hideAttributes();
+                }, 500);
+            });
+            LO.setOnClickListener(lo -> {
+                dialog.dismiss();
+                AllSongsSort allSongsSort = new AllSongsSort(context, rv, loader, NF);
+                allSongsSort.show(getSupportFragmentManager(), null);
+            });
+        });
     }
 
     private void setIDs() {
@@ -148,18 +180,15 @@ public class AllSongList extends AppCompatActivity implements
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
 
-        title.setText(new StringBuilder("All Songs"));
         snippetTitle.setSelected(true);
+        title.setText(new StringBuilder("All Songs"));
         icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_all_songs));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        if (Utils.songs == null || Utils.songs.size() == 0)
-            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new AllSongAdapter(context, Utils.getAllSongs(context), loader, NF)), 10);
-        else rv.setAdapter(new AllSongAdapter(context, Utils.songs, loader, NF));
 
+        rv.setAdapter(new AllSongAdapter(context, Utils.getAllSongs(context), loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }

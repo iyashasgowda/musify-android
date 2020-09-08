@@ -3,7 +3,7 @@ package com.ash.studios.musify.Utils;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Song;
 
 import java.util.ArrayList;
 

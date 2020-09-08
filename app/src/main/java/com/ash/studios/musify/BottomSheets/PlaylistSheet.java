@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BtmSheets;
+package com.ash.studios.musify.BottomSheets;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -15,7 +15,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/LightTheme"
+        android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
             android:name=".Activities.Welcome"
@@ -57,10 +57,16 @@
             android:name=".Activities.Categories.PlayList"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Activities.Categories.YearList"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activities.Categories.TRList"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.Categories.LRList"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.Settings"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.Player"
@@ -69,7 +75,8 @@
             android:name=".Activities.Library"
             android:screenOrientation="portrait" />
 
-        <service android:name=".Utils.MusicService" />
+        <service android:name=".Services.MusicService" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

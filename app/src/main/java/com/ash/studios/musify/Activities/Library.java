@@ -3,6 +3,7 @@ package com.ash.studios.musify.Activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -23,15 +25,17 @@ import com.ash.studios.musify.Activities.Categories.GenreList;
 import com.ash.studios.musify.Activities.Categories.LRList;
 import com.ash.studios.musify.Activities.Categories.PlayList;
 import com.ash.studios.musify.Activities.Categories.TRList;
+import com.ash.studios.musify.Activities.Categories.YearList;
+import com.ash.studios.musify.BottomSheets.LibrarySheet;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.Utils.App;
 import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Constants.LIBRARY_OPTIONS;
 import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
 import static com.ash.studios.musify.Utils.Utils.getDialog;
@@ -47,13 +52,16 @@ import static com.ash.studios.musify.Utils.Utils.setUpUI;
 
 public class Library extends AppCompatActivity implements
         View.OnClickListener, MediaPlayer.OnCompletionListener, IService, IControl {
-    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, optionsBtn, snipArt, snipBtn;
-    String[] colors = new String[8];
+    ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, years, optionsBtn, snipArt, snipBtn;
+    ConstraintLayout list0, list1, list2, list3, list4, list5, list6, list7, list8;
     TextView snipTitle, snipArtist;
     ScrollView scrollView;
     CardView snippet;
-    Context context;
+
     Engine engine;
+    Context context;
+    SharedPreferences prefs;
+    String[] colors = new String[9];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +73,11 @@ public class Library extends AppCompatActivity implements
         setColors();
     }
 
-    private void setColors() {
-        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, lowRated};
-        for (int i = 0; i < icons.length; i++) {
-            String col = getNewColor();
-            colors[i] = col;
-            icons[i].setColorFilter(Color.parseColor(col), PorterDuff.Mode.SRC_IN);
-        }
-    }
-
     private void setIds() {
         context = this;
         engine = new Engine(context);
         snippet = findViewById(R.id.snippet);
+        years = findViewById(R.id.years_icon);
         albums = findViewById(R.id.albums_icon);
         genres = findViewById(R.id.genres_icon);
         folders = findViewById(R.id.folders_icon);
@@ -94,16 +94,35 @@ public class Library extends AppCompatActivity implements
         snipArt = findViewById(R.id.snip_album_art);
         snipArtist = findViewById(R.id.snip_artist);
 
-        findViewById(R.id.all_songs).setOnClickListener(this);
-        findViewById(R.id.folders).setOnClickListener(this);
-        findViewById(R.id.albums).setOnClickListener(this);
-        findViewById(R.id.artists).setOnClickListener(this);
-        findViewById(R.id.genres).setOnClickListener(this);
-        findViewById(R.id.play_lists).setOnClickListener(this);
-        findViewById(R.id.top_rated).setOnClickListener(this);
-        findViewById(R.id.low_rated).setOnClickListener(this);
+        list0 = findViewById(R.id.all_songs);
+        list0.setOnClickListener(this);
+
+        list1 = findViewById(R.id.folders);
+        list1.setOnClickListener(this);
+
+        list2 = findViewById(R.id.albums);
+        list2.setOnClickListener(this);
+
+        list3 = findViewById(R.id.artists);
+        list3.setOnClickListener(this);
+
+        list4 = findViewById(R.id.genres);
+        list4.setOnClickListener(this);
+
+        list5 = findViewById(R.id.years);
+        list5.setOnClickListener(this);
+
+        list6 = findViewById(R.id.play_lists);
+        list6.setOnClickListener(this);
+
+        list7 = findViewById(R.id.top_rated);
+        list7.setOnClickListener(this);
+
+        list8 = findViewById(R.id.low_rated);
+        list8.setOnClickListener(this);
 
         OverScrollDecoratorHelper.setUpOverScroll(scrollView);
+        prefs = getSharedPreferences(LIBRARY_OPTIONS, MODE_PRIVATE);
         optionsBtn.setOnClickListener(v -> {
             Dialog dialog = getDialog(context, R.layout.options_dg);
             ImageView icon = dialog.findViewById(R.id.dialog_icon);
@@ -114,9 +133,21 @@ public class Library extends AppCompatActivity implements
             icon.setColorFilter(Color.parseColor(getNewColor()), PorterDuff.Mode.SRC_IN);
 
             ConstraintLayout rescanMedia = dialog.findViewById(R.id.rescan_media);
-            rescanMedia.setOnClickListener(rm -> {
-                fetchAllSongs(context);
+            ConstraintLayout listOption = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout settings = dialog.findViewById(R.id.settings);
+
+            settings.setOnClickListener(s -> {
                 dialog.dismiss();
+                startActivity(new Intent(context, Settings.class));
+            });
+            listOption.setOnClickListener(lo -> {
+                dialog.dismiss();
+                LibrarySheet librarySheet = new LibrarySheet(context);
+                librarySheet.show(getSupportFragmentManager(), null);
+            });
+            rescanMedia.setOnClickListener(rm -> {
+                dialog.dismiss();
+                fetchAllSongs(context);
             });
         });
 
@@ -146,6 +177,17 @@ public class Library extends AppCompatActivity implements
             }
         });
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
+
+        checkListStates();
+    }
+
+    private void setColors() {
+        ImageView[] icons = {allSong, folders, albums, artists, genres, playlists, topRated, lowRated, years};
+        for (int i = 0; i < icons.length; i++) {
+            String col = getNewColor();
+            colors[i] = col;
+            icons[i].setColorFilter(Color.parseColor(col), PorterDuff.Mode.SRC_IN);
+        }
     }
 
     private void updateSnippet() {
@@ -169,6 +211,18 @@ public class Library extends AppCompatActivity implements
         else snipBtn.setImageResource(R.drawable.ic_play_small);
     }
 
+    private void checkListStates() {
+        if (!prefs.getBoolean("state0", true)) list0.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state1", true)) list1.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state2", true)) list2.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state3", true)) list3.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state4", true)) list4.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state5", true)) list5.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state6", true)) list6.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state7", true)) list7.setVisibility(View.GONE);
+        if (!prefs.getBoolean("state8", true)) list8.setVisibility(View.GONE);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -176,7 +230,7 @@ public class Library extends AppCompatActivity implements
                 startActivity(new Intent(context, AllSongList.class).putExtra("icon_color", colors[0]));
                 break;
             case R.id.folders:
-                //TODO
+                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.albums:
                 startActivity(new Intent(context, AlbumList.class).putExtra("icon_color", colors[2]));
@@ -195,6 +249,9 @@ public class Library extends AppCompatActivity implements
                 break;
             case R.id.low_rated:
                 startActivity(new Intent(context, LRList.class).putExtra("icon_color", colors[7]));
+                break;
+            case R.id.years:
+                startActivity(new Intent(context, YearList.class).putExtra("icon_color", colors[8]));
                 break;
         }
     }

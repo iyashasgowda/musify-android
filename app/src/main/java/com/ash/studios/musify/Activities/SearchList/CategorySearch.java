@@ -27,19 +27,21 @@ import com.ash.studios.musify.Adapters.AllSongAdapter;
 import com.ash.studios.musify.Adapters.ArtistAdapter;
 import com.ash.studios.musify.Adapters.GenreAdapter;
 import com.ash.studios.musify.Adapters.PlaylistAdapter;
+import com.ash.studios.musify.Adapters.YearAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Model.Album;
-import com.ash.studios.musify.Model.Artist;
-import com.ash.studios.musify.Model.Genre;
-import com.ash.studios.musify.Model.Playlist;
-import com.ash.studios.musify.Model.Song;
+import com.ash.studios.musify.Models.Album;
+import com.ash.studios.musify.Models.Artist;
+import com.ash.studios.musify.Models.Genre;
+import com.ash.studios.musify.Models.Playlist;
+import com.ash.studios.musify.Models.Song;
+import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.Utils.App;
 import com.ash.studios.musify.Utils.Constants;
 import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.MusicService;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
@@ -154,7 +156,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                     switch (type) {
                         case 0:
                             ArrayList<Song> tempSongs = new ArrayList<>();
-                            for (Song s : Utils.songs)
+                            for (Song s : Utils.getAllSongs(context))
                                 if (s.getTitle().toLowerCase().contains(editable.toString().toLowerCase()))
                                     tempSongs.add(s);
 
@@ -218,10 +220,43 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
                             updateSongs(tempLR);
                             break;
+                        case 8:
+                            ArrayList<Year> tempYear = new ArrayList<>();
+                            for (Year year : Utils.years)
+                                if (year.getYear().contains(editable.toString()))
+                                    tempYear.add(year);
+
+                            updateYears(tempYear);
+                            break;
+
                     }
                 } else hideBtnAndAdapter();
             }
         });
+    }
+
+    private void updateYears(ArrayList<Year> list) {
+        rv.setAdapter(new YearAdapter(context, list, null, null));
+        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+            new Thread(() -> {
+
+                ArrayList<Song> yearSongs = new ArrayList<>();
+                for (Year year : list)
+                    yearSongs.addAll(year.getSongs());
+
+                if (yearSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(yearSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(yearSongs));
+                        } else hideBtnAndAdapter();
+                    });
+            }).start();
+        } else hideBtnAndAdapter();
     }
 
     private void updateSongs(ArrayList<Song> list) {
@@ -261,7 +296,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void updateArtists(ArrayList<Artist> list) {
-
         rv.setAdapter(new ArtistAdapter(context, list, null, null));
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
@@ -275,7 +309,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                     shuffleBtn.post(() -> {
 
                         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-
                             shuffleBtn.setAlpha(1f);
                             sequenceBtn.setAlpha(1f);
                             shuffleBtn.setOnClickListener(v -> shufflePlay(artistSongs));
