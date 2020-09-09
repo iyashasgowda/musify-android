@@ -145,6 +145,7 @@ public class AllSongList extends AppCompatActivity implements
                 dialog.dismiss();
 
                 rv.setAdapter(null);
+                NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     rv.setAdapter(new AllSongAdapter(context, Utils.getAllSongs(context), loader, NF));

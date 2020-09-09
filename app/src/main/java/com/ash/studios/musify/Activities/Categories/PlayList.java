@@ -74,7 +74,6 @@ public class PlayList extends AppCompatActivity implements
         setIDs();
         showAttributes();
         backToLib.setOnClickListener(v -> finish());
-        optionsBtn.setOnClickListener(v -> openOptionsDialog());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
@@ -92,6 +91,65 @@ public class PlayList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
+        optionsBtn.setOnClickListener(v -> {
+            dialog = Utils.getDialog(context, R.layout.options_dg);
+
+            TextView dialogName = dialog.findViewById(R.id.dialog_name);
+            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
+            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout AN = dialog.findViewById(R.id.add_new);
+            ConstraintLayout ST = dialog.findViewById(R.id.settings);
+
+            dialogName.setText(title.getText());
+            dialogIcon.setImageDrawable(icon.getDrawable());
+
+            ST.setVisibility(View.GONE);
+            LO.setVisibility(View.GONE);
+            AN.setVisibility(View.VISIBLE);
+            SF.setOnClickListener(sf -> {
+                dialog.dismiss();
+                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+            });
+            RM.setOnClickListener(rm -> {
+                dialog.dismiss();
+
+                rv.setAdapter(null);
+                NF.setVisibility(View.GONE);
+                loader.setVisibility(View.VISIBLE);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF));
+                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                        disableBtn();
+                }, 10);
+            });
+            AN.setOnClickListener(an -> {
+                dialog.dismiss();
+
+                Dialog nameDialog = Utils.getDialog(context, R.layout.name_dg);
+                TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
+                TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
+                EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
+                plEditText.requestFocus();
+
+                cancel.setOnClickListener(c -> nameDialog.dismiss());
+                okBtn.setOnClickListener(ok -> {
+                    String playlistName = plEditText.getText().toString().trim();
+
+                    if (!TextUtils.isEmpty(playlistName)) {
+                        Utils.createNewPlaylist(context, playlistName);
+                        PlaylistAdapter adapter = new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF);
+                        rv.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        nameDialog.dismiss();
+                    }
+
+                    if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                        showAttributes();
+                });
+            });
+        });
     }
 
     private void setIDs() {
@@ -125,69 +183,6 @@ public class PlayList extends AppCompatActivity implements
 
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
-    }
-
-    private void openOptionsDialog() {
-        dialog = Utils.getDialog(context, R.layout.options_dg);
-
-        TextView dialogName = dialog.findViewById(R.id.dialog_name);
-        ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
-        ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
-        ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
-        ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
-        ConstraintLayout AN = dialog.findViewById(R.id.add_new);
-        ConstraintLayout ST = dialog.findViewById(R.id.settings);
-
-        ST.setVisibility(View.GONE);
-        AN.setVisibility(View.VISIBLE);
-        dialogName.setText(title.getText());
-        dialogIcon.setImageDrawable(icon.getDrawable());
-
-        RM.setOnClickListener(rm -> {
-            dialog.dismiss();
-            rv.setAdapter(null);
-            NF.setVisibility(View.GONE);
-            loader.setVisibility(View.VISIBLE);
-
-            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF)), 10);
-
-            new Handler(Looper.myLooper()).postDelayed(() -> {
-                if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
-                    disableBtn();
-            }, 20);
-        });
-
-        AN.setOnClickListener(an -> {
-            dialog.dismiss();
-
-            Dialog nameDialog = Utils.getDialog(context, R.layout.name_dg);
-            TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
-            TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
-            EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
-            plEditText.requestFocus();
-
-            cancel.setOnClickListener(c -> nameDialog.dismiss());
-            okBtn.setOnClickListener(ok -> {
-                String playlistName = plEditText.getText().toString().trim();
-
-                if (!TextUtils.isEmpty(playlistName)) {
-                    Utils.createNewPlaylist(context, playlistName);
-                    PlaylistAdapter adapter = new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF);
-                    rv.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                    nameDialog.dismiss();
-                }
-
-                if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
-                    searchBtn.setAlpha(1f);
-                    NF.setVisibility(View.GONE);
-                    searchBtn.setOnClickListener(sb ->
-                            startActivity(new Intent(context, CategorySearch.class)
-                                    .putExtra("cat_key", 5).putExtra("cat_name", "Playlists")));
-                }
-            });
-        });
     }
 
     private void disableBtn() {

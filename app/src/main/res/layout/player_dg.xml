@@ -144,7 +144,6 @@
                             app:srcCompat="@drawable/ic_delete" />
 
                         <TextView
-                            android:id="@+id/textView11"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
@@ -183,7 +182,6 @@
                             app:srcCompat="@drawable/ic_add" />
 
                         <TextView
-                            android:id="@+id/textView12"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
@@ -222,7 +220,6 @@
                             app:srcCompat="@drawable/ic_album_art" />
 
                         <TextView
-                            android:id="@+id/textView13"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
@@ -262,7 +259,6 @@
                             app:srcCompat="@drawable/ic_info" />
 
                         <TextView
-                            android:id="@+id/textView14"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"

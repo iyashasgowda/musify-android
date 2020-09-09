@@ -1,9 +1,7 @@
 package com.ash.studios.musify.Activities.SearchList;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -13,11 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,26 +70,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
         setIDs();
         close.setOnClickListener(v -> finish());
-        optionBtn.setOnClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
-            TextView title = dialog.findViewById(R.id.dialog_name);
-            ImageView icon = dialog.findViewById(R.id.dialog_icon);
-            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
-            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
-            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
-
-            SF.setVisibility(View.GONE);
-            RM.setVisibility(View.GONE);
-
-            title.setText(categoryName);
-            icon.setImageResource(R.drawable.ic_search);
-            icon.setColorFilter(Color.parseColor(Utils.getNewColor()), PorterDuff.Mode.SRC_IN);
-
-            LO.setOnClickListener(lo -> {
-                dialog.dismiss();
-                Toast.makeText(context, "Whoo whooo!", Toast.LENGTH_SHORT).show();
-            });
-        });
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
         new Thread(() -> snipPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
@@ -132,6 +108,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
         type = getIntent().getIntExtra("cat_key", 0);
 
         searchText.requestFocus();
+        optionBtn.setAlpha(0.4f);
         shuffleBtn.setAlpha(0.4f);
         sequenceBtn.setAlpha(0.4f);
         snipTitle.setSelected(true);

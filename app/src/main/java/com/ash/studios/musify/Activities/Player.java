@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -305,7 +306,8 @@ public class Player extends AppCompatActivity implements
             PlaylistSheet playlistSheet = new PlaylistSheet();
             playlistSheet.show(getSupportFragmentManager(), null);
         });
-        DS.setOnClickListener(ds -> {
+        DS.setVisibility(View.GONE);
+        /*DS.setOnClickListener(ds -> {
             dialog.dismiss();
             Dialog delDialog = Utils.getDialog(this, R.layout.delete_dg);
             TextView cancel = delDialog.findViewById(R.id.close_del_dg_btn);
@@ -316,7 +318,7 @@ public class Player extends AppCompatActivity implements
                 delDialog.dismiss();
                 deleteSong();
             });
-        });
+        });*/
     }
 
     private void deleteSong() {

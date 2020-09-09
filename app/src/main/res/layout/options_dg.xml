@@ -103,7 +103,6 @@
                                 app:srcCompat="@drawable/ic_folder" />
 
                             <TextView
-                                android:id="@+id/textView7"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
@@ -131,7 +130,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/select_folders">
 
                             <TextView
-                                android:id="@+id/textView3"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
@@ -183,7 +181,6 @@
                                 app:srcCompat="@drawable/ic_list_op" />
 
                             <TextView
-                                android:id="@+id/textView4"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
@@ -224,7 +221,6 @@
                                 app:srcCompat="@drawable/ic_add_new" />
 
                             <TextView
-                                android:id="@+id/textView5"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
@@ -304,7 +300,6 @@
                                 app:srcCompat="@drawable/ic_settings" />
 
                             <TextView
-                                android:id="@+id/textView16"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"

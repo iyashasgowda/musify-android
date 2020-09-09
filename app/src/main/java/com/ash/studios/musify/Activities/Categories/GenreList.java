@@ -1,5 +1,6 @@
 package com.ash.studios.musify.Activities.Categories;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Activities.SearchList.CategorySearch;
 import com.ash.studios.musify.Adapters.GenreAdapter;
+import com.ash.studios.musify.BottomSheets.GenresSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Genre;
@@ -77,8 +79,8 @@ public class GenreList extends AppCompatActivity implements
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-
                 shufflePlay.setOnClickListener(v -> new Thread(() -> {
+
                     ArrayList<Song> list = new ArrayList<>();
                     for (Genre genre : Utils.genres)
                         list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
@@ -102,8 +104,8 @@ public class GenreList extends AppCompatActivity implements
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-
                 sequencePlay.setOnClickListener(v -> new Thread(() -> {
+
                     ArrayList<Song> list = new ArrayList<>();
                     for (Genre genre : Utils.genres)
                         list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
@@ -141,6 +143,42 @@ public class GenreList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
+        optionsBtn.setOnClickListener(v -> {
+            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
+
+            TextView dialogName = dialog.findViewById(R.id.dialog_name);
+            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
+            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout ST = dialog.findViewById(R.id.settings);
+
+            dialogName.setText(title.getText());
+            dialogIcon.setImageDrawable(icon.getDrawable());
+
+            ST.setVisibility(View.GONE);
+            SF.setOnClickListener(sf -> {
+                dialog.dismiss();
+                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+            });
+            RM.setOnClickListener(rm -> {
+                dialog.dismiss();
+
+                rv.setAdapter(null);
+                NF.setVisibility(View.GONE);
+                loader.setVisibility(View.VISIBLE);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF));
+                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                        hideAttributes();
+                }, 10);
+            });
+            LO.setOnClickListener(lo -> {
+                dialog.dismiss();
+                GenresSort genresSort = new GenresSort(context, rv, loader, NF);
+                genresSort.show(getSupportFragmentManager(), null);
+            });
+        });
     }
 
     private void setIDs() {

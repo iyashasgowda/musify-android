@@ -73,7 +73,9 @@ public class AlbumsSort extends BottomSheetDialogFragment {
 
         close.setOnClickListener(c -> dismiss());
         button0.setVisibility(View.GONE);
-        button1.setOnCheckedChangeListener((compoundButton, checked) -> {
+        button1.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        button3.setOnCheckedChangeListener((compoundButton, checked) -> {
             if (checked) {
                 prefs.edit()
                         .putString("sort_by", "album")
@@ -82,8 +84,6 @@ public class AlbumsSort extends BottomSheetDialogFragment {
                 rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), pb, nf));
             }
         });
-        button2.setVisibility(View.GONE);
-        button3.setVisibility(View.GONE);
         button4.setVisibility(View.GONE);
         button5.setVisibility(View.GONE);
         reverse.setOnCheckedChangeListener((compoundButton, checked) -> {
@@ -95,6 +95,6 @@ public class AlbumsSort extends BottomSheetDialogFragment {
 
     private void getCheckState() {
         reverse.setChecked(prefs.getBoolean("order_by", false));
-        if (prefs.getString("sort_by", "album").equals("album")) button1.setChecked(true);
+        if (prefs.getString("sort_by", "album").equals("album")) button3.setChecked(true);
     }
 }

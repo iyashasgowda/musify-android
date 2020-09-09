@@ -11,10 +11,9 @@
         android:id="@+id/bunch_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="48dp"
+        android:paddingBottom="128dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.appbar.AppBarLayout

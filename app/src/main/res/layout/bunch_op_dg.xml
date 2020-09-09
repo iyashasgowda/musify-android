@@ -11,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/cardColor"
+        app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +54,6 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout5"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -103,86 +103,10 @@
                         android:layout_marginTop="12dp"
                         android:alpha="0.5"
                         android:background="@android:color/darker_gray"
+                        app:layout_constraintBottom_toTopOf="@+id/bunch_op_listing"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/cardView4" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/bunch_op_select"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="@drawable/ripple"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/view5">
-
-                        <ImageView
-                            android:id="@+id/imageView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginBottom="12dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_folder" />
-
-                        <TextView
-                            android:id="@+id/textView24"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="12dp"
-                            android:text="Select folders"
-                            android:textAllCaps="false"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView6"
-                            app:layout_constraintTop_toTopOf="@+id/imageView6" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/bunch_op_rescan"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="@drawable/ripple"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/bunch_op_select">
-
-                        <ImageView
-                            android:id="@+id/imageView18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginBottom="12dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_rescan" />
-
-                        <TextView
-                            android:id="@+id/textView26"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginEnd="12dp"
-                            android:text="Rescan"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView18"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageView18"
-                            app:layout_constraintTop_toTopOf="@+id/imageView18" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/bunch_op_listing"
@@ -194,7 +118,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/bunch_op_rescan">
+                        app:layout_constraintTop_toBottomOf="@+id/view5">
 
                         <ImageView
                             android:id="@+id/imageView19"
@@ -209,7 +133,6 @@
                             app:srcCompat="@drawable/ic_list_op" />
 
                         <TextView
-                            android:id="@+id/textView28"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"

@@ -138,16 +138,16 @@ public class AllSongsSort extends BottomSheetDialogFragment {
                 button0.setChecked(true);
                 break;
             case "title":
-                button1.setChecked(true);
-                break;
-            case "album":
                 button2.setChecked(true);
                 break;
-            case "artist":
+            case "album":
                 button3.setChecked(true);
                 break;
-            case "year":
+            case "artist":
                 button4.setChecked(true);
+                break;
+            case "year":
+                button5.setChecked(true);
                 break;
         }
     }

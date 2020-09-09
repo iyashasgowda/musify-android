@@ -15,7 +15,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="8dp"
-        android:paddingBottom="48dp"
+        android:paddingBottom="128dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.appbar.AppBarLayout

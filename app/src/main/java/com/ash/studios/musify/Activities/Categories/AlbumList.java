@@ -159,6 +159,7 @@ public class AlbumList extends AppCompatActivity implements
                 dialog.dismiss();
 
                 rv.setAdapter(null);
+                NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF));

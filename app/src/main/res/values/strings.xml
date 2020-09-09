@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">Musify</string>
+    <string name="developed_by">Designed and developed by \n<b>Ash Studios</b></string>
+    <string name="terms_and_conditions">Read these <b>Terms and Conditions</b> carefully before using
+        the <b>Musify</b> mobile application.
+
+        \n\nYour access to and use of the Service is conditioned on your acceptance of and compliance with
+        these terms. These terms apply to all visitors, users and others who access or use the Service.
+
+        \n\n<b>Musify</b> application may contain links to third party websites or service that
+        are not owned or controlled by developers. Developer shall not be responsible or liable, directly
+        or indirectly, for any damage or loss or alleged to be caused by or in connection with use of or
+        reliace on any such content and information.
+
+        \n\nThe Developer is not responsible directly or indirectly for any loss or damage caused by the
+        information obtained from <b>Musify</b> application.
+
+        \n\nUser is agree not to reverse engineer, decompile, or attempt to gain access to code or assets
+        of <b>Musify</b> application.
+
+        \n\nDeveloper reverse the right, at our sole discretion, to modify or replace these Terms at any
+        time without notice.
+
+        \n\nIf you have any questions about these Terms, please contact developer.
+    </string>
 </resources>

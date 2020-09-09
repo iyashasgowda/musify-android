@@ -132,10 +132,15 @@ public class Library extends AppCompatActivity implements
             icon.setImageResource(R.drawable.ic_library);
             icon.setColorFilter(Color.parseColor(getNewColor()), PorterDuff.Mode.SRC_IN);
 
+            ConstraintLayout selectFolders = dialog.findViewById(R.id.select_folders);
             ConstraintLayout rescanMedia = dialog.findViewById(R.id.rescan_media);
             ConstraintLayout listOption = dialog.findViewById(R.id.listing_options);
             ConstraintLayout settings = dialog.findViewById(R.id.settings);
 
+            selectFolders.setOnClickListener(sf -> {
+                dialog.dismiss();
+                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+            });
             settings.setOnClickListener(s -> {
                 dialog.dismiss();
                 startActivity(new Intent(context, Settings.class));

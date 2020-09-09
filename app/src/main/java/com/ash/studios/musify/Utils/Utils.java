@@ -44,6 +44,11 @@ import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 import static android.content.Context.MODE_PRIVATE;
 import static com.ash.studios.musify.Utils.Constants.ALBUMS_SORT;
 import static com.ash.studios.musify.Utils.Constants.ALL_SONGS_SORT;
+import static com.ash.studios.musify.Utils.Constants.ARTISTS_SORT;
+import static com.ash.studios.musify.Utils.Constants.GENRES_SORT;
+import static com.ash.studios.musify.Utils.Constants.LR_SORT;
+import static com.ash.studios.musify.Utils.Constants.TR_SORT;
+import static com.ash.studios.musify.Utils.Constants.YEARS_SORT;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils {
@@ -125,15 +130,6 @@ public class Utils {
             colors[1] = Color.WHITE;
         }
         return colors;
-    }
-
-    public static void searchAndDelete(Context ctx, Song song) {
-        if (getTR(ctx) != null && getTR(ctx).contains(song)) deleteFromTR(ctx, song);
-        if (getLR(ctx) != null && getLR(ctx).contains(song)) deleteFromLR(ctx, song);
-        ArrayList<Playlist> playlists = getPlaylists(ctx) == null ? new ArrayList<>() : getPlaylists(ctx);
-        for (int i = 0; i < playlists.size(); i++)
-            if (playlists.get(i).getSongs().contains(song))
-                delFrmPlaylist(ctx, i, song);
     }
 
 
@@ -321,12 +317,28 @@ public class Utils {
 
     //Save, fetch and delete top-rated
     public static ArrayList<Song> getTR(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(TR_SORT, MODE_PRIVATE);
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("TOP_RATED", null),
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
 
         if (list == null) list = new ArrayList<>();
-        Collections.reverse(list);
+
+        String sort_by = prefs.getString("sort_by", "title");
+        boolean isReverse = prefs.getBoolean("order_by", false);
+
+        switch (sort_by) {
+            case "title":
+                list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
+                break;
+            case "album":
+                list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
+                break;
+            case "artist":
+                list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
+                break;
+        }
+        if (isReverse) Collections.reverse(list);
         return list;
     }
 
@@ -362,12 +374,28 @@ public class Utils {
 
     //Save, fetch and delete low-rated
     public static ArrayList<Song> getLR(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(LR_SORT, MODE_PRIVATE);
         ArrayList<Song> list = new Gson().fromJson(PreferenceManager.getDefaultSharedPreferences(c).getString("LOW_RATED", null),
                 new TypeToken<ArrayList<Song>>() {
                 }.getType());
 
         if (list == null) list = new ArrayList<>();
-        Collections.reverse(list);
+
+        String sort_by = prefs.getString("sort_by", "title");
+        boolean isReverse = prefs.getBoolean("order_by", false);
+
+        switch (sort_by) {
+            case "title":
+                list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
+                break;
+            case "album":
+                list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
+                break;
+            case "artist":
+                list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
+                break;
+        }
+        if (isReverse) Collections.reverse(list);
         return list;
     }
 
@@ -727,6 +755,9 @@ public class Utils {
     }
 
     public static ArrayList<Artist> getArtists(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(ARTISTS_SORT, MODE_PRIVATE);
+        String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+        String sort_by = prefs.getString("sort_by", "artist");
         ArrayList<Artist> artists = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI;
@@ -740,7 +771,7 @@ public class Utils {
                 projection,
                 null,
                 null,
-                "artist asc"
+                sort_by + " " + order_by
         );
 
         if (cursor != null) {
@@ -767,6 +798,9 @@ public class Utils {
     }
 
     public static ArrayList<Genre> getGenres(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(GENRES_SORT, MODE_PRIVATE);
+        String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+        String sort_by = prefs.getString("sort_by", "name");
         ArrayList<Genre> genres = new ArrayList<>();
 
         Uri uri = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
@@ -779,7 +813,7 @@ public class Utils {
                 projection,
                 null,
                 null,
-                null
+                sort_by + " " + order_by
         );
 
         if (cursor != null) {
@@ -810,6 +844,8 @@ public class Utils {
     }
 
     public static ArrayList<Year> getYears(Context c) {
+        SharedPreferences prefs = c.getSharedPreferences(YEARS_SORT, MODE_PRIVATE);
+        boolean isReverse = prefs.getBoolean("order_by", false);
         ArrayList<Song> list = getAllSongsByCategory(c, "year desc");
         ArrayList<Year> years = new ArrayList<>();
 
@@ -842,6 +878,7 @@ public class Utils {
                     years.add(new Year(presentYear, bitmap, songsList));
             }
         }
+        if (isReverse) Collections.reverse(years);
         return years;
     }
 

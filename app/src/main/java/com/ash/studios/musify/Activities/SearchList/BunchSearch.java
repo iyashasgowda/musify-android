@@ -100,6 +100,7 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
         snipPlayBtn = snippet.findViewById(R.id.snip_play_btn);
 
         searchText.requestFocus();
+        optionBtn.setAlpha(0.4f);
         shuffleBtn.setAlpha(0.4f);
         sequenceBtn.setAlpha(0.4f);
         snipTitle.setSelected(true);

@@ -6,7 +6,11 @@ public class Constants {
     public static final String ALBUMS_SORT = "MUSIFY_ALBUMS_SORT";
     public static final String ARTISTS_SORT = "MUSIFY_ARTISTS_SORT";
     public static final String GENRES_SORT = "MUSIFY_GENRES_SORT";
-    public static final String PLAYLISTS_SORT = "MUSIFY_PLAYLISTS_SORT";
+    public static final String YEARS_SORT = "MUSIFY_YEARS_SORT";
+    public static final String COMMON_SORT = "MUSIFY_COMMON_SORT";
+    public static final String TR_SORT = "MUSIFY_TR_SORT";
+    public static final String LR_SORT = "MUSIFY_LR_SORT";
+
 
     public interface ACTION {
         String PLAY = "com.ash.studios.musify.Utils.action.play";

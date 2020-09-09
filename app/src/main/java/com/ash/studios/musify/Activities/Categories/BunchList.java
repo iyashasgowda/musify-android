@@ -1,9 +1,12 @@
 package com.ash.studios.musify.Activities.Categories;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Activities.SearchList.BunchSearch;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
+import com.ash.studios.musify.BottomSheets.CommonSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
@@ -33,10 +37,12 @@ import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+import static com.ash.studios.musify.Utils.Constants.COMMON_SORT;
 import static com.ash.studios.musify.Utils.Instance.mp;
 import static com.ash.studios.musify.Utils.Instance.songs;
 import static com.ash.studios.musify.Utils.Utils.setUpUI;
@@ -124,6 +130,25 @@ public class BunchList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
+        optionBtn.setOnClickListener(v -> {
+            Dialog dialog = Utils.getDialog(context, R.layout.bunch_op_dg);
+
+            ImageView bunchArt = dialog.findViewById(R.id.bunch_op_art);
+            TextView title = dialog.findViewById(R.id.bunch_op_title);
+            TextView count = dialog.findViewById(R.id.bunch_op_count);
+            ConstraintLayout LO = dialog.findViewById(R.id.bunch_op_listing);
+
+            title.setText(bunchTitle.getText());
+            title.setSelected(true);
+            bunchArt.setImageDrawable(coverArt.getDrawable());
+            count.setText(new StringBuilder("\u266B ").append(list.size()));
+
+            LO.setOnClickListener(lo -> {
+                dialog.dismiss();
+                CommonSort commonSort = new CommonSort(context, rv, loader, NF, list);
+                commonSort.show(getSupportFragmentManager(), null);
+            });
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -161,9 +186,30 @@ public class BunchList extends AppCompatActivity implements
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
+        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
+        getData();
+    }
+
+    private void getData() {
+        SharedPreferences prefs = context.getSharedPreferences(COMMON_SORT, MODE_PRIVATE);
+        String sort_by = prefs.getString("sort_by", "title");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            switch (sort_by) {
+                case "title":
+                    list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
+                    break;
+                case "album":
+                    list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
+                    break;
+                case "artist":
+                    list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
+                    break;
+            }
+        }
+        if (prefs.getBoolean("order_by", false)) Collections.reverse(list);
         rv.setAdapter(new AllSongAdapter(context, list, loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
-        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
     }
 
     private void updateSnippet() {
