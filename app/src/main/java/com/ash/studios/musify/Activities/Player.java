@@ -213,7 +213,7 @@ public class Player extends AppCompatActivity implements
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Utils.getAlbumArt(song.getAlbum_id()));
             } catch (IOException e) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.placeholder);
             }
 
             Glide.with(getApplicationContext()).load(bitmap).into(albumArt);
@@ -307,18 +307,6 @@ public class Player extends AppCompatActivity implements
             playlistSheet.show(getSupportFragmentManager(), null);
         });
         DS.setVisibility(View.GONE);
-        /*DS.setOnClickListener(ds -> {
-            dialog.dismiss();
-            Dialog delDialog = Utils.getDialog(this, R.layout.delete_dg);
-            TextView cancel = delDialog.findViewById(R.id.close_del_dg_btn);
-            TextView delete = delDialog.findViewById(R.id.del_song_btn);
-
-            cancel.setOnClickListener(c -> delDialog.dismiss());
-            delete.setOnClickListener(d -> {
-                delDialog.dismiss();
-                deleteSong();
-            });
-        });*/
     }
 
     private void deleteSong() {
@@ -362,7 +350,7 @@ public class Player extends AppCompatActivity implements
             Glide.with(getApplicationContext())
                     .asBitmap()
                     .load(Utils.getAlbumArt(song.getAlbum_id()))
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .into(dgAlbumArt);
         }
     }
@@ -424,6 +412,7 @@ public class Player extends AppCompatActivity implements
             } else {
                 playPause.setImageResource(R.drawable.ic_pause);
                 mp.start();
+                Instance.playing = true;
                 if (duration.getAnimation() != null) duration.getAnimation().cancel();
                 startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
             }

@@ -25,6 +25,7 @@ import androidx.palette.graphics.Palette;
 
 import com.ash.studios.musify.Models.Album;
 import com.ash.studios.musify.Models.Artist;
+import com.ash.studios.musify.Models.Folder;
 import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
@@ -33,9 +34,11 @@ import com.ash.studios.musify.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +59,7 @@ public class Utils {
     public static ArrayList<Album> albums;
     public static ArrayList<Genre> genres;
     public static ArrayList<Artist> artists;
+    public static ArrayList<Folder> folders;
 
     public static String getNewColor() {
         return String.format("#%06X", new Random().nextInt((0xFFFFFF - 0x777777) + 1) + 0x777777);
@@ -107,7 +111,7 @@ public class Utils {
         try {
             bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(), uri);
         } catch (IOException e) {
-            bitmap = BitmapFactory.decodeResource(c.getResources(), R.mipmap.ic_abstract);
+            bitmap = BitmapFactory.decodeResource(c.getResources(), R.drawable.placeholder);
         }
 
         Palette palette = Palette.from(bitmap).generate();
@@ -191,6 +195,7 @@ public class Utils {
         String sort_by = prefs.getString("sort_by", "title");
         ArrayList<Song> songs = new ArrayList<>();
 
+        String selection = "is_music != 0";
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -208,7 +213,7 @@ public class Utils {
         Cursor cursor = c.getContentResolver().query(
                 uri,
                 projection,
-                null,
+                selection,
                 null,
                 sort_by + " " + order_by
         );
@@ -254,6 +259,7 @@ public class Utils {
     public static ArrayList<Song> getAllSongsByCategory(Context c, String sortBy) {
         ArrayList<Song> songs = new ArrayList<>();
 
+        String selection = "is_music != 0";
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -271,7 +277,7 @@ public class Utils {
         Cursor cursor = c.getContentResolver().query(
                 uri,
                 projection,
-                null,
+                selection,
                 null,
                 sortBy
         );
@@ -495,10 +501,9 @@ public class Utils {
 
     public static ArrayList<Song> getAlbumSongs(Context c, long albumId) {
         ArrayList<Song> songs = new ArrayList<>();
+
         String selection = "is_music != 0";
-
         if (albumId > 0) selection = selection + " and album_id = " + albumId;
-
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -513,6 +518,7 @@ public class Utils {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.ALBUM_ID
         };
+
         Cursor cursor = c.getContentResolver().query(
                 uri,
                 projection,
@@ -585,6 +591,71 @@ public class Utils {
                 selection,
                 null,
                 "title asc"
+        );
+
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+                long id = cursor.getLong(0);
+                String data = cursor.getString(1);
+                String title = cursor.getString(2);
+                String album = cursor.getString(3);
+                String artist = cursor.getString(4);
+                String year = cursor.getString(5);
+                String track = cursor.getString(6);
+                String composer = cursor.getString(7);
+                String album_artist = cursor.getString(8);
+                long duration = cursor.getLong(9);
+                long album_id = cursor.getLong(10);
+
+                if (title != null && album != null && artist != null)
+                    if (!title.equals("<unknown>"))
+                        songs.add(
+                                new Song(
+                                        id,
+                                        data,
+                                        title,
+                                        album,
+                                        artist,
+                                        year,
+                                        track,
+                                        composer,
+                                        album_artist,
+                                        duration,
+                                        album_id
+                                )
+                        );
+            }
+            cursor.close();
+        }
+        return songs;
+    }
+
+    public static ArrayList<Song> getFolderSongs(Context c, String path) {
+        ArrayList<Song> songs = new ArrayList<>();
+
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.COMPOSER,
+                MediaStore.Audio.Media.ALBUM_ARTIST,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.ALBUM_ID
+        };
+        String selection = MediaStore.Audio.Media.DATA + " like ?";
+        String[] selectionArgs = {path + "%"};
+        Cursor cursor = c.getContentResolver().query(
+                uri,
+                projection,
+                selection,
+                selectionArgs,
+                null
         );
 
         if (cursor != null) {
@@ -710,6 +781,53 @@ public class Utils {
     }
 
     //Get categories
+    public static ArrayList<Folder> getFolders(Context c) {
+        ArrayList<String> dataList = new ArrayList<>();
+        ArrayList<Folder> folders = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> paths = new ArrayList<>();
+
+        String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.DISPLAY_NAME
+        };
+
+        Cursor cursor = c.getContentResolver().query(
+                uri,
+                projection,
+                selection,
+                null,
+                null
+        );
+
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+                dataList.add(cursor.getString(0));
+                names.add(cursor.getString(1));
+            }
+
+            for (int i = 0; i < dataList.size(); i++)
+                paths.add(dataList.get(i).replace(names.get(i), ""));
+
+            HashSet<String> hs = new HashSet<>(paths);
+
+            paths.clear();
+            paths.addAll(hs);
+
+            cursor.close();
+        }
+
+        for (String path : paths) {
+            String folderName = new File(path).getName();
+            ArrayList<Song> songs = getFolderSongs(c, path);
+            if (songs.size() > 0) folders.add(new Folder(folderName, path, songs));
+        }
+        return folders;
+    }
+
     public static ArrayList<Album> getAlbums(Context c) {
         SharedPreferences prefs = c.getSharedPreferences(ALBUMS_SORT, MODE_PRIVATE);
         String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
@@ -872,7 +990,7 @@ public class Utils {
                     bitmap = MediaStore.Images.Media.getBitmap(c.getContentResolver(),
                             Utils.getAlbumArt(songsList.get(0).getAlbum_id()));
                 } catch (Exception e) {
-                    bitmap = BitmapFactory.decodeResource(c.getResources(), R.mipmap.ic_abstract);
+                    bitmap = BitmapFactory.decodeResource(c.getResources(), R.drawable.placeholder);
                 }
                 if (songsList.size() > 0)
                     years.add(new Year(presentYear, bitmap, songsList));
@@ -887,5 +1005,6 @@ public class Utils {
         new Thread(() -> albums = getAlbums(c)).start();
         new Thread(() -> artists = getArtists(c)).start();
         new Thread(() -> years = getYears(c)).start();
+        new Thread(() -> folders = getFolders(c)).start();
     }
 }

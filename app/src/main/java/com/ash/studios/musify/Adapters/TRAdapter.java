@@ -53,7 +53,7 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> {
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(song.getAlbum_id()))
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .into(holder.albumCover);
 
         holder.itemView.setOnClickListener(v -> {

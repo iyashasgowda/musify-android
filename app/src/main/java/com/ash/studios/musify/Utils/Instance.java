@@ -12,6 +12,7 @@ public class Instance {
 
     public static boolean repeat;
     public static boolean shuffle;
+    public static boolean playing;
 
     public static Uri uri;
     public static MediaPlayer mp;

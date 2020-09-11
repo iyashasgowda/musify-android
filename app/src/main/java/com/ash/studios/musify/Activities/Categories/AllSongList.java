@@ -116,6 +116,7 @@ public class AllSongList extends AppCompatActivity implements
                 } else {
                     snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    Instance.playing = true;
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
@@ -201,7 +202,7 @@ public class AllSongList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 

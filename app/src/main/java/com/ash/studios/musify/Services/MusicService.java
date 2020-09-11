@@ -33,7 +33,6 @@ import static com.ash.studios.musify.Utils.App.CHANNEL_ID;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener {
     Context context;
-    boolean isPlaying = true;
     MediaSessionCompat mediaSession;
 
     @Override
@@ -51,7 +50,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
         switch (intent.getAction()) {
             case Constants.ACTION.CREATE:
-                if (isPlaying) notificationForPlay();
+                if (Instance.playing) notificationForPlay();
                 else notificationForPause();
                 break;
             case Constants.ACTION.STOP_SERVICE:
@@ -62,12 +61,12 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPrevClicked();
                 break;
             case Constants.ACTION.PLAY:
-                isPlaying = true;
+                Instance.playing = true;
                 ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPlayClicked();
                 notificationForPlay();
                 break;
             case Constants.ACTION.PAUSE:
-                isPlaying = false;
+                Instance.playing = false;
                 ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPauseClicked();
                 notificationForPause();
                 break;
@@ -170,7 +169,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
         } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_abstract);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.placeholder);
         }
         return bitmap;
     }

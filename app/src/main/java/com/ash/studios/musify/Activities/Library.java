@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.ash.studios.musify.Activities.Categories.AlbumList;
 import com.ash.studios.musify.Activities.Categories.AllSongList;
 import com.ash.studios.musify.Activities.Categories.ArtistList;
+import com.ash.studios.musify.Activities.Categories.FolderList;
 import com.ash.studios.musify.Activities.Categories.GenreList;
 import com.ash.studios.musify.Activities.Categories.LRList;
 import com.ash.studios.musify.Activities.Categories.PlayList;
@@ -168,12 +169,13 @@ public class Library extends AppCompatActivity implements
         snipBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
-                    snipBtn.setImageResource(R.drawable.ic_play_small);
                     Instance.mp.pause();
+                    snipBtn.setImageResource(R.drawable.ic_play_small);
                     stopService(new Intent(context, MusicService.class));
                 } else {
-                    snipBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    Instance.playing = true;
+                    snipBtn.setImageResource(R.drawable.ic_pause);
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
@@ -182,7 +184,6 @@ public class Library extends AppCompatActivity implements
             }
         });
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-
         checkListStates();
     }
 
@@ -201,7 +202,7 @@ public class Library extends AppCompatActivity implements
         snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
         Glide.with(getApplicationContext())
                 .asBitmap()
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                 .into(snipArt);
 
@@ -235,7 +236,7 @@ public class Library extends AppCompatActivity implements
                 startActivity(new Intent(context, AllSongList.class).putExtra("icon_color", colors[0]));
                 break;
             case R.id.folders:
-                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(context, FolderList.class).putExtra("icon_color", colors[1]));
                 break;
             case R.id.albums:
                 startActivity(new Intent(context, AlbumList.class).putExtra("icon_color", colors[2]));

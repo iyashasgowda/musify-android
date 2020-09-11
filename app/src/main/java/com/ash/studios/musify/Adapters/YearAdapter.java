@@ -47,7 +47,7 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.VH> {
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(year.getAlbumArt())
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .into(holder.yearCover);
 
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)

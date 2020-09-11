@@ -123,6 +123,7 @@ public class BunchList extends AppCompatActivity implements
                 } else {
                     snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    Instance.playing = true;
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
@@ -131,7 +132,7 @@ public class BunchList extends AppCompatActivity implements
             }
         })).start();
         optionBtn.setOnClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.bunch_op_dg);
+            Dialog dialog = Utils.getDialog(context, R.layout.bunch_dg);
 
             ImageView bunchArt = dialog.findViewById(R.id.bunch_op_art);
             TextView title = dialog.findViewById(R.id.bunch_op_title);
@@ -181,7 +182,7 @@ public class BunchList extends AppCompatActivity implements
         goBackTo.setText(getIntent().getStringExtra("list_from"));
         if (list.size() > 0) Glide.with(getApplicationContext())
                 .asBitmap().load(Utils.getAlbumArt(list.get(0).getAlbum_id()))
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .into(coverArt);
 
         if (Instance.songs != null) updateSnippet();
@@ -219,7 +220,7 @@ public class BunchList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 

@@ -38,6 +38,7 @@ public class Engine {
         mp = MediaPlayer.create(context, uri);
         mp.start();
 
+        Instance.playing = true;
         context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
         setCurrentPlayBack();
     }

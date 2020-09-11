@@ -21,6 +21,7 @@ import com.ash.studios.musify.Activities.Player;
 import com.ash.studios.musify.Adapters.AlbumAdapter;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
 import com.ash.studios.musify.Adapters.ArtistAdapter;
+import com.ash.studios.musify.Adapters.FolderAdapter;
 import com.ash.studios.musify.Adapters.GenreAdapter;
 import com.ash.studios.musify.Adapters.PlaylistAdapter;
 import com.ash.studios.musify.Adapters.YearAdapter;
@@ -28,6 +29,7 @@ import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Album;
 import com.ash.studios.musify.Models.Artist;
+import com.ash.studios.musify.Models.Folder;
 import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
@@ -80,6 +82,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                 } else {
                     snipPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    Instance.playing = true;
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
@@ -141,7 +144,12 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                             break;
 
                         case 1:
-                            //Todo:yet to get folders
+                            ArrayList<Folder> tempFolders = new ArrayList<>();
+                            for (Folder fo : Utils.getFolders(context))
+                                if (fo.getName().toLowerCase().contains(editable.toString().toLowerCase()))
+                                    tempFolders.add(fo);
+
+                            updateFolders(tempFolders);
                             break;
 
                         case 2:
@@ -210,6 +218,31 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
                 } else hideBtnAndAdapter();
             }
         });
+    }
+
+    private void updateFolders(ArrayList<Folder> list) {
+        rv.setAdapter(new FolderAdapter(context, list, null, null));
+        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+            new Thread(() -> {
+
+                ArrayList<Song> folderSongs = new ArrayList<>();
+                for (Folder folder : list)
+                    folderSongs.addAll(folder.getSongs());
+
+                if (folderSongs.size() > 0)
+                    shuffleBtn.post(() -> {
+
+                        if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
+
+                            shuffleBtn.setAlpha(1f);
+                            sequenceBtn.setAlpha(1f);
+                            shuffleBtn.setOnClickListener(v -> shufflePlay(folderSongs));
+                            sequenceBtn.setOnClickListener(v -> sequencePlay(folderSongs));
+                        } else hideBtnAndAdapter();
+                    });
+            }).start();
+        } else hideBtnAndAdapter();
     }
 
     private void updateYears(ArrayList<Year> list) {
@@ -363,7 +396,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
             snipArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snipArt);
 

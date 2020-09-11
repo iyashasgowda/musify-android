@@ -48,7 +48,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         Glide.with(context.getApplicationContext())
                 .asBitmap()
                 .load(Utils.getAlbumArt(genre.getAlbum_id()))
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .into(holder.genreCover);
 
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, BunchList.class)

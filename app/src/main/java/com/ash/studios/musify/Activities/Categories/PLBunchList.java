@@ -119,6 +119,7 @@ public class PLBunchList extends AppCompatActivity implements
                 } else {
                     snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
+                    Instance.playing = true;
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
                 }
             } else {
@@ -160,7 +161,7 @@ public class PLBunchList extends AppCompatActivity implements
         goBackTo.setText(new StringBuilder("Playlist"));
         if (list.size() > 0) Glide.with(getApplicationContext())
                 .asBitmap().load(Utils.getAlbumArt(list.get(0).getAlbum_id()))
-                .placeholder(R.mipmap.ic_abstract)
+                .placeholder(R.drawable.placeholder)
                 .into(coverArt);
 
         if (Instance.songs != null) updateSnippet();
@@ -177,7 +178,7 @@ public class PLBunchList extends AppCompatActivity implements
             snippetArtist.setText(Instance.songs.get(Instance.position).getArtist());
             Glide.with(getApplicationContext())
                     .asBitmap()
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .load(Utils.getAlbumArt(Instance.songs.get(Instance.position).getAlbum_id()))
                     .into(snippetArt);
 

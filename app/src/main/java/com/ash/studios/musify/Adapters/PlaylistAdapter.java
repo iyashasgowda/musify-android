@@ -52,7 +52,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> {
         if (playlist.getSongs().size() > 0)
             Glide.with(context.getApplicationContext())
                     .asBitmap().load(Utils.getAlbumArt(playlist.getSongs().get(0).getAlbum_id()))
-                    .placeholder(R.mipmap.ic_abstract)
+                    .placeholder(R.drawable.placeholder)
                     .into(holder.playlistCover);
 
         holder.itemView.setOnClickListener(v -> {
