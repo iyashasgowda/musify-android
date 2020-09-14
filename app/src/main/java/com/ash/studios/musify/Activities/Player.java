@@ -212,14 +212,14 @@ public class Player extends AppCompatActivity implements
             Bitmap bitmap;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Utils.getAlbumArt(song.getAlbum_id()));
+                BlurImage.with(getApplicationContext()).load(bitmap).intensity(30).Async(true).into(background);
             } catch (IOException e) {
                 bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.placeholder);
+                background.setImageBitmap(null);
             }
 
             Glide.with(getApplicationContext()).load(bitmap).into(albumArt);
             albumArt.startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_down));
-
-            BlurImage.with(getApplicationContext()).load(bitmap).intensity(30).Async(true).into(background);
             background.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
             Palette.from(bitmap).generate(palette -> {
                 if (palette != null) {

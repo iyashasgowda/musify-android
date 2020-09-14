@@ -144,7 +144,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
                 .addAction(R.drawable.ic_previous, "Previous", prevPending)
-                .addAction(R.drawable.ic_play_small, "Play", playPending)
+                .addAction(R.drawable.ic_play, "Play", playPending)
                 .addAction(R.drawable.ic_next, "Next", nextPending)
                 .addAction(R.drawable.ic_close, "Stop", stopPending)
 

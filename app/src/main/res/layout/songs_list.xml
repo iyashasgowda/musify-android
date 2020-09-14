@@ -119,7 +119,7 @@
                 <ImageView
                     android:id="@+id/play_all_btn"
                     android:layout_width="56dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/border_bg"
                     android:clickable="true"
@@ -130,12 +130,12 @@
                     app:layout_constraintBottom_toBottomOf="@+id/shuffle_all_btn"
                     app:layout_constraintStart_toEndOf="@+id/shuffle_all_btn"
                     app:layout_constraintTop_toTopOf="@+id/shuffle_all_btn"
-                    app:srcCompat="@drawable/ic_play_all" />
+                    app:srcCompat="@drawable/ic_play" />
 
                 <ImageView
                     android:id="@+id/search_btn"
                     android:layout_width="56dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/border_bg"
                     android:clickable="true"

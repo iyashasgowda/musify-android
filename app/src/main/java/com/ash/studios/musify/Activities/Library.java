@@ -170,7 +170,7 @@ public class Library extends AppCompatActivity implements
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
                     Instance.mp.pause();
-                    snipBtn.setImageResource(R.drawable.ic_play_small);
+                    snipBtn.setImageResource(R.drawable.ic_play);
                     stopService(new Intent(context, MusicService.class));
                 } else {
                     Instance.mp.start();
@@ -214,7 +214,7 @@ public class Library extends AppCompatActivity implements
 
         if (Instance.mp != null && Instance.mp.isPlaying())
             snipBtn.setImageResource(R.drawable.ic_pause);
-        else snipBtn.setImageResource(R.drawable.ic_play_small);
+        else snipBtn.setImageResource(R.drawable.ic_play);
     }
 
     private void checkListStates() {
@@ -293,7 +293,7 @@ public class Library extends AppCompatActivity implements
             Instance.mp.release();
             Instance.mp = null;
         }
-        snipBtn.setImageResource(R.drawable.ic_play_small);
+        snipBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
     }
 

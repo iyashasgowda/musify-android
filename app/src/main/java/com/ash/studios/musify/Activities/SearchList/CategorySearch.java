@@ -76,7 +76,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
         new Thread(() -> snipPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
-                    snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    snipPlayBtn.setImageResource(R.drawable.ic_play);
                     Instance.mp.pause();
                     stopService(new Intent(context, MusicService.class));
                 } else {
@@ -409,7 +409,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
             if (Instance.mp != null && Instance.mp.isPlaying())
                 snipPlayBtn.setImageResource(R.drawable.ic_pause);
             else
-                snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+                snipPlayBtn.setImageResource(R.drawable.ic_play);
         } else snippet.setVisibility(View.GONE);
     }
 
@@ -499,7 +499,7 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
             Instance.mp.release();
             Instance.mp = null;
         }
-        snipPlayBtn.setImageResource(R.drawable.ic_play_small);
+        snipPlayBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
     }
 

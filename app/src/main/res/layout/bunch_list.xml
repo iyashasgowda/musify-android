@@ -109,7 +109,7 @@
                 <ImageView
                     android:id="@+id/bunch_sequence_all_btn"
                     android:layout_width="56dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/black_bg"
                     android:clickable="true"
@@ -117,7 +117,7 @@
                     android:foreground="@drawable/border_ripple"
                     android:paddingTop="11dp"
                     android:paddingBottom="11dp"
-                    android:src="@drawable/ic_play_all"
+                    android:src="@drawable/ic_play"
                     app:layout_constraintBottom_toBottomOf="@+id/bunch_shuffle_all_btn"
                     app:layout_constraintStart_toEndOf="@+id/bunch_shuffle_all_btn"
                     app:layout_constraintTop_toTopOf="@+id/bunch_shuffle_all_btn" />
@@ -125,7 +125,7 @@
                 <ImageView
                     android:id="@+id/bunch_search_btn"
                     android:layout_width="56dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/black_bg"
                     android:clickable="true"

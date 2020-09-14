@@ -130,7 +130,7 @@ public class FolderList extends AppCompatActivity implements
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
                     Instance.mp.pause();
-                    snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                    snippetPlayBtn.setImageResource(R.drawable.ic_play);
                     stopService(new Intent(context, MusicService.class));
                 } else {
                     Instance.mp.start();
@@ -232,7 +232,7 @@ public class FolderList extends AppCompatActivity implements
             if (Instance.mp != null && Instance.mp.isPlaying())
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             else
-                snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+                snippetPlayBtn.setImageResource(R.drawable.ic_play);
         } else snippet.setVisibility(View.GONE);
     }
 
@@ -301,7 +301,7 @@ public class FolderList extends AppCompatActivity implements
             Instance.mp.release();
             Instance.mp = null;
         }
-        snippetPlayBtn.setImageResource(R.drawable.ic_play_small);
+        snippetPlayBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
     }
 
