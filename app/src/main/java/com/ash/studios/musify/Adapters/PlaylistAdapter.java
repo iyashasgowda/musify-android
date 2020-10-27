@@ -21,10 +21,11 @@ import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> {
+public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> implements SectionTitleProvider {
     private Context context;
     private ArrayList<Playlist> list;
 
@@ -93,6 +94,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> {
     @Override
     public int getItemCount() {
         return list == null ? 0 : list.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return list.get(position).getName().substring(0, 1);
     }
 
     static class VH extends RecyclerView.ViewHolder {

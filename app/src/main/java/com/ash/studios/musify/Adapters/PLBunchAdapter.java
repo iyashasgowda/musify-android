@@ -21,10 +21,11 @@ import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> {
+public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
     private Context context;
     private int pos;
@@ -93,6 +94,11 @@ public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> {
     @Override
     public int getItemCount() {
         return list == null ? 0 : list.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return list.get(position).getTitle().substring(0, 1);
     }
 
     static class VH extends RecyclerView.ViewHolder {

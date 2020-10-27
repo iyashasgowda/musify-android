@@ -17,10 +17,11 @@ import com.ash.studios.musify.Models.Folder;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> implements SectionTitleProvider {
     private ArrayList<Folder> folders;
     private Context context;
 
@@ -60,6 +61,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return folders == null ? 0 : folders.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return folders.get(position).getName().substring(0, 1);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

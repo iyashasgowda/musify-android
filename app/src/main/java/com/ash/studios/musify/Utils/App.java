@@ -27,14 +27,12 @@ public class App extends Application {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Musify",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Musify", NotificationManager.IMPORTANCE_NONE);
+            channel.setVibrationPattern(new long[]{0});
+            channel.enableVibration(true);
 
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(notificationChannel);
+            manager.createNotificationChannel(channel);
         }
     }
 }

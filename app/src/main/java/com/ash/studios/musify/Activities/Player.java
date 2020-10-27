@@ -202,7 +202,7 @@ public class Player extends AppCompatActivity implements
     }
 
     private void updateUI() {
-        song = Instance.songs.get(Instance.position);
+        song = Instance.songs == null ? null : Instance.songs.get(Instance.position);
 
         if (song != null) {
             title.setText(song.getTitle());

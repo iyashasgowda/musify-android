@@ -8,8 +8,8 @@ android {
         applicationId "com.ash.studios.musify"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -42,6 +42,9 @@ dependencies {
     //Bounce animation
     implementation 'me.everything:overscroll-decor-android:1.1.0'
 
+    //Fast scroll recyclerview
+    implementation 'com.futuremind.recyclerfastscroll:fastscroll:0.2.5'
+
     //Porter shape imageView
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
 
@@ -54,5 +57,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
 }

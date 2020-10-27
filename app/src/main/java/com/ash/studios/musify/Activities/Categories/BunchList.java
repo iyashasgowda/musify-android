@@ -35,6 +35,7 @@ import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class BunchList extends AppCompatActivity implements
     ProgressBar loader;
     CardView snippet;
     RecyclerView rv;
+    FastScroller fs;
 
     Engine engine;
     String listName;
@@ -164,6 +166,7 @@ public class BunchList extends AppCompatActivity implements
         snippet = findViewById(R.id.snippet);
         loader = findViewById(R.id.bunch_pb);
         NF = findViewById(R.id.nothing_found);
+        fs = findViewById(R.id.fast_bunch_list);
         coverArt = findViewById(R.id.cover_art);
         goBackTo = findViewById(R.id.go_back_to);
         goBackBtn = findViewById(R.id.go_back_btn);
@@ -211,6 +214,8 @@ public class BunchList extends AppCompatActivity implements
         if (prefs.getBoolean("order_by", false)) Collections.reverse(list);
         rv.setAdapter(new AllSongAdapter(context, list, loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
+
+        fs.setRecyclerView(rv);
     }
 
     private void updateSnippet() {

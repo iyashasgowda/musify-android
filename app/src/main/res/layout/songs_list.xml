@@ -17,6 +17,18 @@
         android:paddingBottom="128dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <com.futuremind.recyclerviewfastscroll.FastScroller
+        android:id="@+id/fast_song_list"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="128dp"
+        android:orientation="vertical"
+        app:fastscroll__bubbleColor="#ffffff"
+        app:fastscroll__handleColor="#ffffff"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"

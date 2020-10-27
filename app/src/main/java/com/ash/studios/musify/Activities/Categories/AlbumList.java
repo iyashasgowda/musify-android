@@ -39,6 +39,7 @@ import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class AlbumList extends AppCompatActivity implements
     ProgressBar loader;
     CardView snippet;
     RecyclerView rv;
+    FastScroller fs;
 
     Engine engine;
     Context context;
@@ -143,7 +145,6 @@ public class AlbumList extends AppCompatActivity implements
 
             TextView dialogName = dialog.findViewById(R.id.dialog_name);
             ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
-            ConstraintLayout SF = dialog.findViewById(R.id.select_folders);
             ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
             ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
             ConstraintLayout ST = dialog.findViewById(R.id.settings);
@@ -152,10 +153,6 @@ public class AlbumList extends AppCompatActivity implements
             dialogIcon.setImageDrawable(icon.getDrawable());
 
             ST.setVisibility(View.GONE);
-            SF.setOnClickListener(sf -> {
-                dialog.dismiss();
-                Toast.makeText(context, "In development", Toast.LENGTH_SHORT).show();
-            });
             RM.setOnClickListener(rm -> {
                 dialog.dismiss();
 
@@ -183,6 +180,7 @@ public class AlbumList extends AppCompatActivity implements
         appBar = findViewById(R.id.app_bar);
         snippet = findViewById(R.id.snippet);
         NF = findViewById(R.id.nothing_found);
+        fs = findViewById(R.id.fast_song_list);
         icon = findViewById(R.id.activity_icon);
         backToLib = findViewById(R.id.lib_back);
         loader = findViewById(R.id.list_loader);
@@ -211,6 +209,8 @@ public class AlbumList extends AppCompatActivity implements
 
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
+
+        fs.setRecyclerView(rv);
     }
 
     private void hideAttributes() {

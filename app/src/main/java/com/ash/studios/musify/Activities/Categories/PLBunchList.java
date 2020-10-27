@@ -33,6 +33,7 @@ import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -51,6 +52,7 @@ public class PLBunchList extends AppCompatActivity implements
     ProgressBar loader;
     CardView snippet;
     RecyclerView rv;
+    FastScroller fs;
 
     Engine engine;
     String listName;
@@ -143,6 +145,7 @@ public class PLBunchList extends AppCompatActivity implements
         snippet = findViewById(R.id.snippet);
         loader = findViewById(R.id.bunch_pb);
         NF = findViewById(R.id.nothing_found);
+        fs = findViewById(R.id.fast_song_list);
         coverArt = findViewById(R.id.cover_art);
         goBackTo = findViewById(R.id.go_back_to);
         goBackBtn = findViewById(R.id.go_back_btn);
@@ -169,6 +172,8 @@ public class PLBunchList extends AppCompatActivity implements
         rv.setAdapter(new PLBunchAdapter(context, list, position, loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
+
+        fs.setRecyclerView(rv);
     }
 
     private void updateSnippet() {

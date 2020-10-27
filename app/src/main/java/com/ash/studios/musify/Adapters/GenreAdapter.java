@@ -17,10 +17,11 @@ import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> {
+public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> implements SectionTitleProvider {
     private ArrayList<Genre> genres;
     private Context context;
 
@@ -60,6 +61,11 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return genres == null ? 0 : genres.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return genres.get(position).getGenre().substring(0, 1);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

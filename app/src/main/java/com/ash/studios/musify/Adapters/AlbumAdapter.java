@@ -17,10 +17,11 @@ import com.ash.studios.musify.Models.Album;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> implements SectionTitleProvider {
     private ArrayList<Album> albums;
     private Context context;
 
@@ -60,6 +61,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return albums == null ? 0 : albums.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return albums.get(position).getAlbum().substring(0, 1);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

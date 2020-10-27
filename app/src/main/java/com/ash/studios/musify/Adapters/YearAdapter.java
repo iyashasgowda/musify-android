@@ -16,10 +16,11 @@ import com.ash.studios.musify.Activities.Categories.BunchList;
 import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.bumptech.glide.Glide;
+import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class YearAdapter extends RecyclerView.Adapter<YearAdapter.VH> {
+public class YearAdapter extends RecyclerView.Adapter<YearAdapter.VH> implements SectionTitleProvider {
     private ArrayList<Year> years;
     private Context context;
 
@@ -59,6 +60,11 @@ public class YearAdapter extends RecyclerView.Adapter<YearAdapter.VH> {
     @Override
     public int getItemCount() {
         return years == null ? 0 : years.size();
+    }
+
+    @Override
+    public String getSectionTitle(int position) {
+        return years.get(position).getYear();
     }
 
     static class VH extends RecyclerView.ViewHolder {

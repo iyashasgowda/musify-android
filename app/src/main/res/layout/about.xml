@@ -30,10 +30,11 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
+                android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_logo" />
+                app:srcCompat="@drawable/ic_play" />
 
             <TextView
                 android:id="@+id/textView"

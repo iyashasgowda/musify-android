@@ -27,14 +27,16 @@ public class Engine {
     }
 
     public void startPlayer() {
-        if (songs != null) {
-            uri = Uri.parse(songs.get(position).getPath());
-        }
+
+        if (songs != null) uri = Uri.parse(songs.get(position).getPath());
 
         if (mp != null) {
             mp.stop();
-            mp.release();
+            mp.reset();
         }
+
+        if (uri == null && uri.equals(Uri.EMPTY)) return;
+
         mp = MediaPlayer.create(context, uri);
         mp.start();
 
@@ -47,7 +49,7 @@ public class Engine {
         if (mp != null) {
             if (mp.isPlaying()) {
                 mp.stop();
-                mp.release();
+                mp.reset();
 
                 if (shuffle && !repeat) position = new Random().nextInt((songs.size() - 1) + 1);
                 else if (!shuffle && !repeat) position = ((position + 1) % songs.size());
@@ -59,7 +61,7 @@ public class Engine {
                 mp.start();
             } else {
                 mp.stop();
-                mp.release();
+                mp.reset();
                 if (shuffle && !repeat) position = new Random().nextInt((songs.size() - 1) + 1);
                 else if (!shuffle && !repeat) position = ((position + 1) % songs.size());
 
@@ -85,7 +87,7 @@ public class Engine {
         if (mp != null) {
             if (mp.isPlaying()) {
                 mp.stop();
-                mp.release();
+                mp.reset();
 
                 if (shuffle && !repeat)
                     position = new Random().nextInt((songs.size() - 1) + 1);
@@ -99,7 +101,7 @@ public class Engine {
                 mp.start();
             } else {
                 mp.stop();
-                mp.release();
+                mp.reset();
 
                 if (shuffle && !repeat)
                     position = new Random().nextInt((songs.size() - 1) + 1);
