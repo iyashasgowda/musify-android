@@ -31,7 +31,6 @@ import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
-import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,7 +47,6 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
     EditText searchText;
     CardView snippet;
     RecyclerView rv;
-    FastScroller fs;
 
     Engine engine;
     Context context;
@@ -92,7 +90,6 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
         close = findViewById(R.id.close);
         rv = findViewById(R.id.search_rv);
         snippet = findViewById(R.id.snippet);
-        fs = findViewById(R.id.fast_search_list);
         searchText = findViewById(R.id.search_text);
         searchType = findViewById(R.id.search_type);
         optionBtn = findViewById(R.id.search_option);
@@ -134,7 +131,6 @@ public class BunchSearch extends AppCompatActivity implements MediaPlayer.OnComp
                             tempList.add(songs);
 
                     rv.setAdapter(new AllSongAdapter(context, tempList, null, null));
-                    fs.setRecyclerView(rv);
                     if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
                         shuffleBtn.setAlpha(1f);
                         sequenceBtn.setAlpha(1f);

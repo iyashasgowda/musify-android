@@ -42,7 +42,6 @@ import com.ash.studios.musify.Utils.Engine;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 import com.bumptech.glide.Glide;
-import com.futuremind.recyclerviewfastscroll.FastScroller;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -59,7 +58,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     EditText searchText;
     CardView snippet;
     RecyclerView rv;
-    FastScroller fs;
 
     int type;
     Engine engine;
@@ -100,7 +98,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
         close = findViewById(R.id.close);
         rv = findViewById(R.id.search_rv);
         snippet = findViewById(R.id.snippet);
-        fs = findViewById(R.id.fast_search_list);
         searchText = findViewById(R.id.search_text);
         searchType = findViewById(R.id.search_type);
         optionBtn = findViewById(R.id.search_option);
@@ -225,8 +222,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateFolders(ArrayList<Folder> list) {
         rv.setAdapter(new FolderAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
@@ -252,8 +247,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateYears(ArrayList<Year> list) {
         rv.setAdapter(new YearAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
@@ -278,8 +271,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateSongs(ArrayList<Song> list) {
         rv.setAdapter(new AllSongAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
             shuffleBtn.setAlpha(1f);
             sequenceBtn.setAlpha(1f);
@@ -291,8 +282,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateAlbums(ArrayList<Album> list) {
         rv.setAdapter(new AlbumAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
@@ -318,8 +307,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateArtists(ArrayList<Artist> list) {
         rv.setAdapter(new ArtistAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
@@ -344,8 +331,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updateGenres(ArrayList<Genre> list) {
         rv.setAdapter(new GenreAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
@@ -371,8 +356,6 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
 
     private void updatePlaylists(ArrayList<Playlist> list) {
         rv.setAdapter(new PlaylistAdapter(context, list, null, null));
-        fs.setRecyclerView(rv);
-
         if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0) {
 
             new Thread(() -> {
