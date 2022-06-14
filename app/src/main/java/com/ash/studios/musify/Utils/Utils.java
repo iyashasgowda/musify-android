@@ -1,7 +1,15 @@
 package com.ash.studios.musify.Utils;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.ash.studios.musify.Utils.Constants.ALBUMS_SORT;
+import static com.ash.studios.musify.Utils.Constants.ALL_SONGS_SORT;
+import static com.ash.studios.musify.Utils.Constants.ARTISTS_SORT;
+import static com.ash.studios.musify.Utils.Constants.GENRES_SORT;
+import static com.ash.studios.musify.Utils.Constants.LR_SORT;
+import static com.ash.studios.musify.Utils.Constants.TR_SORT;
+import static com.ash.studios.musify.Utils.Constants.YEARS_SORT;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -11,8 +19,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
@@ -38,20 +44,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.Utils.Constants.ALBUMS_SORT;
-import static com.ash.studios.musify.Utils.Constants.ALL_SONGS_SORT;
-import static com.ash.studios.musify.Utils.Constants.ARTISTS_SORT;
-import static com.ash.studios.musify.Utils.Constants.GENRES_SORT;
-import static com.ash.studios.musify.Utils.Constants.LR_SORT;
-import static com.ash.studios.musify.Utils.Constants.TR_SORT;
-import static com.ash.studios.musify.Utils.Constants.YEARS_SORT;
 
 @SuppressLint("InlinedApi, DefaultLocale")
 public class Utils {
@@ -67,16 +65,6 @@ public class Utils {
 
     public static Uri getAlbumArt(long id) {
         return ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), id);
-    }
-
-    public static void setUpUI(Activity activity) {
-        View decorView = activity.getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-        decorView.setOnSystemUiVisibilityChangeListener(visibility -> {
-            if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN), 1500);
-        });
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
     public static String getDuration(long duration) {
@@ -177,7 +165,7 @@ public class Utils {
     public static void putCurrentList(Context c, ArrayList<Song> songs) {
         c.getSharedPreferences("CURRENT_LIST", MODE_PRIVATE)
                 .edit().putString("current_list", new Gson()
-                .toJson(songs)).apply();
+                        .toJson(songs)).apply();
     }
 
     public static ArrayList<Song> getCurrentList(Context c) {
@@ -335,13 +323,13 @@ public class Utils {
 
         switch (sort_by) {
             case "title":
-                list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
+                list.sort(Comparator.comparing(Song::getTitle));
                 break;
             case "album":
-                list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
+                list.sort(Comparator.comparing(Song::getAlbum));
                 break;
             case "artist":
-                list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
+                list.sort(Comparator.comparing(Song::getArtist));
                 break;
         }
         if (isReverse) Collections.reverse(list);
@@ -392,13 +380,13 @@ public class Utils {
 
         switch (sort_by) {
             case "title":
-                list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
+                list.sort(Comparator.comparing(Song::getTitle));
                 break;
             case "album":
-                list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
+                list.sort(Comparator.comparing(Song::getAlbum));
                 break;
             case "artist":
-                list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
+                list.sort(Comparator.comparing(Song::getArtist));
                 break;
         }
         if (isReverse) Collections.reverse(list);

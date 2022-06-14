@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">Musify</string>
-    <string name="developed_by">Designed and developed by \n<b>Ash Studios</b></string>
+    <string name="developed_by">Designed and developed by \n<b>Yashas Gowda</b></string>
+
+    <!-- URL's [Dev] -->
+    <string name="dev_email">yashas348@gmail.com</string>
+    <string name="dev_portfolio">https://iyashasgowda.com</string>
+    <string name="dev_linkedin">https://linkedin.com/in/iyashasgowda</string>
+    <string name="dev_github">https://github.com/iyashasgowda</string>
+    <string name="dev_instagram">https://instagram.com/iyashasgowda</string>
+    <string name="dev_twitter">https://twitter.com/iyashasgowda</string>
+    <string name="dev_facebook">http://www.facebook.com/iyashasgowda</string>
+    <string name="dev_google_play">https://play.google.com/store/apps/dev?id=8336303605457314464</string>
+
     <string name="terms_and_conditions">Read these <b>Terms and Conditions</b> carefully before using
         the <b>Musify</b> mobile application.
 

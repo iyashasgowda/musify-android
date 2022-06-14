@@ -1,5 +1,7 @@
 package com.ash.studios.musify.Activities;
 
+import static com.ash.studios.musify.Utils.Instance.mp;
+
 import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -48,9 +51,6 @@ import java.io.IOException;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Utils.setUpUI;
-
 public class Player extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IService, IControl {
     ImageView albumArt, background, previousBtn, nextBtn, shuffleBtn, repeatBtn, likeBtn, dislikeBtn;
@@ -70,7 +70,9 @@ public class Player extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
-        setUpUI(this);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
         updateUI();

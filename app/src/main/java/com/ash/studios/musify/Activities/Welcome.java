@@ -1,12 +1,17 @@
 package com.ash.studios.musify.Activities;
 
+import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,20 +26,20 @@ import com.ash.studios.musify.R;
 import com.ash.studios.musify.Utils.Instance;
 import com.ash.studios.musify.Utils.Utils;
 
-import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
-import static com.ash.studios.musify.Utils.Utils.setUpUI;
-
 public class Welcome extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     ImageView icon;
 
     Context context;
     TextView appName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
-        setUpUI(this);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         setIDs();
 
         new Handler(Looper.getMainLooper()).postDelayed(this::checkPermission, 500);

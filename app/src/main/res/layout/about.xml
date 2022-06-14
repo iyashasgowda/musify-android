@@ -81,19 +81,21 @@
                 app:layout_constraintVertical_bias="0.7" />
 
             <ImageView
-                android:id="@+id/github"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:id="@+id/linkedin"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/twitter"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2"
-                app:srcCompat="@drawable/ic_github" />
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                app:srcCompat="@drawable/ic_linkedin" />
 
             <ImageView
                 android:id="@+id/facebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 app:layout_constraintBottom_toBottomOf="@+id/instagram"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/instagram"
@@ -102,8 +104,8 @@
 
             <ImageView
                 android:id="@+id/instagram"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 app:layout_constraintBottom_toBottomOf="@+id/twitter"
                 app:layout_constraintEnd_toStartOf="@+id/facebook"
                 app:layout_constraintStart_toEndOf="@+id/twitter"
@@ -112,71 +114,23 @@
 
             <ImageView
                 android:id="@+id/twitter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/github"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toBottomOf="@+id/linkedin"
                 app:layout_constraintEnd_toStartOf="@+id/instagram"
-                app:layout_constraintStart_toEndOf="@+id/github"
-                app:layout_constraintTop_toTopOf="@+id/github"
+                app:layout_constraintStart_toEndOf="@+id/linkedin"
+                app:layout_constraintTop_toTopOf="@+id/linkedin"
                 app:srcCompat="@drawable/ic_twitter" />
 
             <View
                 android:id="@+id/view"
                 android:layout_width="0dp"
                 android:layout_height="0.6dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:background="#80808080"
                 app:layout_constraintEnd_toEndOf="@+id/facebook"
-                app:layout_constraintStart_toStartOf="@+id/github"
-                app:layout_constraintTop_toBottomOf="@+id/github" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/ash_studios"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:elevation="0dp"
-                    android:src="@drawable/ash_studios"
-                    app:cardBackgroundColor="@color/cardColor"
-                    app:cardCornerRadius="50dp"
-                    app:cardElevation="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/rgb_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ash_studios" />
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/rgb_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="@string/developed_by"
-                    android:textAlignment="textStart"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/ash_studios"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ash_studios"
-                    app:layout_constraintTop_toTopOf="@+id/ash_studios" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintStart_toStartOf="@+id/linkedin"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

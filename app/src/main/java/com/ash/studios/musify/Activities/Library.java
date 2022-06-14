@@ -1,5 +1,11 @@
 package com.ash.studios.musify.Activities;
 
+import static com.ash.studios.musify.Utils.Constants.LIBRARY_OPTIONS;
+import static com.ash.studios.musify.Utils.Instance.mp;
+import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
+import static com.ash.studios.musify.Utils.Utils.getDialog;
+import static com.ash.studios.musify.Utils.Utils.getNewColor;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,13 +50,6 @@ import java.util.ArrayList;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-import static com.ash.studios.musify.Utils.Constants.LIBRARY_OPTIONS;
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
-import static com.ash.studios.musify.Utils.Utils.getDialog;
-import static com.ash.studios.musify.Utils.Utils.getNewColor;
-import static com.ash.studios.musify.Utils.Utils.setUpUI;
-
 public class Library extends AppCompatActivity implements
         View.OnClickListener, MediaPlayer.OnCompletionListener, IService, IControl {
     ImageView allSong, folders, albums, artists, genres, playlists, topRated, lowRated, years, optionsBtn, snipArt, snipBtn;
@@ -67,7 +67,9 @@ public class Library extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library);
-        setUpUI(this);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIds();
         setColors();

@@ -1,13 +1,19 @@
 package com.ash.studios.musify.Activities;
 
+import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
+import static com.ash.studios.musify.Utils.Utils.getDialog;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -23,10 +29,6 @@ import com.ash.studios.musify.Utils.Utils;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
-import static com.ash.studios.musify.Utils.Utils.getDialog;
-import static com.ash.studios.musify.Utils.Utils.setUpUI;
-
 public class Settings extends AppCompatActivity {
     ConstraintLayout rateApp, moreApps, reportBug, shareApp, aboutApp, termsConditions, privacyPolicy, libraryOption;
     ScrollView scrollView;
@@ -39,7 +41,9 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
-        setUpUI(this);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
     }
@@ -75,39 +79,22 @@ public class Settings extends AppCompatActivity {
 
     private void showAbout() {
         Dialog dialog = getDialog(context, R.layout.about);
-        ImageView github, twitter, instagram, facebook;
+        ImageView linkedin, twitter, instagram, facebook;
         TextView version;
 
-        //Visiting Github
-        github = dialog.findViewById(R.id.github);
-        github.setOnClickListener(v -> {
-            Uri uri = Uri.parse("https://github.com/yashas003");
+        //LinkedIn
+        linkedin = dialog.findViewById(R.id.linkedin);
+        linkedin.setOnClickListener(v -> {
+            Uri uri = Uri.parse(context.getString(R.string.dev_linkedin));
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
             dialog.dismiss();
         });
 
-        //Visiting Twitter
-        twitter = dialog.findViewById(R.id.twitter);
-        twitter.setOnClickListener(v -> {
-            Intent intent;
-            try {
-                // get the Twitter app if possible
-                context.getPackageManager().getPackageInfo("com.twitter.android", 0);
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=1281605687001243648"));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            } catch (Exception e) {
-                // no Twitter app! revert to browser
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/ash_studio_apps"));
-            }
-            context.startActivity(intent);
-            dialog.dismiss();
-        });
-
-        //Visiting Instagram
+        //Instagram
         instagram = dialog.findViewById(R.id.instagram);
         instagram.setOnClickListener(v -> {
-            Uri uri = Uri.parse("http://instagram.com/_u/ash.studio.apps");
+            Uri uri = Uri.parse(context.getString(R.string.dev_instagram));
             Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
             likeIng.setPackage("com.instagram.android");
 
@@ -115,28 +102,29 @@ public class Settings extends AppCompatActivity {
                 context.startActivity(likeIng);
             } catch (Exception e) {
                 context.startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://instagram.com/ash.studio.apps")));
+                        Uri.parse("http://instagram.com/iyashasgowda")));
             }
+            dialog.dismiss();
+        });
+
+        //Twitter
+        twitter = dialog.findViewById(R.id.twitter);
+        twitter.setOnClickListener(v -> {
+            Uri uri = Uri.parse(context.getString(R.string.dev_twitter));
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(intent);
             dialog.dismiss();
         });
 
         //Visiting LinkedIn
         facebook = dialog.findViewById(R.id.facebook);
         facebook.setOnClickListener(v -> {
-            String facebookUrl = "https://www.facebook.com/ash.studio.apps/";
             try {
-                int versionCode = context.getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
-                if (versionCode >= 3002850) {
-                    Uri uri = Uri.parse("fb://facewebmodal/f?href=" + facebookUrl);
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                } else {
-                    Uri uri = Uri.parse("fb://page/ash.studio.apps");
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(facebookUrl)));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/100069452733970"));
+                startActivity(intent);
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.dev_facebook))));
             }
-            dialog.dismiss();
         });
 
         //Setting Version
@@ -165,7 +153,7 @@ public class Settings extends AppCompatActivity {
     }
 
     private void viewPolicy() {
-        Uri uri = Uri.parse("https://github.com/yashas003/Privacy-Policies/blob/master/Musify.md");
+        Uri uri = Uri.parse("https://github.com/iyashasgowda/Privacy-Policies/blob/master/Musify.md");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
@@ -174,12 +162,12 @@ public class Settings extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
-        intent.setData(Uri.parse("https://play.google.com/store/apps/dev?id=6467928347053951775"));
+        intent.setData(Uri.parse(getString(R.string.dev_google_play)));
         startActivity(intent);
     }
 
     private void rateApplication() {
-        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
 
@@ -187,12 +175,12 @@ public class Settings extends AppCompatActivity {
             startActivity(goToMarket);
         } catch (Exception e) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
         }
     }
 
     private void shareApplication() {
-        String appPackageName = this.getPackageName();
+        String appPackageName = context.getPackageName();
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + appPackageName);
@@ -202,7 +190,7 @@ public class Settings extends AppCompatActivity {
 
     private void reportApplicationBug() {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "ash.studio.apps@gmail.com"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + getString(R.string.dev_email)));
             intent.putExtra(Intent.EXTRA_SUBJECT, "Color Palette : Report Bug");
             intent.putExtra(Intent.EXTRA_TEXT, "");
             startActivity(intent);

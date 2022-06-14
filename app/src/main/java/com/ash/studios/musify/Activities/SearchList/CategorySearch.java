@@ -1,13 +1,18 @@
 package com.ash.studios.musify.Activities.SearchList;
 
+import static com.ash.studios.musify.Utils.Instance.mp;
+import static com.ash.studios.musify.Utils.Instance.songs;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,10 +53,6 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Instance.songs;
-import static com.ash.studios.musify.Utils.Utils.setUpUI;
-
 public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView shuffleBtn, sequenceBtn, optionBtn, snipArt, snipPlayBtn, close;
     TextView searchType, snipTitle, snipArtist;
@@ -68,7 +69,9 @@ public class CategorySearch extends AppCompatActivity implements MediaPlayer.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
-        setUpUI(this);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
         close.setOnClickListener(v -> finish());
