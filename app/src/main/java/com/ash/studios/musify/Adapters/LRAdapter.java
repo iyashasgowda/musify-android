@@ -14,11 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Categories.LRList;
+import com.ash.studios.musify.activities.Categories.LRList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Activities.Categories;
+package com.ash.studios.musify.activities.Categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
@@ -23,8 +23,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Player;
-import com.ash.studios.musify.Activities.SearchList.BunchSearch;
+import com.ash.studios.musify.activities.Player;
+import com.ash.studios.musify.activities.searchList.BunchSearch;
 import com.ash.studios.musify.Adapters.PLBunchAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
@@ -35,7 +35,6 @@ import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;

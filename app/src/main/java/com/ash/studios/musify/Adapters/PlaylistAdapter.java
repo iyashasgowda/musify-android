@@ -14,8 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Categories.PLBunchList;
-import com.ash.studios.musify.Activities.Categories.PlayList;
+import com.ash.studios.musify.activities.Categories.PLBunchList;
+import com.ash.studios.musify.activities.Categories.PlayList;
 import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;

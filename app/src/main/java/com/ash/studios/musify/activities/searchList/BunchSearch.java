@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Activities.SearchList;
+package com.ash.studios.musify.activities.searchList;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
@@ -23,7 +23,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Player;
+import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.Adapters.AllSongAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
@@ -33,7 +33,6 @@ import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:padding="8dp"
-    tools:context=".Activities.Welcome"
+    tools:context=".activities.Welcome"
     tools:ignore="ContentDescription,HardcodedText">
 
     <ImageView

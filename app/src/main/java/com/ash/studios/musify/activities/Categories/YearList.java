@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Activities.Categories;
+package com.ash.studios.musify.activities.Categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
@@ -27,20 +27,19 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Player;
-import com.ash.studios.musify.Activities.SearchList.CategorySearch;
-import com.ash.studios.musify.Adapters.GenreAdapter;
-import com.ash.studios.musify.BottomSheets.GenresSort;
+import com.ash.studios.musify.activities.Player;
+import com.ash.studios.musify.activities.searchList.CategorySearch;
+import com.ash.studios.musify.Adapters.YearAdapter;
+import com.ash.studios.musify.BottomSheets.YearsSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.Models.Song;
+import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
@@ -51,7 +50,7 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class GenreList extends AppCompatActivity implements
+public class YearList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -79,15 +78,15 @@ public class GenreList extends AppCompatActivity implements
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
                 startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 4).putExtra("cat_name", "Genres"));
+                        .putExtra("cat_key", 8).putExtra("cat_name", "Years"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                shufflePlay.setOnClickListener(v -> new Thread(() -> {
 
+                shufflePlay.setOnClickListener(v -> new Thread(() -> {
                     ArrayList<Song> list = new ArrayList<>();
-                    for (Genre genre : Utils.genres)
-                        list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                    for (Year year : Utils.years)
+                        list.addAll(year.getSongs());
 
                     shufflePlay.post(() -> {
                         if (list.size() > 0) {
@@ -96,38 +95,38 @@ public class GenreList extends AppCompatActivity implements
                             Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                             engine.startPlayer();
-                            mp.setOnCompletionListener(GenreList.this);
+                            mp.setOnCompletionListener(YearList.this);
 
                             updateSnippet();
                             Utils.putShflStatus(context, true);
                             Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
                         } else
-                            Toast.makeText(context, "No songs found in any genres :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
                     });
                 }).start());
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                sequencePlay.setOnClickListener(v -> new Thread(() -> {
 
+                sequencePlay.setOnClickListener(v -> new Thread(() -> {
                     ArrayList<Song> list = new ArrayList<>();
-                    for (Genre genre : Utils.genres)
-                        list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                    for (Year year : Utils.years)
+                        list.addAll(year.getSongs());
 
                     sequencePlay.post(() -> {
                         if (list.size() > 0) {
-                            Instance.songs = list;
+                            songs = list;
                             Instance.shuffle = false;
                             Instance.position = 0;
 
                             engine.startPlayer();
-                            mp.setOnCompletionListener(GenreList.this);
+                            mp.setOnCompletionListener(YearList.this);
 
                             updateSnippet();
                             Utils.putShflStatus(context, false);
                             Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
                         } else
-                            Toast.makeText(context, "No songs found in any genres :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
                     });
                 }).start());
         }).start();
@@ -168,15 +167,15 @@ public class GenreList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF));
+                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
                         hideAttributes();
                 }, 10);
             });
             LO.setOnClickListener(lo -> {
                 dialog.dismiss();
-                GenresSort genresSort = new GenresSort(context, rv, loader, NF);
-                genresSort.show(getSupportFragmentManager(), null);
+                YearsSort yearsSort = new YearsSort(context, rv, loader, NF);
+                yearsSort.show(getSupportFragmentManager(), null);
             });
         });
     }
@@ -202,32 +201,22 @@ public class GenreList extends AppCompatActivity implements
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
 
+        title.setText(new StringBuilder("Years"));
         snippetTitle.setSelected(true);
-        title.setText(new StringBuilder("Genres"));
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_genres));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_year));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-
-        if (Utils.genres == null || Utils.genres.size() == 0)
+        if (Utils.years == null || Utils.years.size() == 0)
             new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF)), 10);
-        else rv.setAdapter(new GenreAdapter(context, Utils.genres, loader, NF));
+                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF)), 10);
+        else rv.setAdapter(new YearAdapter(context, Utils.years, loader, NF));
+
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
-    }
-
-    private void hideAttributes() {
-        shufflePlay.setAlpha(0.4f);
-        sequencePlay.setAlpha(0.4f);
-        searchBtn.setAlpha(0.4f);
-
-        shufflePlay.setOnClickListener(null);
-        sequencePlay.setOnClickListener(null);
-        searchBtn.setOnClickListener(null);
     }
 
     private void updateSnippet() {
@@ -254,17 +243,32 @@ public class GenreList extends AppCompatActivity implements
         } else snippet.setVisibility(View.GONE);
     }
 
+    private void hideAttributes() {
+        shufflePlay.setAlpha(0.4f);
+        sequencePlay.setAlpha(0.4f);
+        searchBtn.setAlpha(0.4f);
+
+        shufflePlay.setOnClickListener(null);
+        sequencePlay.setOnClickListener(null);
+        searchBtn.setOnClickListener(null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
+        if (Instance.songs != null) updateSnippet();
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        if (rv.getAdapter() != null) {
+            rv.getAdapter().notifyDataSetChanged();
+            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
+        }
+    }
+
     @Override
     public void onStartService() {
         engine.startPlayer();
         updateSnippet();
-    }
-
-    @Override
-    public void onPrevClicked() {
-        engine.playPrevSong();
-        updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override
@@ -275,11 +279,18 @@ public class GenreList extends AppCompatActivity implements
     }
 
     @Override
+    public void onPrevClicked() {
+        engine.playPrevSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
+    }
+
+    @Override
     public void onPlayClicked() {
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(GenreList.this);
+            mp.setOnCompletionListener(this);
         }
         updateSnippet();
     }
@@ -299,18 +310,6 @@ public class GenreList extends AppCompatActivity implements
         }
         snippetPlayBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((App) getApplicationContext()).setCurrentContext(context);
-        if (Instance.songs != null) updateSnippet();
-        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
-        if (rv.getAdapter() != null) {
-            rv.getAdapter().notifyDataSetChanged();
-            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
-        }
     }
 
     @Override

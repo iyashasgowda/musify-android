@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context=".Activities.SearchList.CategorySearch"
+    tools:context=".activities.searchList.CategorySearch"
     tools:ignore="UnusedAttribute,HardcodedText,ContentDescription,Autofill,LabelFor">
 
     <androidx.recyclerview.widget.RecyclerView

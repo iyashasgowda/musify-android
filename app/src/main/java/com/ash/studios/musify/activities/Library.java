@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Activities;
+package com.ash.studios.musify.activities;
 
 import static com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS;
 import static com.ash.studios.musify.utils.Instance.mp;
@@ -24,15 +24,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.ash.studios.musify.Activities.Categories.AlbumList;
-import com.ash.studios.musify.Activities.Categories.AllSongList;
-import com.ash.studios.musify.Activities.Categories.ArtistList;
-import com.ash.studios.musify.Activities.Categories.FolderList;
-import com.ash.studios.musify.Activities.Categories.GenreList;
-import com.ash.studios.musify.Activities.Categories.LRList;
-import com.ash.studios.musify.Activities.Categories.PlayList;
-import com.ash.studios.musify.Activities.Categories.TRList;
-import com.ash.studios.musify.Activities.Categories.YearList;
+import com.ash.studios.musify.activities.Categories.AlbumList;
+import com.ash.studios.musify.activities.Categories.AllSongList;
+import com.ash.studios.musify.activities.Categories.ArtistList;
+import com.ash.studios.musify.activities.Categories.FolderList;
+import com.ash.studios.musify.activities.Categories.GenreList;
+import com.ash.studios.musify.activities.Categories.LRList;
+import com.ash.studios.musify.activities.Categories.PlayList;
+import com.ash.studios.musify.activities.Categories.TRList;
+import com.ash.studios.musify.activities.Categories.YearList;
 import com.ash.studios.musify.BottomSheets.LibrarySheet;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
@@ -42,7 +42,6 @@ import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 

@@ -18,7 +18,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.ash.studios.musify.Activities.Player;
+import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
@@ -26,7 +26,6 @@ import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 
 import static com.ash.studios.musify.utils.App.CHANNEL_ID;

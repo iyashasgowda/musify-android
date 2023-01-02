@@ -1,6 +1,6 @@
-package com.ash.studios.musify.Activities.Categories;
+package com.ash.studios.musify.activities.Categories;
 
-import static com.ash.studios.musify.utils.Constants.COMMON_SORT;
+import static com.ash.studios.musify.utils.Constants.ALBUMS_SORT;
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
 
@@ -11,8 +11,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,16 +21,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Activities.Player;
-import com.ash.studios.musify.Activities.SearchList.BunchSearch;
-import com.ash.studios.musify.Adapters.AllSongAdapter;
-import com.ash.studios.musify.BottomSheets.CommonSort;
+import com.ash.studios.musify.activities.Player;
+import com.ash.studios.musify.activities.searchList.CategorySearch;
+import com.ash.studios.musify.Adapters.AlbumAdapter;
+import com.ash.studios.musify.BottomSheets.AlbumsSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
@@ -38,85 +41,87 @@ import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
 import com.ash.studios.musify.utils.Constants;
 import com.ash.studios.musify.utils.Engine;
-import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class BunchList extends AppCompatActivity implements
+public class AlbumList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
-    ImageView coverArt, shuffleAllBtn, sequenceAllBtn, searchBtn, optionBtn, snippetArt, snippetPlayBtn;
-    TextView bunchTitle, goBackTo, NF, snippetTitle, snippetArtist;
-    ConstraintLayout goBackBtn;
+    ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
+    TextView title, NF, snippetTitle, snippetArtist;
+    ConstraintLayout backToLib;
+    AppBarLayout appBar;
     ProgressBar loader;
     CardView snippet;
     RecyclerView rv;
     FastScroller fs;
 
     Engine engine;
-    String listName;
     Context context;
-    ArrayList<Song> list;
+    SharedPreferences prefs;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bunch_list);
+        setContentView(R.layout.songs_list);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
-        goBackBtn.setOnClickListener(v -> finish());
+        backToLib.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                startActivity(new Intent(context, BunchSearch.class)
-                        .putExtra("list_name", listName)
-                        .putExtra("list", list));
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 2).putExtra("cat_name", "Albums"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                shufflePlay.setOnClickListener(v -> {
 
-                shuffleAllBtn.setOnClickListener(v -> {
+                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "album " + order_by);
                     if (list.size() > 0) {
                         Instance.songs = list;
                         Instance.shuffle = true;
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(BunchList.this);
+                        mp.setOnCompletionListener(AlbumList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in any albums :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                sequencePlay.setOnClickListener(v -> {
 
-                sequenceAllBtn.setOnClickListener(v -> {
+                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "album " + order_by);
                     if (list.size() > 0) {
                         Instance.songs = list;
                         Instance.shuffle = false;
                         Instance.position = 0;
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(BunchList.this);
+                        mp.setOnCompletionListener(AlbumList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, false);
                         Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in any albums :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
@@ -136,89 +141,87 @@ public class BunchList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
-        optionBtn.setOnClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.bunch_dg);
+        optionsBtn.setOnClickListener(v -> {
+            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
 
-            ImageView bunchArt = dialog.findViewById(R.id.bunch_op_art);
-            TextView title = dialog.findViewById(R.id.bunch_op_title);
-            TextView count = dialog.findViewById(R.id.bunch_op_count);
-            ConstraintLayout LO = dialog.findViewById(R.id.bunch_op_listing);
+            TextView dialogName = dialog.findViewById(R.id.dialog_name);
+            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
+            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
+            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout ST = dialog.findViewById(R.id.settings);
 
-            title.setText(bunchTitle.getText());
-            title.setSelected(true);
-            bunchArt.setImageDrawable(coverArt.getDrawable());
-            count.setText(new StringBuilder("\u266B ").append(list.size()));
+            dialogName.setText(title.getText());
+            dialogIcon.setImageDrawable(icon.getDrawable());
 
+            ST.setVisibility(View.GONE);
+            RM.setOnClickListener(rm -> {
+                dialog.dismiss();
+
+                rv.setAdapter(null);
+                NF.setVisibility(View.GONE);
+                loader.setVisibility(View.VISIBLE);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF));
+                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
+                        hideAttributes();
+                }, 500);
+            });
             LO.setOnClickListener(lo -> {
                 dialog.dismiss();
-                CommonSort commonSort = new CommonSort(context, rv, loader, NF, list);
-                commonSort.show(getSupportFragmentManager(), null);
+                AlbumsSort albumsSort = new AlbumsSort(context, rv, loader, NF);
+                albumsSort.show(getSupportFragmentManager(), null);
             });
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void setIDs() {
-        listName = getIntent().getStringExtra("list_name");
-        ArrayList<Song> temp = (ArrayList<Song>) getIntent().getSerializableExtra("list");
-        list = temp == null ? new ArrayList<>() : temp;
-
         context = this;
         engine = new Engine(context);
-        rv = findViewById(R.id.bunch_rv);
+        rv = findViewById(R.id.song_list);
+        appBar = findViewById(R.id.app_bar);
         snippet = findViewById(R.id.snippet);
-        loader = findViewById(R.id.bunch_pb);
         NF = findViewById(R.id.nothing_found);
-        fs = findViewById(R.id.fast_bunch_list);
-        coverArt = findViewById(R.id.cover_art);
-        goBackTo = findViewById(R.id.go_back_to);
-        goBackBtn = findViewById(R.id.go_back_btn);
-        bunchTitle = findViewById(R.id.bunch_title);
-        searchBtn = findViewById(R.id.bunch_search_btn);
-        optionBtn = findViewById(R.id.bunch_option_btn);
+        fs = findViewById(R.id.fast_song_list);
+        icon = findViewById(R.id.activity_icon);
+        backToLib = findViewById(R.id.lib_back);
+        loader = findViewById(R.id.list_loader);
+        title = findViewById(R.id.activity_title);
+        searchBtn = findViewById(R.id.search_btn);
+        optionsBtn = findViewById(R.id.options_btn);
+        sequencePlay = findViewById(R.id.play_all_btn);
+        shufflePlay = findViewById(R.id.shuffle_all_btn);
         snippetTitle = snippet.findViewById(R.id.snip_title);
         snippetArt = snippet.findViewById(R.id.snip_album_art);
         snippetArtist = snippet.findViewById(R.id.snip_artist);
-        shuffleAllBtn = findViewById(R.id.bunch_shuffle_all_btn);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
-        sequenceAllBtn = findViewById(R.id.bunch_sequence_all_btn);
+        prefs = getSharedPreferences(ALBUMS_SORT, MODE_PRIVATE);
 
-        bunchTitle.setText(listName);
         snippetTitle.setSelected(true);
-        goBackTo.setText(getIntent().getStringExtra("list_from"));
-        if (list.size() > 0) Glide.with(getApplicationContext())
-                .asBitmap().load(Utils.getAlbumArt(list.get(0).getAlbum_id()))
-                .placeholder(R.drawable.placeholder)
-                .into(coverArt);
+        title.setText(new StringBuilder("Albums"));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_album));
+        icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
-        getData();
-    }
+        if (Utils.albums == null || Utils.albums.size() == 0)
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF)), 10);
+        else rv.setAdapter(new AlbumAdapter(context, Utils.albums, loader, NF));
 
-    private void getData() {
-        SharedPreferences prefs = context.getSharedPreferences(COMMON_SORT, MODE_PRIVATE);
-        String sort_by = prefs.getString("sort_by", "title");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            switch (sort_by) {
-                case "title":
-                    list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
-                    break;
-                case "album":
-                    list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
-                    break;
-                case "artist":
-                    list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
-                    break;
-            }
-        }
-        if (prefs.getBoolean("order_by", false)) Collections.reverse(list);
-        rv.setAdapter(new AllSongAdapter(context, list, loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
+        OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
+    }
+
+    private void hideAttributes() {
+        shufflePlay.setAlpha(0.4f);
+        sequencePlay.setAlpha(0.4f);
+        searchBtn.setAlpha(0.4f);
+
+        shufflePlay.setOnClickListener(null);
+        sequencePlay.setOnClickListener(null);
+        searchBtn.setOnClickListener(null);
     }
 
     private void updateSnippet() {
@@ -245,20 +248,33 @@ public class BunchList extends AppCompatActivity implements
         } else snippet.setVisibility(View.GONE);
     }
 
-    private void hideAttributes() {
-        searchBtn.setAlpha(0.4f);
-        shuffleAllBtn.setAlpha(0.4f);
-        sequenceAllBtn.setAlpha(0.4f);
-
-        searchBtn.setOnClickListener(null);
-        shuffleAllBtn.setOnClickListener(null);
-        sequenceAllBtn.setOnClickListener(null);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
+        if (Instance.songs != null) updateSnippet();
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        if (rv.getAdapter() != null) {
+            rv.getAdapter().notifyDataSetChanged();
+            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
+        }
     }
 
     @Override
     public void onStartService() {
         engine.startPlayer();
         updateSnippet();
+    }
+
+    @Override
+    public void onStopService() {
+        if (Instance.mp != null) {
+            Instance.mp.stop();
+            Instance.mp.release();
+            Instance.mp = null;
+        }
+        snippetPlayBtn.setImageResource(R.drawable.ic_play);
+        stopService(new Intent(context, MusicService.class));
     }
 
     @Override
@@ -280,7 +296,7 @@ public class BunchList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(BunchList.this);
+            mp.setOnCompletionListener(AlbumList.this);
         }
         updateSnippet();
     }
@@ -289,29 +305,6 @@ public class BunchList extends AppCompatActivity implements
     public void onPauseClicked() {
         if (Instance.mp != null) Instance.mp.pause();
         updateSnippet();
-    }
-
-    @Override
-    public void onStopService() {
-        if (Instance.mp != null) {
-            Instance.mp.stop();
-            Instance.mp.release();
-            Instance.mp = null;
-        }
-        snippetPlayBtn.setImageResource(R.drawable.ic_play);
-        stopService(new Intent(context, MusicService.class));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((App) getApplicationContext()).setCurrentContext(context);
-        if (Instance.songs != null) updateSnippet();
-        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
-        if (rv.getAdapter() != null) {
-            rv.getAdapter().notifyDataSetChanged();
-            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
-        }
     }
 
     @Override

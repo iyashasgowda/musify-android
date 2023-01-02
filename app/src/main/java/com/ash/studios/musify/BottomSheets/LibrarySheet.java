@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.ash.studios.musify.Activities.Library;
+import com.ash.studios.musify.activities.Library;
 import com.ash.studios.musify.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Activities;
+package com.ash.studios.musify.activities;
 
 import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 import static com.ash.studios.musify.utils.Utils.getDialog;

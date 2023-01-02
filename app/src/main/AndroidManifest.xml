@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
-            android:name=".Activities.Welcome"
+            android:name=".activities.Welcome"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,25 +30,25 @@
         </activity>
 
         <activity
-            android:name=".Activities.SearchList.CategorySearch"
+            android:name=".activities.searchList.CategorySearch"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
         <activity
-            android:name=".Activities.SearchList.BunchSearch"
+            android:name=".activities.searchList.BunchSearch"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
-        <activity android:name=".Activities.Categories.AllSongList" />
-        <activity android:name=".Activities.Categories.PLBunchList" />
-        <activity android:name=".Activities.Categories.FolderList" />
-        <activity android:name=".Activities.Categories.ArtistList" />
-        <activity android:name=".Activities.Categories.AlbumList" />
-        <activity android:name=".Activities.Categories.GenreList" />
-        <activity android:name=".Activities.Categories.BunchList" />
-        <activity android:name=".Activities.Categories.PlayList" />
-        <activity android:name=".Activities.Categories.YearList" />
-        <activity android:name=".Activities.Categories.TRList" />
-        <activity android:name=".Activities.Categories.LRList" />
-        <activity android:name=".Activities.Settings" />
-        <activity android:name=".Activities.Player" />
-        <activity android:name=".Activities.Library" />
+        <activity android:name=".activities.Categories.AllSongList" />
+        <activity android:name=".activities.Categories.PLBunchList" />
+        <activity android:name=".activities.Categories.FolderList" />
+        <activity android:name=".activities.Categories.ArtistList" />
+        <activity android:name=".activities.Categories.AlbumList" />
+        <activity android:name=".activities.Categories.GenreList" />
+        <activity android:name=".activities.Categories.BunchList" />
+        <activity android:name=".activities.Categories.PlayList" />
+        <activity android:name=".activities.Categories.YearList" />
+        <activity android:name=".activities.Categories.TRList" />
+        <activity android:name=".activities.Categories.LRList" />
+        <activity android:name=".activities.Settings" />
+        <activity android:name=".activities.Player" />
+        <activity android:name=".activities.Library" />
 
         <service android:name=".Services.MusicService" />
 
