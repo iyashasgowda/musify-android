@@ -172,7 +172,7 @@ public class Library extends AppCompatActivity implements
                     Instance.mp.start();
                     Instance.playing = true;
                     snipBtn.setImageResource(R.drawable.ic_pause);
-                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
                 }
             } else {
                 engine.startPlayer();
@@ -297,14 +297,14 @@ public class Library extends AppCompatActivity implements
     public void onPrevClicked() {
         engine.playPrevSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override
     public void onNextClicked() {
         engine.playNextSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override

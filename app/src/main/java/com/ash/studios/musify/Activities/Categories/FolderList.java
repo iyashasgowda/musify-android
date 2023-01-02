@@ -140,7 +140,7 @@ public class FolderList extends AppCompatActivity implements
                     Instance.mp.start();
                     Instance.playing = true;
                     snippetPlayBtn.setImageResource(R.drawable.ic_pause);
-                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
                 }
             } else {
                 engine.startPlayer();
@@ -270,14 +270,14 @@ public class FolderList extends AppCompatActivity implements
     public void onNextClicked() {
         engine.playNextSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override
     public void onPrevClicked() {
         engine.playPrevSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override

@@ -89,7 +89,7 @@ public class PlayList extends AppCompatActivity implements
                     snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
                     Instance.playing = true;
-                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                    startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
                 }
             } else {
                 engine.startPlayer();
@@ -322,14 +322,14 @@ public class PlayList extends AppCompatActivity implements
     public void onPrevClicked() {
         engine.playPrevSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override
     public void onNextClicked() {
         engine.playNextSong();
         updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override

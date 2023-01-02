@@ -41,7 +41,7 @@ public class Engine {
         mp.start();
 
         Instance.playing = true;
-        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
         setCurrentPlayBack();
     }
 
@@ -79,7 +79,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
-        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
         setCurrentPlayBack();
     }
 
@@ -124,7 +124,7 @@ public class Engine {
 
             mp.setOnCompletionListener((MediaPlayer.OnCompletionListener) context);
         }
-        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+        context.startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
         setCurrentPlayBack();
     }
 

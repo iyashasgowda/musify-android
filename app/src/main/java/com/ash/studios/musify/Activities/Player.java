@@ -416,7 +416,7 @@ public class Player extends AppCompatActivity implements
                 mp.start();
                 Instance.playing = true;
                 if (duration.getAnimation() != null) duration.getAnimation().cancel();
-                startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE));
+                startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
             }
         } else {
             engine.startPlayer();

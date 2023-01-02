@@ -30,6 +30,7 @@ import com.ash.studios.musify.utils.Instance;
 import com.ash.studios.musify.utils.Utils;
 
 import static com.ash.studios.musify.utils.App.CHANNEL_ID;
+import static com.ash.studios.musify.utils.Constants.FOREGROUND_SERVICE;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener {
     Context context;
@@ -47,32 +48,24 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        switch (intent.getAction()) {
-            case Constants.ACTION.CREATE:
-                if (Instance.playing) notificationForPlay();
-                else notificationForPause();
-                break;
-            case Constants.ACTION.STOP_SERVICE:
-                ((IService) ((App) getApplicationContext()).getCurrentContext()).onStopService();
-                stopSelf();
-                break;
-            case Constants.ACTION.PREV:
-                ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPrevClicked();
-                break;
-            case Constants.ACTION.PLAY:
-                Instance.playing = true;
-                ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPlayClicked();
-                notificationForPlay();
-                break;
-            case Constants.ACTION.PAUSE:
-                Instance.playing = false;
-                ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPauseClicked();
-                notificationForPause();
-                break;
-            case Constants.ACTION.NEXT:
-                ((IControl) ((App) getApplicationContext()).getCurrentContext()).onNextClicked();
-                break;
+        if (Constants.ACTION.CREATE.getLabel().equals(intent.getAction())) {
+            if (Instance.playing) notificationForPlay();
+            else notificationForPause();
+        } else if (Constants.ACTION.STOP_SERVICE.getLabel().equals(intent.getAction())) {
+            ((IService) ((App) getApplicationContext()).getCurrentContext()).onStopService();
+            stopSelf();
+        } else if (Constants.ACTION.PREV.getLabel().equals(intent.getAction())) {
+            ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPrevClicked();
+        } else if (Constants.ACTION.PLAY.getLabel().equals(intent.getAction())) {
+            Instance.playing = true;
+            ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPlayClicked();
+            notificationForPlay();
+        } else if (Constants.ACTION.PAUSE.getLabel().equals(intent.getAction())) {
+            Instance.playing = false;
+            ((IControl) ((App) getApplicationContext()).getCurrentContext()).onPauseClicked();
+            notificationForPause();
+        } else if (Constants.ACTION.NEXT.getLabel().equals(intent.getAction())) {
+            ((IControl) ((App) getApplicationContext()).getCurrentContext()).onNextClicked();
         }
 
         return START_NOT_STICKY;
@@ -83,16 +76,16 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent mainPending = PendingIntent.getActivity(context, 0, mainIntent, 0);
 
-        Intent stopIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.STOP_SERVICE);
+        Intent stopIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.STOP_SERVICE.getLabel());
         PendingIntent stopPending = PendingIntent.getService(context, 0, stopIntent, 0);
 
-        Intent prevIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PREV);
+        Intent prevIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PREV.getLabel());
         PendingIntent prevPending = PendingIntent.getService(context, 0, prevIntent, 0);
 
-        Intent pauseIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PAUSE);
+        Intent pauseIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PAUSE.getLabel());
         PendingIntent pausePending = PendingIntent.getService(context, 0, pauseIntent, 0);
 
-        Intent nextIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.NEXT);
+        Intent nextIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.NEXT.getLabel());
         PendingIntent nextPending = PendingIntent.getService(context, 0, nextIntent, 0);
 
         Song song = Instance.songs.get(Instance.position);
@@ -118,7 +111,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setContentIntent(mainPending)
                 .build();
 
-        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+        startForeground(FOREGROUND_SERVICE, notification);
     }
 
     private void notificationForPause() {
@@ -126,16 +119,16 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent mainPending = PendingIntent.getActivity(context, 0, mainIntent, 0);
 
-        Intent stopIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.STOP_SERVICE);
+        Intent stopIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.STOP_SERVICE.getLabel());
         PendingIntent stopPending = PendingIntent.getService(context, 3, stopIntent, 0);
 
-        Intent prevIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PREV);
+        Intent prevIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PREV.getLabel());
         PendingIntent prevPending = PendingIntent.getService(context, 0, prevIntent, 0);
 
-        Intent playIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PLAY);
+        Intent playIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.PLAY.getLabel());
         PendingIntent playPending = PendingIntent.getService(context, 1, playIntent, 0);
 
-        Intent nextIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.NEXT);
+        Intent nextIntent = new Intent(context, MusicService.class).setAction(Constants.ACTION.NEXT.getLabel());
         PendingIntent nextPending = PendingIntent.getService(context, 2, nextIntent, 0);
 
         Song song = Instance.songs.get(Instance.position);
@@ -161,7 +154,7 @@ public class MusicService extends Service implements MediaPlayer.OnCompletionLis
                 .setContentIntent(mainPending)
                 .build();
 
-        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+        startForeground(FOREGROUND_SERVICE, notification);
     }
 
     private Bitmap getBitmap(Uri uri) {
