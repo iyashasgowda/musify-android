@@ -1,4 +1,4 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
@@ -29,11 +29,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.FolderAdapter;
+import com.ash.studios.musify.Adapters.YearAdapter;
+import com.ash.studios.musify.BottomSheets.YearsSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Models.Folder;
 import com.ash.studios.musify.Models.Song;
+import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
@@ -49,7 +50,7 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class FolderList extends AppCompatActivity implements
+public class YearList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -77,15 +78,15 @@ public class FolderList extends AppCompatActivity implements
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
                 startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 1).putExtra("cat_name", "Folders"));
+                        .putExtra("cat_key", 8).putExtra("cat_name", "Years"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                shufflePlay.setOnClickListener(v -> new Thread(() -> {
 
+                shufflePlay.setOnClickListener(v -> new Thread(() -> {
                     ArrayList<Song> list = new ArrayList<>();
-                    for (Folder folder : Utils.folders != null ? Utils.folders : Utils.getFolders(context))
-                        list.addAll(folder.getSongs());
+                    for (Year year : Utils.years)
+                        list.addAll(year.getSongs());
 
                     shufflePlay.post(() -> {
                         if (list.size() > 0) {
@@ -94,58 +95,58 @@ public class FolderList extends AppCompatActivity implements
                             Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                             engine.startPlayer();
-                            mp.setOnCompletionListener(FolderList.this);
+                            mp.setOnCompletionListener(YearList.this);
 
                             updateSnippet();
                             Utils.putShflStatus(context, true);
                             Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
                         } else
-                            Toast.makeText(context, "No songs found in any folders :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
                     });
                 }).start());
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                sequencePlay.setOnClickListener(v -> new Thread(() -> {
 
+                sequencePlay.setOnClickListener(v -> new Thread(() -> {
                     ArrayList<Song> list = new ArrayList<>();
-                    for (Folder folder : Utils.folders != null ? Utils.folders : Utils.getFolders(context))
-                        list.addAll(folder.getSongs());
+                    for (Year year : Utils.years)
+                        list.addAll(year.getSongs());
 
                     sequencePlay.post(() -> {
                         if (list.size() > 0) {
-                            Instance.songs = list;
+                            songs = list;
                             Instance.shuffle = false;
                             Instance.position = 0;
 
                             engine.startPlayer();
-                            mp.setOnCompletionListener(FolderList.this);
+                            mp.setOnCompletionListener(YearList.this);
 
                             updateSnippet();
                             Utils.putShflStatus(context, false);
                             Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
                         } else
-                            Toast.makeText(context, "No songs found in any folders :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
                     });
                 }).start());
         }).start();
-        snippetPlayBtn.setOnClickListener(v -> {
+        new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
-                    Instance.mp.pause();
                     snippetPlayBtn.setImageResource(R.drawable.ic_play);
+                    Instance.mp.pause();
                     stopService(new Intent(context, MusicService.class));
                 } else {
+                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     Instance.mp.start();
                     Instance.playing = true;
-                    snippetPlayBtn.setImageResource(R.drawable.ic_pause);
                     startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
                 }
             } else {
                 engine.startPlayer();
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
-        });
+        })).start();
         optionsBtn.setOnClickListener(v -> {
             Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
 
@@ -159,7 +160,6 @@ public class FolderList extends AppCompatActivity implements
             dialogIcon.setImageDrawable(icon.getDrawable());
 
             ST.setVisibility(View.GONE);
-            LO.setVisibility(View.GONE);
             RM.setOnClickListener(rm -> {
                 dialog.dismiss();
 
@@ -167,10 +167,15 @@ public class FolderList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new FolderAdapter(context, Utils.getFolders(context), loader, NF));
+                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
                         hideAttributes();
                 }, 10);
+            });
+            LO.setOnClickListener(lo -> {
+                dialog.dismiss();
+                YearsSort yearsSort = new YearsSort(context, rv, loader, NF);
+                yearsSort.show(getSupportFragmentManager(), null);
             });
         });
     }
@@ -196,18 +201,19 @@ public class FolderList extends AppCompatActivity implements
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
 
+        title.setText(new StringBuilder("Years"));
         snippetTitle.setSelected(true);
-        title.setText(new StringBuilder("Folders"));
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_folders));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_year));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-
-        if (Utils.folders == null || Utils.folders.size() == 0)
+        if (Utils.years == null || Utils.years.size() == 0)
             new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new FolderAdapter(context, Utils.getFolders(context), loader, NF)), 10);
-        else rv.setAdapter(new FolderAdapter(context, Utils.folders, loader, NF));
+                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF)), 10);
+        else rv.setAdapter(new YearAdapter(context, Utils.years, loader, NF));
+
+        if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
@@ -284,7 +290,7 @@ public class FolderList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(FolderList.this);
+            mp.setOnCompletionListener(this);
         }
         updateSnippet();
     }

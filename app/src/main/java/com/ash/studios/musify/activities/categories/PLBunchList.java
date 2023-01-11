@@ -1,17 +1,14 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -23,17 +20,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
-import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.GenreAdapter;
-import com.ash.studios.musify.BottomSheets.GenresSort;
+import com.ash.studios.musify.activities.searchList.BunchSearch;
+import com.ash.studios.musify.Adapters.PLBunchAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Models.Genre;
+import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
@@ -43,92 +38,81 @@ import com.ash.studios.musify.utils.Engine;
 import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
-import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class GenreList extends AppCompatActivity implements
+public class PLBunchList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
-    ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
-    TextView title, NF, snippetTitle, snippetArtist;
-    ConstraintLayout backToLib;
-    AppBarLayout appBar;
+    ImageView coverArt, shuffleAllBtn, sequenceAllBtn, searchBtn, optionBtn, snippetArt, snippetPlayBtn;
+    TextView bunchTitle, goBackTo, NF, snippetTitle, snippetArtist;
+    ConstraintLayout goBackBtn;
     ProgressBar loader;
     CardView snippet;
     RecyclerView rv;
     FastScroller fs;
 
     Engine engine;
+    String listName;
     Context context;
+    ArrayList<Song> list;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.songs_list);
+        setContentView(R.layout.bunch_list);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
-        backToLib.setOnClickListener(v -> finish());
+        goBackBtn.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 4).putExtra("cat_name", "Genres"));
+                startActivity(new Intent(context, BunchSearch.class)
+                        .putExtra("list_name", listName)
+                        .putExtra("list", list));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                shufflePlay.setOnClickListener(v -> new Thread(() -> {
 
-                    ArrayList<Song> list = new ArrayList<>();
-                    for (Genre genre : Utils.genres)
-                        list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                shuffleAllBtn.setOnClickListener(v -> {
+                    if (list.size() > 0) {
+                        songs = list;
+                        Instance.shuffle = true;
+                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                    shufflePlay.post(() -> {
-                        if (list.size() > 0) {
-                            Instance.songs = list;
-                            Instance.shuffle = true;
-                            Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                        engine.startPlayer();
+                        mp.setOnCompletionListener(PLBunchList.this);
 
-                            engine.startPlayer();
-                            mp.setOnCompletionListener(GenreList.this);
-
-                            updateSnippet();
-                            Utils.putShflStatus(context, true);
-                            Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                        } else
-                            Toast.makeText(context, "No songs found in any genres :(", Toast.LENGTH_SHORT).show();
-                    });
-                }).start());
+                        updateSnippet();
+                        Utils.putShflStatus(context, true);
+                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
+                });
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                sequencePlay.setOnClickListener(v -> new Thread(() -> {
 
-                    ArrayList<Song> list = new ArrayList<>();
-                    for (Genre genre : Utils.genres)
-                        list.addAll(Utils.getGenreSongs(context, genre.getGenre_id()));
+                sequenceAllBtn.setOnClickListener(v -> {
+                    if (list.size() > 0) {
+                        songs = list;
+                        Instance.shuffle = false;
+                        Instance.position = 0;
 
-                    sequencePlay.post(() -> {
-                        if (list.size() > 0) {
-                            Instance.songs = list;
-                            Instance.shuffle = false;
-                            Instance.position = 0;
+                        engine.startPlayer();
+                        mp.setOnCompletionListener(PLBunchList.this);
 
-                            engine.startPlayer();
-                            mp.setOnCompletionListener(GenreList.this);
-
-                            updateSnippet();
-                            Utils.putShflStatus(context, false);
-                            Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                        } else
-                            Toast.makeText(context, "No songs found in any genres :(", Toast.LENGTH_SHORT).show();
-                    });
-                }).start());
+                        updateSnippet();
+                        Utils.putShflStatus(context, false);
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "No songs found in the current list :(", Toast.LENGTH_SHORT).show();
+                });
         }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
@@ -147,86 +131,51 @@ public class GenreList extends AppCompatActivity implements
                 snippetPlayBtn.setImageResource(R.drawable.ic_pause);
             }
         })).start();
-        optionsBtn.setOnClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
-
-            TextView dialogName = dialog.findViewById(R.id.dialog_name);
-            ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
-            ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
-            ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
-            ConstraintLayout ST = dialog.findViewById(R.id.settings);
-
-            dialogName.setText(title.getText());
-            dialogIcon.setImageDrawable(icon.getDrawable());
-
-            ST.setVisibility(View.GONE);
-            RM.setOnClickListener(rm -> {
-                dialog.dismiss();
-
-                rv.setAdapter(null);
-                NF.setVisibility(View.GONE);
-                loader.setVisibility(View.VISIBLE);
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF));
-                    if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
-                        hideAttributes();
-                }, 10);
-            });
-            LO.setOnClickListener(lo -> {
-                dialog.dismiss();
-                GenresSort genresSort = new GenresSort(context, rv, loader, NF);
-                genresSort.show(getSupportFragmentManager(), null);
-            });
-        });
     }
 
     private void setIDs() {
+        Playlist playlist = (Playlist) getIntent().getSerializableExtra("playlist");
+        listName = playlist.getName();
+
+        ArrayList<Song> temp = playlist.getSongs();
+        list = temp == null ? new ArrayList<>() : temp;
+        int position = getIntent().getIntExtra("position", -1);
+
         context = this;
         engine = new Engine(context);
-        rv = findViewById(R.id.song_list);
-        appBar = findViewById(R.id.app_bar);
+        rv = findViewById(R.id.bunch_rv);
         snippet = findViewById(R.id.snippet);
+        loader = findViewById(R.id.bunch_pb);
         NF = findViewById(R.id.nothing_found);
-        fs = findViewById(R.id.fast_song_list);
-        icon = findViewById(R.id.activity_icon);
-        backToLib = findViewById(R.id.lib_back);
-        loader = findViewById(R.id.list_loader);
-        title = findViewById(R.id.activity_title);
-        searchBtn = findViewById(R.id.search_btn);
-        optionsBtn = findViewById(R.id.options_btn);
-        sequencePlay = findViewById(R.id.play_all_btn);
-        shufflePlay = findViewById(R.id.shuffle_all_btn);
+        fs = findViewById(R.id.fast_bunch_list);
+        coverArt = findViewById(R.id.cover_art);
+        goBackTo = findViewById(R.id.go_back_to);
+        goBackBtn = findViewById(R.id.go_back_btn);
+        bunchTitle = findViewById(R.id.bunch_title);
+        searchBtn = findViewById(R.id.bunch_search_btn);
+        optionBtn = findViewById(R.id.bunch_option_btn);
         snippetTitle = snippet.findViewById(R.id.snip_title);
         snippetArt = snippet.findViewById(R.id.snip_album_art);
         snippetArtist = snippet.findViewById(R.id.snip_artist);
+        shuffleAllBtn = findViewById(R.id.bunch_shuffle_all_btn);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
+        sequenceAllBtn = findViewById(R.id.bunch_sequence_all_btn);
 
+        bunchTitle.setText(listName);
         snippetTitle.setSelected(true);
-        title.setText(new StringBuilder("Genres"));
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_genres));
-        icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
+        goBackTo.setText(new StringBuilder("Playlist"));
+        if (list.size() > 0) Glide.with(getApplicationContext())
+                .asBitmap().load(Utils.getAlbumArt(list.get(0).getAlbum_id()))
+                .placeholder(R.drawable.placeholder)
+                .into(coverArt);
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-
-        if (Utils.genres == null || Utils.genres.size() == 0)
-            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new GenreAdapter(context, Utils.getGenres(context), loader, NF)), 10);
-        else rv.setAdapter(new GenreAdapter(context, Utils.genres, loader, NF));
+        rv.setAdapter(new PLBunchAdapter(context, list, position, loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
-    }
-
-    private void hideAttributes() {
-        shufflePlay.setAlpha(0.4f);
-        sequencePlay.setAlpha(0.4f);
-        searchBtn.setAlpha(0.4f);
-
-        shufflePlay.setOnClickListener(null);
-        sequencePlay.setOnClickListener(null);
-        searchBtn.setOnClickListener(null);
     }
 
     private void updateSnippet() {
@@ -251,6 +200,16 @@ public class GenreList extends AppCompatActivity implements
             else
                 snippetPlayBtn.setImageResource(R.drawable.ic_play);
         } else snippet.setVisibility(View.GONE);
+    }
+
+    private void hideAttributes() {
+        searchBtn.setAlpha(0.4f);
+        shuffleAllBtn.setAlpha(0.4f);
+        sequenceAllBtn.setAlpha(0.4f);
+
+        searchBtn.setOnClickListener(null);
+        shuffleAllBtn.setOnClickListener(null);
+        sequenceAllBtn.setOnClickListener(null);
     }
 
     @Override
@@ -278,7 +237,7 @@ public class GenreList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(GenreList.this);
+            mp.setOnCompletionListener(PLBunchList.this);
         }
         updateSnippet();
     }

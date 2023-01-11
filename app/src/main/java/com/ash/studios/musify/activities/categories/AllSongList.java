@@ -1,4 +1,4 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;

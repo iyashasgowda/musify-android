@@ -1,21 +1,21 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
-import static com.ash.studios.musify.utils.Constants.ARTISTS_SORT;
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,10 +31,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.ArtistAdapter;
-import com.ash.studios.musify.BottomSheets.ArtistsSort;
+import com.ash.studios.musify.Adapters.PlaylistAdapter;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
+import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
@@ -51,7 +51,7 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class ArtistList extends AppCompatActivity implements
+public class PlayList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -63,8 +63,8 @@ public class ArtistList extends AppCompatActivity implements
     FastScroller fs;
 
     Engine engine;
+    Dialog dialog;
     Context context;
-    SharedPreferences prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,55 +75,9 @@ public class ArtistList extends AppCompatActivity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         setIDs();
+        showAttributes();
         backToLib.setOnClickListener(v -> finish());
         snippet.setOnClickListener(v -> startActivity(new Intent(context, Player.class)));
-        searchBtn.setOnClickListener(v -> {
-            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 3).putExtra("cat_name", "Artists"));
-        });
-        new Thread(() -> {
-            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                shufflePlay.setOnClickListener(v -> {
-
-                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
-                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist " + order_by);
-                    if (list.size() > 0) {
-                        Instance.songs = list;
-                        Instance.shuffle = true;
-                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
-
-                        engine.startPlayer();
-                        mp.setOnCompletionListener(ArtistList.this);
-
-                        updateSnippet();
-                        Utils.putShflStatus(context, true);
-                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                    } else
-                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
-                });
-        }).start();
-        new Thread(() -> {
-            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                sequencePlay.setOnClickListener(v -> {
-
-                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
-                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist " + order_by);
-                    if (list.size() > 0) {
-                        Instance.songs = list;
-                        Instance.shuffle = false;
-                        Instance.position = 0;
-
-                        engine.startPlayer();
-                        mp.setOnCompletionListener(ArtistList.this);
-
-                        updateSnippet();
-                        Utils.putShflStatus(context, false);
-                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                    } else
-                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
-                });
-        }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
                 if (Instance.mp.isPlaying()) {
@@ -142,18 +96,21 @@ public class ArtistList extends AppCompatActivity implements
             }
         })).start();
         optionsBtn.setOnClickListener(v -> {
-            Dialog dialog = Utils.getDialog(context, R.layout.options_dg);
+            dialog = Utils.getDialog(context, R.layout.options_dg);
 
             TextView dialogName = dialog.findViewById(R.id.dialog_name);
             ImageView dialogIcon = dialog.findViewById(R.id.dialog_icon);
             ConstraintLayout RM = dialog.findViewById(R.id.rescan_media);
             ConstraintLayout LO = dialog.findViewById(R.id.listing_options);
+            ConstraintLayout AN = dialog.findViewById(R.id.add_new);
             ConstraintLayout ST = dialog.findViewById(R.id.settings);
 
             dialogName.setText(title.getText());
             dialogIcon.setImageDrawable(icon.getDrawable());
 
             ST.setVisibility(View.GONE);
+            LO.setVisibility(View.GONE);
+            AN.setVisibility(View.VISIBLE);
             RM.setOnClickListener(rm -> {
                 dialog.dismiss();
 
@@ -161,15 +118,35 @@ public class ArtistList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new ArtistAdapter(context, Utils.getArtists(context), loader, NF));
+                    rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
-                        hideAttributes();
+                        disableBtn();
                 }, 10);
             });
-            LO.setOnClickListener(lo -> {
+            AN.setOnClickListener(an -> {
                 dialog.dismiss();
-                ArtistsSort artistsSort = new ArtistsSort(context, rv, loader, NF);
-                artistsSort.show(getSupportFragmentManager(), null);
+
+                Dialog nameDialog = Utils.getDialog(context, R.layout.name_dg);
+                TextView okBtn = nameDialog.findViewById(R.id.ok_btn);
+                TextView cancel = nameDialog.findViewById(R.id.cancel_btn);
+                EditText plEditText = nameDialog.findViewById(R.id.playlist_edit_text);
+                plEditText.requestFocus();
+
+                cancel.setOnClickListener(c -> nameDialog.dismiss());
+                okBtn.setOnClickListener(ok -> {
+                    String playlistName = plEditText.getText().toString().trim();
+
+                    if (!TextUtils.isEmpty(playlistName)) {
+                        Utils.createNewPlaylist(context, playlistName);
+                        PlaylistAdapter adapter = new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF);
+                        rv.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        nameDialog.dismiss();
+                    }
+
+                    if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                        showAttributes();
+                });
             });
         });
     }
@@ -194,24 +171,33 @@ public class ArtistList extends AppCompatActivity implements
         snippetArt = snippet.findViewById(R.id.snip_album_art);
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
-        prefs = getSharedPreferences(ARTISTS_SORT, MODE_PRIVATE);
 
         snippetTitle.setSelected(true);
-        title.setText(new StringBuilder("Artists"));
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_mic));
+        title.setText(new StringBuilder("Playlists"));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_playlist));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        if (Utils.artists == null || Utils.artists.size() == 0)
-            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new ArtistAdapter(context, Utils.getArtists(context), loader, NF)), 10);
-        else rv.setAdapter(new ArtistAdapter(context, Utils.artists, loader, NF));
+        rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF));
 
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
+    }
+
+    private void disableBtn() {
+        searchBtn.setAlpha(0.4f);
+        sequencePlay.setAlpha(0.4f);
+        shufflePlay.setAlpha(0.4f);
+
+        NF.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.GONE);
+
+        searchBtn.setOnClickListener(null);
+        sequencePlay.setOnClickListener(null);
+        shufflePlay.setOnClickListener(null);
     }
 
     private void hideAttributes() {
@@ -249,6 +235,83 @@ public class ArtistList extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
+        if (Instance.songs != null) updateSnippet();
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        rv.setAdapter(new PlaylistAdapter(context, Utils.getPlaylists(context), loader, NF));
+        if (rv.getAdapter() != null) {
+            rv.getAdapter().notifyDataSetChanged();
+            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
+            else showAttributes();
+        }
+    }
+
+    private void showAttributes() {
+        searchBtn.setAlpha(1f);
+        shufflePlay.setAlpha(1f);
+        sequencePlay.setAlpha(1f);
+        NF.setVisibility(View.GONE);
+
+        searchBtn.setOnClickListener(v -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                startActivity(new Intent(context, CategorySearch.class)
+                        .putExtra("cat_key", 5).putExtra("cat_name", "Playlists"));
+        });
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                shufflePlay.setOnClickListener(v -> new Thread(() -> {
+                    ArrayList<Song> list = new ArrayList<>();
+                    for (Playlist playlist : Utils.getPlaylists(context))
+                        list.addAll(playlist.getSongs());
+
+                    shufflePlay.post(() -> {
+                        if (list.size() > 0) {
+                            Instance.songs = list;
+                            Instance.shuffle = true;
+                            Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+
+                            engine.startPlayer();
+                            mp.setOnCompletionListener(PlayList.this);
+
+                            updateSnippet();
+                            Utils.putShflStatus(context, true);
+                            Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(context, "No songs found in any playlist :(", Toast.LENGTH_SHORT).show();
+                    });
+                }).start());
+        }).start();
+        new Thread(() -> {
+            if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+
+                sequencePlay.setOnClickListener(v -> new Thread(() -> {
+                    ArrayList<Song> list = new ArrayList<>();
+                    for (Playlist playlist : Utils.getPlaylists(context))
+                        list.addAll(playlist.getSongs());
+
+                    sequencePlay.post(() -> {
+                        if (list.size() > 0) {
+                            Instance.songs = list;
+                            Instance.position = 0;
+                            Instance.shuffle = false;
+
+                            if (songs.size() > 0) engine.startPlayer();
+                            mp.setOnCompletionListener(PlayList.this);
+
+                            updateSnippet();
+                            Utils.putShflStatus(context, false);
+                            Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(context, "No songs found in any playlist :(", Toast.LENGTH_SHORT).show();
+                    });
+                }).start());
+        }).start();
+    }
+
+    @Override
     public void onStartService() {
         engine.startPlayer();
         updateSnippet();
@@ -273,7 +336,7 @@ public class ArtistList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(ArtistList.this);
+            mp.setOnCompletionListener(PlayList.this);
         }
         updateSnippet();
     }
@@ -293,18 +356,6 @@ public class ArtistList extends AppCompatActivity implements
         }
         snippetPlayBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((App) getApplicationContext()).setCurrentContext(context);
-        if (Instance.songs != null) updateSnippet();
-        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
-        if (rv.getAdapter() != null) {
-            rv.getAdapter().notifyDataSetChanged();
-            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
-        }
     }
 
     @Override

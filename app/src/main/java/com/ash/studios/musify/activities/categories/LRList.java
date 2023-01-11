@@ -1,13 +1,11 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
-import static com.ash.studios.musify.utils.Constants.ALBUMS_SORT;
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
@@ -31,11 +29,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.AlbumAdapter;
-import com.ash.studios.musify.BottomSheets.AlbumsSort;
+import com.ash.studios.musify.Adapters.LRAdapter;
+import com.ash.studios.musify.BottomSheets.LRSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
-import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
@@ -46,12 +43,11 @@ import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 import com.google.android.material.appbar.AppBarLayout;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class AlbumList extends AppCompatActivity implements
+public class LRList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -64,7 +60,6 @@ public class AlbumList extends AppCompatActivity implements
 
     Engine engine;
     Context context;
-    SharedPreferences prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,48 +75,44 @@ public class AlbumList extends AppCompatActivity implements
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
                 startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 2).putExtra("cat_name", "Albums"));
+                        .putExtra("cat_key", 7).putExtra("cat_name", "Low Rated"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                shufflePlay.setOnClickListener(v -> {
 
-                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
-                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "album " + order_by);
-                    if (list.size() > 0) {
-                        Instance.songs = list;
+                shufflePlay.setOnClickListener(v -> {
+                    if (Utils.getLR(context).size() > 0) {
                         Instance.shuffle = true;
+                        Instance.songs = Utils.getLR(context);
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(AlbumList.this);
+                        mp.setOnCompletionListener(LRList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in any albums :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in the Low-Rated :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
-                sequencePlay.setOnClickListener(v -> {
 
-                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
-                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "album " + order_by);
-                    if (list.size() > 0) {
-                        Instance.songs = list;
+                sequencePlay.setOnClickListener(v -> {
+                    if (Utils.getLR(context).size() > 0) {
                         Instance.shuffle = false;
+                        Instance.songs = Utils.getLR(context);
                         Instance.position = 0;
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(AlbumList.this);
+                        mp.setOnCompletionListener(LRList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, false);
                         Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in any albums :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in the Low-Rated :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
@@ -161,15 +152,15 @@ public class AlbumList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF));
+                    rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
                         hideAttributes();
                 }, 500);
             });
             LO.setOnClickListener(lo -> {
                 dialog.dismiss();
-                AlbumsSort albumsSort = new AlbumsSort(context, rv, loader, NF);
-                albumsSort.show(getSupportFragmentManager(), null);
+                LRSort lrSort = new LRSort(context, rv, loader, NF);
+                lrSort.show(getSupportFragmentManager(), null);
             });
         });
     }
@@ -194,34 +185,19 @@ public class AlbumList extends AppCompatActivity implements
         snippetArt = snippet.findViewById(R.id.snip_album_art);
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
-        prefs = getSharedPreferences(ALBUMS_SORT, MODE_PRIVATE);
 
+        title.setText(new StringBuilder("Low Rated"));
         snippetTitle.setSelected(true);
-        title.setText(new StringBuilder("Albums"));
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_album));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        if (Utils.albums == null || Utils.albums.size() == 0)
-            new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new AlbumAdapter(context, Utils.getAlbums(context), loader, NF)), 10);
-        else rv.setAdapter(new AlbumAdapter(context, Utils.albums, loader, NF));
-
+        rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
-    }
-
-    private void hideAttributes() {
-        shufflePlay.setAlpha(0.4f);
-        sequencePlay.setAlpha(0.4f);
-        searchBtn.setAlpha(0.4f);
-
-        shufflePlay.setOnClickListener(null);
-        sequencePlay.setOnClickListener(null);
-        searchBtn.setOnClickListener(null);
     }
 
     private void updateSnippet() {
@@ -248,12 +224,23 @@ public class AlbumList extends AppCompatActivity implements
         } else snippet.setVisibility(View.GONE);
     }
 
+    private void hideAttributes() {
+        shufflePlay.setAlpha(0.4f);
+        sequencePlay.setAlpha(0.4f);
+        searchBtn.setAlpha(0.4f);
+
+        shufflePlay.setOnClickListener(null);
+        sequencePlay.setOnClickListener(null);
+        searchBtn.setOnClickListener(null);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
         if (rv.getAdapter() != null) {
             rv.getAdapter().notifyDataSetChanged();
             if (rv.getAdapter().getItemCount() == 0) hideAttributes();
@@ -264,17 +251,6 @@ public class AlbumList extends AppCompatActivity implements
     public void onStartService() {
         engine.startPlayer();
         updateSnippet();
-    }
-
-    @Override
-    public void onStopService() {
-        if (Instance.mp != null) {
-            Instance.mp.stop();
-            Instance.mp.release();
-            Instance.mp = null;
-        }
-        snippetPlayBtn.setImageResource(R.drawable.ic_play);
-        stopService(new Intent(context, MusicService.class));
     }
 
     @Override
@@ -296,7 +272,7 @@ public class AlbumList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(AlbumList.this);
+            mp.setOnCompletionListener(LRList.this);
         }
         updateSnippet();
     }
@@ -305,6 +281,17 @@ public class AlbumList extends AppCompatActivity implements
     public void onPauseClicked() {
         if (Instance.mp != null) Instance.mp.pause();
         updateSnippet();
+    }
+
+    @Override
+    public void onStopService() {
+        if (Instance.mp != null) {
+            Instance.mp.stop();
+            Instance.mp.release();
+            Instance.mp = null;
+        }
+        snippetPlayBtn.setImageResource(R.drawable.ic_play);
+        stopService(new Intent(context, MusicService.class));
     }
 
     @Override

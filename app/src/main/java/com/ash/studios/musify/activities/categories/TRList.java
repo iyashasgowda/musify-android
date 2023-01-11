@@ -1,4 +1,4 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
@@ -29,8 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.LRAdapter;
-import com.ash.studios.musify.BottomSheets.LRSort;
+import com.ash.studios.musify.Adapters.TRAdapter;
+import com.ash.studios.musify.BottomSheets.TRSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.R;
@@ -47,7 +47,7 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class LRList extends AppCompatActivity implements
+public class TRList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -75,44 +75,44 @@ public class LRList extends AppCompatActivity implements
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
                 startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 7).putExtra("cat_name", "Low Rated"));
+                        .putExtra("cat_key", 6).putExtra("cat_name", "Top Rated"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
                 shufflePlay.setOnClickListener(v -> {
-                    if (Utils.getLR(context).size() > 0) {
+                    if (Utils.getTR(context).size() > 0) {
                         Instance.shuffle = true;
-                        Instance.songs = Utils.getLR(context);
+                        Instance.songs = Utils.getTR(context);
                         Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(LRList.this);
+                        mp.setOnCompletionListener(TRList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, true);
                         Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in the Low-Rated :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in the Top-Rated :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
 
                 sequencePlay.setOnClickListener(v -> {
-                    if (Utils.getLR(context).size() > 0) {
+                    if (Utils.getTR(context).size() > 0) {
                         Instance.shuffle = false;
-                        Instance.songs = Utils.getLR(context);
+                        Instance.songs = Utils.getTR(context);
                         Instance.position = 0;
 
                         engine.startPlayer();
-                        mp.setOnCompletionListener(LRList.this);
+                        mp.setOnCompletionListener(TRList.this);
 
                         updateSnippet();
                         Utils.putShflStatus(context, false);
                         Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
                     } else
-                        Toast.makeText(context, "No songs found in the Low-Rated :(", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No songs found in the Top-Rated :(", Toast.LENGTH_SHORT).show();
                 });
         }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
@@ -152,15 +152,15 @@ public class LRList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
+                    rv.setAdapter(new TRAdapter(context, Utils.getTR(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
                         hideAttributes();
                 }, 500);
             });
             LO.setOnClickListener(lo -> {
                 dialog.dismiss();
-                LRSort lrSort = new LRSort(context, rv, loader, NF);
-                lrSort.show(getSupportFragmentManager(), null);
+                TRSort trSort = new TRSort(context, rv, loader, NF);
+                trSort.show(getSupportFragmentManager(), null);
             });
         });
     }
@@ -186,14 +186,14 @@ public class LRList extends AppCompatActivity implements
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
 
-        title.setText(new StringBuilder("Low Rated"));
+        title.setText(new StringBuilder("Top Rated"));
         snippetTitle.setSelected(true);
         icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_top_rated));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
+        rv.setAdapter(new TRAdapter(context, Utils.getTR(context), loader, NF));
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
@@ -240,7 +240,7 @@ public class LRList extends AppCompatActivity implements
         ((App) getApplicationContext()).setCurrentContext(context);
         if (Instance.songs != null) updateSnippet();
         if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
-        rv.setAdapter(new LRAdapter(context, Utils.getLR(context), loader, NF));
+        rv.setAdapter(new TRAdapter(context, Utils.getTR(context), loader, NF));
         if (rv.getAdapter() != null) {
             rv.getAdapter().notifyDataSetChanged();
             if (rv.getAdapter().getItemCount() == 0) hideAttributes();
@@ -272,7 +272,7 @@ public class LRList extends AppCompatActivity implements
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(LRList.this);
+            mp.setOnCompletionListener(TRList.this);
         }
         updateSnippet();
     }

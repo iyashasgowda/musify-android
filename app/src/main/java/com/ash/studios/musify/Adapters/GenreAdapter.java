@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.activities.Categories.BunchList;
+import com.ash.studios.musify.activities.categories.BunchList;
 import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;

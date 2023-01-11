@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.activities.Categories.TRList;
+import com.ash.studios.musify.activities.categories.TRList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;

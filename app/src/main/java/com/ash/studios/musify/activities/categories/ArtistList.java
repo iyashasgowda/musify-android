@@ -1,11 +1,13 @@
-package com.ash.studios.musify.activities.Categories;
+package com.ash.studios.musify.activities.categories;
 
+import static com.ash.studios.musify.utils.Constants.ARTISTS_SORT;
 import static com.ash.studios.musify.utils.Instance.mp;
 import static com.ash.studios.musify.utils.Instance.songs;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
@@ -29,12 +31,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.activities.Player;
 import com.ash.studios.musify.activities.searchList.CategorySearch;
-import com.ash.studios.musify.Adapters.YearAdapter;
-import com.ash.studios.musify.BottomSheets.YearsSort;
+import com.ash.studios.musify.Adapters.ArtistAdapter;
+import com.ash.studios.musify.BottomSheets.ArtistsSort;
 import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
-import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
 import com.ash.studios.musify.utils.App;
@@ -50,7 +51,7 @@ import java.util.Random;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
-public class YearList extends AppCompatActivity implements
+public class ArtistList extends AppCompatActivity implements
         MediaPlayer.OnCompletionListener, IControl, IService {
     ImageView icon, shufflePlay, sequencePlay, searchBtn, optionsBtn, snippetArt, snippetPlayBtn;
     TextView title, NF, snippetTitle, snippetArtist;
@@ -63,6 +64,7 @@ public class YearList extends AppCompatActivity implements
 
     Engine engine;
     Context context;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,57 +80,49 @@ public class YearList extends AppCompatActivity implements
         searchBtn.setOnClickListener(v -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
                 startActivity(new Intent(context, CategorySearch.class)
-                        .putExtra("cat_key", 8).putExtra("cat_name", "Years"));
+                        .putExtra("cat_key", 3).putExtra("cat_name", "Artists"));
         });
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                shufflePlay.setOnClickListener(v -> {
 
-                shufflePlay.setOnClickListener(v -> new Thread(() -> {
-                    ArrayList<Song> list = new ArrayList<>();
-                    for (Year year : Utils.years)
-                        list.addAll(year.getSongs());
+                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist " + order_by);
+                    if (list.size() > 0) {
+                        Instance.songs = list;
+                        Instance.shuffle = true;
+                        Instance.position = new Random().nextInt((songs.size() - 1) + 1);
 
-                    shufflePlay.post(() -> {
-                        if (list.size() > 0) {
-                            Instance.songs = list;
-                            Instance.shuffle = true;
-                            Instance.position = new Random().nextInt((songs.size() - 1) + 1);
+                        engine.startPlayer();
+                        mp.setOnCompletionListener(ArtistList.this);
 
-                            engine.startPlayer();
-                            mp.setOnCompletionListener(YearList.this);
-
-                            updateSnippet();
-                            Utils.putShflStatus(context, true);
-                            Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
-                        } else
-                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
-                    });
-                }).start());
+                        updateSnippet();
+                        Utils.putShflStatus(context, true);
+                        Toast.makeText(context, "Shuffle all songs", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
+                });
         }).start();
         new Thread(() -> {
             if (rv.getAdapter() != null && rv.getAdapter().getItemCount() > 0)
+                sequencePlay.setOnClickListener(v -> {
 
-                sequencePlay.setOnClickListener(v -> new Thread(() -> {
-                    ArrayList<Song> list = new ArrayList<>();
-                    for (Year year : Utils.years)
-                        list.addAll(year.getSongs());
+                    String order_by = prefs.getBoolean("order_by", false) ? "desc" : "asc";
+                    ArrayList<Song> list = Utils.getAllSongsByCategory(context, "artist " + order_by);
+                    if (list.size() > 0) {
+                        Instance.songs = list;
+                        Instance.shuffle = false;
+                        Instance.position = 0;
 
-                    sequencePlay.post(() -> {
-                        if (list.size() > 0) {
-                            songs = list;
-                            Instance.shuffle = false;
-                            Instance.position = 0;
+                        engine.startPlayer();
+                        mp.setOnCompletionListener(ArtistList.this);
 
-                            engine.startPlayer();
-                            mp.setOnCompletionListener(YearList.this);
-
-                            updateSnippet();
-                            Utils.putShflStatus(context, false);
-                            Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
-                        } else
-                            Toast.makeText(context, "No songs found in any years :(", Toast.LENGTH_SHORT).show();
-                    });
-                }).start());
+                        updateSnippet();
+                        Utils.putShflStatus(context, false);
+                        Toast.makeText(context, "Sequence all songs", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "No songs found in any artists :(", Toast.LENGTH_SHORT).show();
+                });
         }).start();
         new Thread(() -> snippetPlayBtn.setOnClickListener(v -> {
             if (Instance.mp != null) {
@@ -167,15 +161,15 @@ public class YearList extends AppCompatActivity implements
                 NF.setVisibility(View.GONE);
                 loader.setVisibility(View.VISIBLE);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF));
+                    rv.setAdapter(new ArtistAdapter(context, Utils.getArtists(context), loader, NF));
                     if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0)
                         hideAttributes();
                 }, 10);
             });
             LO.setOnClickListener(lo -> {
                 dialog.dismiss();
-                YearsSort yearsSort = new YearsSort(context, rv, loader, NF);
-                yearsSort.show(getSupportFragmentManager(), null);
+                ArtistsSort artistsSort = new ArtistsSort(context, rv, loader, NF);
+                artistsSort.show(getSupportFragmentManager(), null);
             });
         });
     }
@@ -200,23 +194,34 @@ public class YearList extends AppCompatActivity implements
         snippetArt = snippet.findViewById(R.id.snip_album_art);
         snippetArtist = snippet.findViewById(R.id.snip_artist);
         snippetPlayBtn = snippet.findViewById(R.id.snip_play_btn);
+        prefs = getSharedPreferences(ARTISTS_SORT, MODE_PRIVATE);
 
-        title.setText(new StringBuilder("Years"));
         snippetTitle.setSelected(true);
-        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_year));
+        title.setText(new StringBuilder("Artists"));
+        icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_mic));
         icon.setColorFilter(Color.parseColor(getIntent().getStringExtra("icon_color")));
 
         if (Instance.songs != null) updateSnippet();
         rv.setLayoutManager(new LinearLayoutManager(context));
-        if (Utils.years == null || Utils.years.size() == 0)
+        if (Utils.artists == null || Utils.artists.size() == 0)
             new Handler(Looper.getMainLooper()).postDelayed(() ->
-                    rv.setAdapter(new YearAdapter(context, Utils.getYears(context), loader, NF)), 10);
-        else rv.setAdapter(new YearAdapter(context, Utils.years, loader, NF));
+                    rv.setAdapter(new ArtistAdapter(context, Utils.getArtists(context), loader, NF)), 10);
+        else rv.setAdapter(new ArtistAdapter(context, Utils.artists, loader, NF));
 
         if (rv.getAdapter() == null || rv.getAdapter().getItemCount() == 0) hideAttributes();
         OverScrollDecoratorHelper.setUpOverScroll(rv, OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
         fs.setRecyclerView(rv);
+    }
+
+    private void hideAttributes() {
+        shufflePlay.setAlpha(0.4f);
+        sequencePlay.setAlpha(0.4f);
+        searchBtn.setAlpha(0.4f);
+
+        shufflePlay.setOnClickListener(null);
+        sequencePlay.setOnClickListener(null);
+        searchBtn.setOnClickListener(null);
     }
 
     private void updateSnippet() {
@@ -243,39 +248,10 @@ public class YearList extends AppCompatActivity implements
         } else snippet.setVisibility(View.GONE);
     }
 
-    private void hideAttributes() {
-        shufflePlay.setAlpha(0.4f);
-        sequencePlay.setAlpha(0.4f);
-        searchBtn.setAlpha(0.4f);
-
-        shufflePlay.setOnClickListener(null);
-        sequencePlay.setOnClickListener(null);
-        searchBtn.setOnClickListener(null);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((App) getApplicationContext()).setCurrentContext(context);
-        if (Instance.songs != null) updateSnippet();
-        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
-        if (rv.getAdapter() != null) {
-            rv.getAdapter().notifyDataSetChanged();
-            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
-        }
-    }
-
     @Override
     public void onStartService() {
         engine.startPlayer();
         updateSnippet();
-    }
-
-    @Override
-    public void onNextClicked() {
-        engine.playNextSong();
-        updateSnippet();
-        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
     }
 
     @Override
@@ -286,11 +262,18 @@ public class YearList extends AppCompatActivity implements
     }
 
     @Override
+    public void onNextClicked() {
+        engine.playNextSong();
+        updateSnippet();
+        startService(new Intent(context, MusicService.class).setAction(Constants.ACTION.CREATE.getLabel()));
+    }
+
+    @Override
     public void onPlayClicked() {
         if (Instance.mp != null) mp.start();
         else {
             engine.startPlayer();
-            mp.setOnCompletionListener(this);
+            mp.setOnCompletionListener(ArtistList.this);
         }
         updateSnippet();
     }
@@ -310,6 +293,18 @@ public class YearList extends AppCompatActivity implements
         }
         snippetPlayBtn.setImageResource(R.drawable.ic_play);
         stopService(new Intent(context, MusicService.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((App) getApplicationContext()).setCurrentContext(context);
+        if (Instance.songs != null) updateSnippet();
+        if (Instance.mp != null) Instance.mp.setOnCompletionListener(this);
+        if (rv.getAdapter() != null) {
+            rv.getAdapter().notifyDataSetChanged();
+            if (rv.getAdapter().getItemCount() == 0) hideAttributes();
+        }
     }
 
     @Override
