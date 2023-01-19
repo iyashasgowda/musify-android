@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +9,12 @@ import com.ash.studios.musify.Services.MusicService;
 
 import java.util.Random;
 
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Instance.position;
-import static com.ash.studios.musify.Utils.Instance.repeat;
-import static com.ash.studios.musify.Utils.Instance.shuffle;
-import static com.ash.studios.musify.Utils.Instance.songs;
-import static com.ash.studios.musify.Utils.Instance.uri;
+import static com.ash.studios.musify.utils.Instance.mp;
+import static com.ash.studios.musify.utils.Instance.position;
+import static com.ash.studios.musify.utils.Instance.repeat;
+import static com.ash.studios.musify.utils.Instance.shuffle;
+import static com.ash.studios.musify.utils.Instance.songs;
+import static com.ash.studios.musify.utils.Instance.uri;
 
 public class Engine {
     private Context context;

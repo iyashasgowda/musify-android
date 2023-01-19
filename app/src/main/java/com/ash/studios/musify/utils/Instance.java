@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.utils;
 
 import android.media.MediaPlayer;
 import android.net.Uri;

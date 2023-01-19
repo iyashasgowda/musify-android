@@ -23,13 +23,13 @@ import com.ash.studios.musify.Interfaces.IControl;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.App;
-import com.ash.studios.musify.Utils.Constants;
-import com.ash.studios.musify.Utils.Engine;
-import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.App;
+import com.ash.studios.musify.utils.Constants;
+import com.ash.studios.musify.utils.Engine;
+import com.ash.studios.musify.utils.Instance;
+import com.ash.studios.musify.utils.Utils;
 
-import static com.ash.studios.musify.Utils.App.CHANNEL_ID;
+import static com.ash.studios.musify.utils.App.CHANNEL_ID;
 
 public class MusicService extends Service implements MediaPlayer.OnCompletionListener {
     Context context;

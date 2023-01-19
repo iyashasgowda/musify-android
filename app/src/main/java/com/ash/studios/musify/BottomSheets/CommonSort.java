@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.Utils.Constants.COMMON_SORT;
+import static com.ash.studios.musify.utils.Constants.COMMON_SORT;
 
 public class CommonSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;

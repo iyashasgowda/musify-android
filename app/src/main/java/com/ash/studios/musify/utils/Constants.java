@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.utils;
 
 public class Constants {
     public static final String LIBRARY_OPTIONS = "MUSIFY_LIB_OPTIONS";

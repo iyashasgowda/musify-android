@@ -17,7 +17,7 @@ import com.ash.studios.musify.Activities.Library;
 import com.ash.studios.musify.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import static com.ash.studios.musify.Utils.Constants.LIBRARY_OPTIONS;
+import static com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS;
 
 public class LibrarySheet extends BottomSheetDialogFragment {
     ConstraintLayout list0, list1, list2, list3, list4, list5, list6, list7, list8;

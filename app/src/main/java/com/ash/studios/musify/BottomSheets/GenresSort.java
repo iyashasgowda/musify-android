@@ -20,14 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Adapters.GenreAdapter;
 import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.Utils.Constants.GENRES_SORT;
+import static com.ash.studios.musify.utils.Constants.GENRES_SORT;
 
 public class GenresSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;

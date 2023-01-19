@@ -1,10 +1,10 @@
 package com.ash.studios.musify.Activities;
 
-import static com.ash.studios.musify.Utils.Constants.LIBRARY_OPTIONS;
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
-import static com.ash.studios.musify.Utils.Utils.getDialog;
-import static com.ash.studios.musify.Utils.Utils.getNewColor;
+import static com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS;
+import static com.ash.studios.musify.utils.Instance.mp;
+import static com.ash.studios.musify.utils.Utils.fetchAllSongs;
+import static com.ash.studios.musify.utils.Utils.getDialog;
+import static com.ash.studios.musify.utils.Utils.getNewColor;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -39,11 +39,11 @@ import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
-import com.ash.studios.musify.Utils.App;
-import com.ash.studios.musify.Utils.Constants;
-import com.ash.studios.musify.Utils.Engine;
-import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.App;
+import com.ash.studios.musify.utils.Constants;
+import com.ash.studios.musify.utils.Engine;
+import com.ash.studios.musify.utils.Instance;
+import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;

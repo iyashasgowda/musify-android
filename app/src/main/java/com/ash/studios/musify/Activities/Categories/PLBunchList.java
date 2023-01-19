@@ -1,7 +1,7 @@
 package com.ash.studios.musify.Activities.Categories;
 
-import static com.ash.studios.musify.Utils.Instance.mp;
-import static com.ash.studios.musify.Utils.Instance.songs;
+import static com.ash.studios.musify.utils.Instance.mp;
+import static com.ash.studios.musify.utils.Instance.songs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,11 +32,11 @@ import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.Services.MusicService;
-import com.ash.studios.musify.Utils.App;
-import com.ash.studios.musify.Utils.Constants;
-import com.ash.studios.musify.Utils.Engine;
-import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.App;
+import com.ash.studios.musify.utils.Constants;
+import com.ash.studios.musify.utils.Engine;
+import com.ash.studios.musify.utils.Instance;
+import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.FastScroller;
 

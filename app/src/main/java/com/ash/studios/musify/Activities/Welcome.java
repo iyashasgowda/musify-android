@@ -1,6 +1,6 @@
 package com.ash.studios.musify.Activities;
 
-import static com.ash.studios.musify.Utils.Utils.fetchAllSongs;
+import static com.ash.studios.musify.utils.Utils.fetchAllSongs;
 
 import android.Manifest;
 import android.content.Context;
@@ -23,8 +23,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Instance;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Instance;
+import com.ash.studios.musify.utils.Utils;
 
 public class Welcome extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;

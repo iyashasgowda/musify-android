@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Adapters.TRAdapter;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.Utils.Constants.TR_SORT;
+import static com.ash.studios.musify.utils.Constants.TR_SORT;
 
 public class TRSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;

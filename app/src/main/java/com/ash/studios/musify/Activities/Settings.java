@@ -1,7 +1,7 @@
 package com.ash.studios.musify.Activities;
 
 import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
-import static com.ash.studios.musify.Utils.Utils.getDialog;
+import static com.ash.studios.musify.utils.Utils.getDialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -24,8 +24,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Engine;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Engine;
+import com.ash.studios.musify.utils.Utils;
 
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 

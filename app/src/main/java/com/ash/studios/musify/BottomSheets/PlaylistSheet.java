@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ash.studios.musify.Adapters.SheetListAdapter;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import static com.ash.studios.musify.Utils.Utils.getPlaylists;
+import static com.ash.studios.musify.utils.Utils.getPlaylists;
 
 public class PlaylistSheet extends BottomSheetDialogFragment {
     TextView NF;

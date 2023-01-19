@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ash.studios.musify.Activities.Categories.BunchList;
 import com.ash.studios.musify.Models.Album;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 

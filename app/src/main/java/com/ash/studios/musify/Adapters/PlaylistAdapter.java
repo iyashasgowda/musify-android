@@ -19,7 +19,7 @@ import com.ash.studios.musify.Activities.Categories.PlayList;
 import com.ash.studios.musify.Models.Playlist;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
-import com.ash.studios.musify.Utils.Utils;
+import com.ash.studios.musify.utils.Utils;
 import com.bumptech.glide.Glide;
 import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 

@@ -1,13 +1,13 @@
-package com.ash.studios.musify.Utils;
+package com.ash.studios.musify.utils;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.Utils.Constants.ALBUMS_SORT;
-import static com.ash.studios.musify.Utils.Constants.ALL_SONGS_SORT;
-import static com.ash.studios.musify.Utils.Constants.ARTISTS_SORT;
-import static com.ash.studios.musify.Utils.Constants.GENRES_SORT;
-import static com.ash.studios.musify.Utils.Constants.LR_SORT;
-import static com.ash.studios.musify.Utils.Constants.TR_SORT;
-import static com.ash.studios.musify.Utils.Constants.YEARS_SORT;
+import static com.ash.studios.musify.utils.Constants.ALBUMS_SORT;
+import static com.ash.studios.musify.utils.Constants.ALL_SONGS_SORT;
+import static com.ash.studios.musify.utils.Constants.ARTISTS_SORT;
+import static com.ash.studios.musify.utils.Constants.GENRES_SORT;
+import static com.ash.studios.musify.utils.Constants.LR_SORT;
+import static com.ash.studios.musify.utils.Constants.TR_SORT;
+import static com.ash.studios.musify.utils.Constants.YEARS_SORT;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
