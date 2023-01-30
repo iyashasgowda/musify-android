@@ -22,7 +22,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Adapters.GenreAdapter
+import com.ash.studios.musify.adapters.GenreAdapter
 import com.ash.studios.musify.BottomSheets.GenresSort
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService

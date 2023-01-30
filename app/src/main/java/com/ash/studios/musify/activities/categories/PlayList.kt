@@ -21,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Adapters.PlaylistAdapter
+import com.ash.studios.musify.adapters.PlaylistAdapter
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService
 import com.ash.studios.musify.Models.Song

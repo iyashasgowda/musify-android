@@ -20,7 +20,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Adapters.AllSongAdapter
+import com.ash.studios.musify.adapters.AllSongAdapter
 import com.ash.studios.musify.BottomSheets.CommonSort
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService

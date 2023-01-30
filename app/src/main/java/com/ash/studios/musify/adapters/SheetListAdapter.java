@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Adapters;
+package com.ash.studios.musify.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

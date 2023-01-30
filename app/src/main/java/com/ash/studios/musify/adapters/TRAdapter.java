@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Adapters;
+package com.ash.studios.musify.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.activities.categories.LRList;
+import com.ash.studios.musify.activities.categories.TRList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
@@ -24,11 +24,11 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements SectionTitleProvider {
+public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
     private final Context context;
 
-    public LRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
+    public TRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
         this.list = list;
         this.context = context;
 
@@ -38,13 +38,13 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements Sec
 
     @NonNull
     @Override
-    public LRAdapter.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new LRAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
+    public TRAdapter.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new TRAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LRAdapter.VH holder, int position) {
+    public void onBindViewHolder(@NonNull TRAdapter.VH holder, int position) {
         Song song = list.get(position);
 
         holder.songName.setText(song.getTitle());
@@ -71,7 +71,7 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements Sec
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             title.setText(new StringBuilder("Remove song?"));
-            body.setText(new StringBuilder("Selected song will be removed from the Low-Rated"));
+            body.setText(new StringBuilder("Selected song will be removed from the Top-Rated"));
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();
@@ -79,10 +79,10 @@ public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements Sec
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
-                Utils.deleteFromLR(context, song);
+                Utils.deleteFromTR(context, song);
                 if (getItemCount() == 0) {
-                    ((LRList) context).finish();
-                    Toast.makeText(context, "No songs in the Low-Rated", Toast.LENGTH_SHORT).show();
+                    ((TRList) context).finish();
+                    Toast.makeText(context, "No songs in the Top-Rated", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

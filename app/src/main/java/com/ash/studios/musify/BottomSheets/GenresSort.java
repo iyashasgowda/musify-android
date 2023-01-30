@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Adapters.GenreAdapter;
+import com.ash.studios.musify.adapters.GenreAdapter;
 import com.ash.studios.musify.Models.Genre;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;

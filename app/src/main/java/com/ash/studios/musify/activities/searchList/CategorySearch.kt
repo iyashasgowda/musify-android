@@ -20,7 +20,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ash.studios.musify.activities.Player
-import com.ash.studios.musify.Adapters.*
+import com.ash.studios.musify.adapters.*
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService
 import com.ash.studios.musify.Models.*

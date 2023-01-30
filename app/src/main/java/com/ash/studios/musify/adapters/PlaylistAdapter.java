@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Adapters;
+package com.ash.studios.musify.adapters;
 
 import android.app.Dialog;
 import android.content.Context;

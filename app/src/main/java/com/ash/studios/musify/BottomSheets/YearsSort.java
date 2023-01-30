@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Adapters.YearAdapter;
+import com.ash.studios.musify.adapters.YearAdapter;
 import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;

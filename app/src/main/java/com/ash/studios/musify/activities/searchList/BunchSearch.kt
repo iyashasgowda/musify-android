@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Adapters.AllSongAdapter
+import com.ash.studios.musify.adapters.AllSongAdapter
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService
 import com.ash.studios.musify.Models.Song

@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.Adapters.AllSongAdapter;
+import com.ash.studios.musify.adapters.AllSongAdapter;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

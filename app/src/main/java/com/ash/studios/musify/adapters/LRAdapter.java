@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Adapters;
+package com.ash.studios.musify.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.activities.categories.PLBunchList;
+import com.ash.studios.musify.activities.categories.LRList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
@@ -24,13 +24,11 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> implements SectionTitleProvider {
+public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
     private final Context context;
-    private final int pos;
 
-    public PLBunchAdapter(Context context, ArrayList<Song> list, int pos, ProgressBar pb, TextView nf) {
-        this.pos = pos;
+    public LRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
         this.list = list;
         this.context = context;
 
@@ -40,12 +38,13 @@ public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> impl
 
     @NonNull
     @Override
-    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PLBunchAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
+    public LRAdapter.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new LRAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VH holder, int position) {
+    public void onBindViewHolder(@NonNull LRAdapter.VH holder, int position) {
         Song song = list.get(position);
 
         holder.songName.setText(song.getTitle());
@@ -72,7 +71,7 @@ public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> impl
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             title.setText(new StringBuilder("Remove song?"));
-            body.setText(new StringBuilder("Selected song will be removed from the playlist"));
+            body.setText(new StringBuilder("Selected song will be removed from the Low-Rated"));
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();
@@ -80,10 +79,10 @@ public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> impl
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
-                Utils.delFrmPlaylist(context, pos, song);
+                Utils.deleteFromLR(context, song);
                 if (getItemCount() == 0) {
-                    ((PLBunchList) context).finish();
-                    Toast.makeText(context, "No songs in the playlist", Toast.LENGTH_SHORT).show();
+                    ((LRList) context).finish();
+                    Toast.makeText(context, "No songs in the Low-Rated", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;

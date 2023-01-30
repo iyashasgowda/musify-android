@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Adapters;
+package com.ash.studios.musify.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.activities.categories.TRList;
+import com.ash.studios.musify.activities.categories.PLBunchList;
 import com.ash.studios.musify.Interfaces.IService;
 import com.ash.studios.musify.Models.Song;
 import com.ash.studios.musify.R;
@@ -24,11 +24,13 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 
 import java.util.ArrayList;
 
-public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> implements SectionTitleProvider {
+public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
     private final Context context;
+    private final int pos;
 
-    public TRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
+    public PLBunchAdapter(Context context, ArrayList<Song> list, int pos, ProgressBar pb, TextView nf) {
+        this.pos = pos;
         this.list = list;
         this.context = context;
 
@@ -38,13 +40,12 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> implements Sec
 
     @NonNull
     @Override
-    public TRAdapter.VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TRAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
-
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PLBunchAdapter.VH(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TRAdapter.VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         Song song = list.get(position);
 
         holder.songName.setText(song.getTitle());
@@ -71,7 +72,7 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> implements Sec
             TextView delete = dialog.findViewById(R.id.del_song_btn);
 
             title.setText(new StringBuilder("Remove song?"));
-            body.setText(new StringBuilder("Selected song will be removed from the Top-Rated"));
+            body.setText(new StringBuilder("Selected song will be removed from the playlist"));
             cancel.setOnClickListener(c -> dialog.dismiss());
             delete.setOnClickListener(d -> {
                 dialog.dismiss();
@@ -79,10 +80,10 @@ public class TRAdapter extends RecyclerView.Adapter<TRAdapter.VH> implements Sec
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
-                Utils.deleteFromTR(context, song);
+                Utils.delFrmPlaylist(context, pos, song);
                 if (getItemCount() == 0) {
-                    ((TRList) context).finish();
-                    Toast.makeText(context, "No songs in the Top-Rated", Toast.LENGTH_SHORT).show();
+                    ((PLBunchList) context).finish();
+                    Toast.makeText(context, "No songs in the playlist", Toast.LENGTH_SHORT).show();
                 }
             });
             return true;
