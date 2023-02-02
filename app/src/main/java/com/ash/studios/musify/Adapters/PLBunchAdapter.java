@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 public class PLBunchAdapter extends RecyclerView.Adapter<PLBunchAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
-    private Context context;
-    private int pos;
+    private final Context context;
+    private final int pos;
 
     public PLBunchAdapter(Context context, ArrayList<Song> list, int pos, ProgressBar pb, TextView nf) {
         this.pos = pos;

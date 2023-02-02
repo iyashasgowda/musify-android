@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class LRAdapter extends RecyclerView.Adapter<LRAdapter.VH> implements SectionTitleProvider {
     public ArrayList<Song> list;
-    private Context context;
+    private final Context context;
 
     public LRAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
         this.list = list;

@@ -22,9 +22,9 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class SheetListAdapter extends RecyclerView.Adapter<SheetListAdapter.VH> {
-    private Context context;
-    private PlaylistSheet sheet;
-    private ArrayList<Playlist> list;
+    private final Context context;
+    private final PlaylistSheet sheet;
+    private final ArrayList<Playlist> list;
 
     public SheetListAdapter(Context context, ArrayList<Playlist> list, ProgressBar pb, PlaylistSheet sheet, TextView nf) {
         this.list = list;

@@ -26,8 +26,8 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import java.util.ArrayList;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.VH> implements SectionTitleProvider {
-    private Context context;
-    private ArrayList<Playlist> list;
+    private final Context context;
+    private final ArrayList<Playlist> list;
 
     public PlaylistAdapter(Context context, ArrayList<Playlist> list, ProgressBar pb, TextView nf) {
         this.context = context;

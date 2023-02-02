@@ -21,8 +21,8 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import java.util.ArrayList;
 
 public class YearAdapter extends RecyclerView.Adapter<YearAdapter.VH> implements SectionTitleProvider {
-    private ArrayList<Year> years;
-    private Context context;
+    private final ArrayList<Year> years;
+    private final Context context;
 
     public YearAdapter(Context context, ArrayList<Year> years, ProgressBar pb, TextView nf) {
         this.years = years;

@@ -22,8 +22,8 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import java.util.ArrayList;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> implements SectionTitleProvider {
-    private ArrayList<Album> albums;
-    private Context context;
+    private final ArrayList<Album> albums;
+    private final Context context;
 
     public AlbumAdapter(Context context, ArrayList<Album> albums, ProgressBar pb, TextView nf) {
         this.albums = albums;
