@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Year implements Serializable {
-    private String year;
-    private Bitmap albumArt;
-    private ArrayList<Song> songs;
+    private final String year;
+    private final Bitmap albumArt;
+    private final ArrayList<Song> songs;
 
     public Year(String year, Bitmap albumArt, ArrayList<Song> songs) {
         this.year = year;

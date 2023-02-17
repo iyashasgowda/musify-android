@@ -22,8 +22,8 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import java.util.ArrayList;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> implements SectionTitleProvider {
-    private ArrayList<Genre> genres;
-    private Context context;
+    private final ArrayList<Genre> genres;
+    private final Context context;
 
     public GenreAdapter(Context context, ArrayList<Genre> genres, ProgressBar pb, TextView nf) {
         this.genres = genres;

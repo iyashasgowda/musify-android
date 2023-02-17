@@ -175,23 +175,14 @@ public class LibrarySheet extends BottomSheetDialogFragment {
     }
 
     private void getCheckStates() {
-        if (prefs.getBoolean("state0", true)) check0.setChecked(true);
-        else check0.setChecked(false);
-        if (prefs.getBoolean("state1", true)) check1.setChecked(true);
-        else check1.setChecked(false);
-        if (prefs.getBoolean("state2", true)) check2.setChecked(true);
-        else check2.setChecked(false);
-        if (prefs.getBoolean("state3", true)) check3.setChecked(true);
-        else check3.setChecked(false);
-        if (prefs.getBoolean("state4", true)) check4.setChecked(true);
-        else check4.setChecked(false);
-        if (prefs.getBoolean("state5", true)) check5.setChecked(true);
-        else check5.setChecked(false);
-        if (prefs.getBoolean("state6", true)) check6.setChecked(true);
-        else check6.setChecked(false);
-        if (prefs.getBoolean("state7", true)) check7.setChecked(true);
-        else check7.setChecked(false);
-        if (prefs.getBoolean("state8", true)) check8.setChecked(true);
-        else check8.setChecked(false);
+        check0.setChecked(prefs.getBoolean("state0", true));
+        check1.setChecked(prefs.getBoolean("state1", true));
+        check2.setChecked(prefs.getBoolean("state2", true));
+        check3.setChecked(prefs.getBoolean("state3", true));
+        check4.setChecked(prefs.getBoolean("state4", true));
+        check5.setChecked(prefs.getBoolean("state5", true));
+        check6.setChecked(prefs.getBoolean("state6", true));
+        check7.setChecked(prefs.getBoolean("state7", true));
+        check8.setChecked(prefs.getBoolean("state8", true));
     }
 }

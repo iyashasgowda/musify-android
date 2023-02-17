@@ -22,8 +22,8 @@ import com.futuremind.recyclerviewfastscroll.SectionTitleProvider;
 import java.util.ArrayList;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> implements SectionTitleProvider {
-    private ArrayList<Folder> folders;
-    private Context context;
+    private final ArrayList<Folder> folders;
+    private final Context context;
 
     public FolderAdapter(Context context, ArrayList<Folder> folders, ProgressBar pb, TextView nf) {
         this.folders = folders;

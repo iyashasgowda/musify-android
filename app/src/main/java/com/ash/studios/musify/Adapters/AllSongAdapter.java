@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class AllSongAdapter extends RecyclerView.Adapter<AllSongAdapter.ViewHolder> implements SectionTitleProvider {
     public ArrayList<Song> list;
-    private Context context;
+    private final Context context;
 
     public AllSongAdapter(Context context, ArrayList<Song> list, ProgressBar pb, TextView nf) {
         this.list = list;

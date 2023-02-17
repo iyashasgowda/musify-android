@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Folder implements Serializable {
-    private String name;
-    private String path;
-    private ArrayList<Song> songs;
+    private final String name;
+    private final String path;
+    private final ArrayList<Song> songs;
 
     public Folder(String name, String path, ArrayList<Song> songs) {
         this.name = name;

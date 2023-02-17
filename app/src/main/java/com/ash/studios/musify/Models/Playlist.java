@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Playlist implements Serializable {
-    private String name;
-    private ArrayList<Song> songs;
+    private final String name;
+    private final ArrayList<Song> songs;
 
     public Playlist(String name, ArrayList<Song> songs) {
         this.name = name;

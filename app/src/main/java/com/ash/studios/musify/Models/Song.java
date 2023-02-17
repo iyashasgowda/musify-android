@@ -6,17 +6,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Song implements Serializable {
-    private long id;
-    private String path;
-    private String title;
-    private String album;
-    private String artist;
-    private String year;
-    private String track;
-    private String composer;
-    private String album_artist;
-    private long duration;
-    private long album_id;
+    private final long id;
+    private final String path;
+    private final String title;
+    private final String album;
+    private final String artist;
+    private final String year;
+    private final String track;
+    private final String composer;
+    private final String album_artist;
+    private final long duration;
+    private final long album_id;
 
     public Song(long id, String path, String title, String album, String artist, String year, String track, String composer, String album_artist, long duration, long album_id) {
         this.id = id;

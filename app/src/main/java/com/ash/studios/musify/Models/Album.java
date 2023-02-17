@@ -6,10 +6,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Album implements Serializable {
-    private String album;
-    private String artist;
-    private long album_id;
-    private int song_count;
+    private final String album;
+    private final String artist;
+    private final long album_id;
+    private final int song_count;
 
     public Album(String album, String artist, long album_id, int song_count) {
         this.album = album;

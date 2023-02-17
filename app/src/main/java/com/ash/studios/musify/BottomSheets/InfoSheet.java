@@ -18,7 +18,7 @@ public class InfoSheet extends BottomSheetDialogFragment {
     TextView path, title, track, year, artist, album, albumArtist, composer;
     ImageView close;
 
-    private Song song;
+    private final Song song;
 
     public InfoSheet(Song song) {
         this.song = song;
