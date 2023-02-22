@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.content.Context;
 import android.content.SharedPreferences;

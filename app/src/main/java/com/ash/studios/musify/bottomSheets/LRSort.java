@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,19 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.adapters.YearAdapter;
-import com.ash.studios.musify.Models.Year;
+import com.ash.studios.musify.adapters.LRAdapter;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.utils.Constants.YEARS_SORT;
+import static com.ash.studios.musify.utils.Constants.LR_SORT;
 
-public class YearsSort extends BottomSheetDialogFragment {
+public class LRSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;
     RadioGroup sortGroup;
     CheckBox reverse;
@@ -41,13 +37,13 @@ public class YearsSort extends BottomSheetDialogFragment {
     Context context;
     SharedPreferences prefs;
 
-    public YearsSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
+    public LRSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
         this.context = context;
         this.nf = nf;
         this.pb = pb;
         this.rv = rv;
 
-        prefs = context.getSharedPreferences(YEARS_SORT, MODE_PRIVATE);
+        prefs = context.getSharedPreferences(LR_SORT, MODE_PRIVATE);
     }
 
     @Override
@@ -56,6 +52,8 @@ public class YearsSort extends BottomSheetDialogFragment {
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.BottomSheetTheme);
     }
 
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sort_sheet, container, false);
 
@@ -78,30 +76,57 @@ public class YearsSort extends BottomSheetDialogFragment {
         close.setOnClickListener(c -> dismiss());
         button0.setVisibility(View.GONE);
         button1.setVisibility(View.GONE);
-        button2.setVisibility(View.GONE);
-        button3.setVisibility(View.GONE);
-        button4.setVisibility(View.GONE);
-        button5.setOnCheckedChangeListener((compoundButton, checked) -> {
+        button2.setOnCheckedChangeListener((compoundButton, checked) -> {
             if (checked) {
                 prefs.edit()
-                        .putString("sort_by", "years")
+                        .putString("sort_by", "title")
                         .putBoolean("order_by", reverse.isChecked())
                         .apply();
-                rv.setAdapter(new YearAdapter(context, Utils.years, pb, nf));
+                getData();
             }
         });
-        reverse.setOnCheckedChangeListener((compoundButton, checked) -> {
-            ArrayList<Year> list = Utils.years;
-            Collections.reverse(list);
-
+        button3.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if (checked) {
+                prefs.edit()
+                        .putString("sort_by", "album")
+                        .putBoolean("order_by", reverse.isChecked())
+                        .apply();
+                getData();
+            }
+        });
+        button4.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if (checked) {
+                prefs.edit()
+                        .putString("sort_by", "artist")
+                        .putBoolean("order_by", reverse.isChecked())
+                        .apply();
+                getData();
+            }
+        });
+        button5.setVisibility(View.GONE);
+        reverse.setOnCheckedChangeListener(((compoundButton, checked) -> {
             if (checked) prefs.edit().putBoolean("order_by", true).apply();
             else prefs.edit().putBoolean("order_by", false).apply();
-            rv.setAdapter(new YearAdapter(context, list, pb, nf));
-        });
+            getData();
+        }));
+    }
+
+    private void getData() {
+        rv.setAdapter(new LRAdapter(context, Utils.getLR(context), pb, nf));
     }
 
     private void getCheckState() {
         reverse.setChecked(prefs.getBoolean("order_by", false));
-        if (prefs.getString("sort_by", "years").equals("years")) button5.setChecked(true);
+        switch (prefs.getString("sort_by", "title")) {
+            case "title":
+                button2.setChecked(true);
+                break;
+            case "album":
+                button3.setChecked(true);
+                break;
+            case "artist":
+                button4.setChecked(true);
+                break;
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,15 +17,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.adapters.TRAdapter;
+import com.ash.studios.musify.adapters.ArtistAdapter;
+import com.ash.studios.musify.Models.Artist;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.utils.Constants.TR_SORT;
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class TRSort extends BottomSheetDialogFragment {
+import static android.content.Context.MODE_PRIVATE;
+import static com.ash.studios.musify.utils.Constants.ARTISTS_SORT;
+
+public class ArtistsSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;
     RadioGroup sortGroup;
     CheckBox reverse;
@@ -37,13 +41,13 @@ public class TRSort extends BottomSheetDialogFragment {
     Context context;
     SharedPreferences prefs;
 
-    public TRSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
+    public ArtistsSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
         this.context = context;
         this.nf = nf;
         this.pb = pb;
         this.rv = rv;
 
-        prefs = context.getSharedPreferences(TR_SORT, MODE_PRIVATE);
+        prefs = context.getSharedPreferences(ARTISTS_SORT, MODE_PRIVATE);
     }
 
     @Override
@@ -52,8 +56,6 @@ public class TRSort extends BottomSheetDialogFragment {
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.BottomSheetTheme);
     }
 
-    @Nullable
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.sort_sheet, container, false);
 
@@ -76,57 +78,30 @@ public class TRSort extends BottomSheetDialogFragment {
         close.setOnClickListener(c -> dismiss());
         button0.setVisibility(View.GONE);
         button1.setVisibility(View.GONE);
-        button2.setOnCheckedChangeListener((compoundButton, checked) -> {
-            if (checked) {
-                prefs.edit()
-                        .putString("sort_by", "title")
-                        .putBoolean("order_by", reverse.isChecked())
-                        .apply();
-                getData();
-            }
-        });
-        button3.setOnCheckedChangeListener((compoundButton, checked) -> {
-            if (checked) {
-                prefs.edit()
-                        .putString("sort_by", "album")
-                        .putBoolean("order_by", reverse.isChecked())
-                        .apply();
-                getData();
-            }
-        });
+        button2.setVisibility(View.GONE);
+        button3.setVisibility(View.GONE);
         button4.setOnCheckedChangeListener((compoundButton, checked) -> {
             if (checked) {
                 prefs.edit()
                         .putString("sort_by", "artist")
                         .putBoolean("order_by", reverse.isChecked())
                         .apply();
-                getData();
+                rv.setAdapter(new ArtistAdapter(context, Utils.artists, pb, nf));
             }
         });
         button5.setVisibility(View.GONE);
-        reverse.setOnCheckedChangeListener(((compoundButton, checked) -> {
+        reverse.setOnCheckedChangeListener((compoundButton, checked) -> {
+            ArrayList<Artist> list = Utils.artists;
+            Collections.reverse(list);
+
             if (checked) prefs.edit().putBoolean("order_by", true).apply();
             else prefs.edit().putBoolean("order_by", false).apply();
-            getData();
-        }));
-    }
-
-    private void getData() {
-        rv.setAdapter(new TRAdapter(context, Utils.getTR(context), pb, nf));
+            rv.setAdapter(new ArtistAdapter(context, list, pb, nf));
+        });
     }
 
     private void getCheckState() {
         reverse.setChecked(prefs.getBoolean("order_by", false));
-        switch (prefs.getString("sort_by", "title")) {
-            case "title":
-                button2.setChecked(true);
-                break;
-            case "album":
-                button3.setChecked(true);
-                break;
-            case "artist":
-                button4.setChecked(true);
-                break;
-        }
+        if (prefs.getString("sort_by", "artist").equals("artist")) button4.setChecked(true);
     }
 }

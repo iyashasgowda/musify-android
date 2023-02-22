@@ -25,8 +25,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.palette.graphics.Palette
-import com.ash.studios.musify.BottomSheets.InfoSheet
-import com.ash.studios.musify.BottomSheets.PlaylistSheet
+import com.ash.studios.musify.bottomSheets.InfoSheet
+import com.ash.studios.musify.bottomSheets.PlaylistSheet
 import com.ash.studios.musify.Interfaces.IControl
 import com.ash.studios.musify.Interfaces.IService
 import com.ash.studios.musify.Models.Song

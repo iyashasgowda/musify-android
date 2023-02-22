@@ -1,8 +1,7 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,18 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.adapters.AllSongAdapter;
-import com.ash.studios.musify.Models.Song;
+import com.ash.studios.musify.adapters.TRAdapter;
 import com.ash.studios.musify.R;
+import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.utils.Constants.COMMON_SORT;
+import static com.ash.studios.musify.utils.Constants.TR_SORT;
 
-public class CommonSort extends BottomSheetDialogFragment {
+public class TRSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;
     RadioGroup sortGroup;
     CheckBox reverse;
@@ -39,17 +35,15 @@ public class CommonSort extends BottomSheetDialogFragment {
     TextView nf;
 
     Context context;
-    ArrayList<Song> list;
     SharedPreferences prefs;
 
-    public CommonSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf, ArrayList<Song> list) {
+    public TRSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
         this.context = context;
-        this.list = list;
         this.nf = nf;
         this.pb = pb;
         this.rv = rv;
 
-        prefs = context.getSharedPreferences(COMMON_SORT, MODE_PRIVATE);
+        prefs = context.getSharedPreferences(TR_SORT, MODE_PRIVATE);
     }
 
     @Override
@@ -118,23 +112,7 @@ public class CommonSort extends BottomSheetDialogFragment {
     }
 
     private void getData() {
-        String sort_by = prefs.getString("sort_by", "title");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            switch (sort_by) {
-                case "title":
-                    list.sort((song1, song2) -> song1.getTitle().compareTo(song2.getTitle()));
-                    break;
-                case "album":
-                    list.sort((song1, song2) -> song1.getAlbum().compareTo(song2.getAlbum()));
-                    break;
-                case "artist":
-                    list.sort((song1, song2) -> song1.getArtist().compareTo(song2.getArtist()));
-                    break;
-            }
-        }
-        if (prefs.getBoolean("order_by", false)) Collections.reverse(list);
-        rv.setAdapter(new AllSongAdapter(context, list, pb, nf));
+        rv.setAdapter(new TRAdapter(context, Utils.getTR(context), pb, nf));
     }
 
     private void getCheckState() {

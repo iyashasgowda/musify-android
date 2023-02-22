@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,8 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ash.studios.musify.adapters.GenreAdapter;
-import com.ash.studios.musify.Models.Genre;
+import com.ash.studios.musify.adapters.YearAdapter;
+import com.ash.studios.musify.Models.Year;
 import com.ash.studios.musify.R;
 import com.ash.studios.musify.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.ash.studios.musify.utils.Constants.GENRES_SORT;
+import static com.ash.studios.musify.utils.Constants.YEARS_SORT;
 
-public class GenresSort extends BottomSheetDialogFragment {
+public class YearsSort extends BottomSheetDialogFragment {
     RadioButton button0, button1, button2, button3, button4, button5;
     RadioGroup sortGroup;
     CheckBox reverse;
@@ -41,13 +41,13 @@ public class GenresSort extends BottomSheetDialogFragment {
     Context context;
     SharedPreferences prefs;
 
-    public GenresSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
+    public YearsSort(Context context, RecyclerView rv, ProgressBar pb, TextView nf) {
         this.context = context;
         this.nf = nf;
         this.pb = pb;
         this.rv = rv;
 
-        prefs = context.getSharedPreferences(GENRES_SORT, MODE_PRIVATE);
+        prefs = context.getSharedPreferences(YEARS_SORT, MODE_PRIVATE);
     }
 
     @Override
@@ -77,31 +77,31 @@ public class GenresSort extends BottomSheetDialogFragment {
 
         close.setOnClickListener(c -> dismiss());
         button0.setVisibility(View.GONE);
-        button1.setOnCheckedChangeListener((compoundButton, checked) -> {
-            if (checked) {
-                prefs.edit()
-                        .putString("sort_by", "name")
-                        .putBoolean("order_by", reverse.isChecked())
-                        .apply();
-                rv.setAdapter(new GenreAdapter(context, Utils.genres, pb, nf));
-            }
-        });
+        button1.setVisibility(View.GONE);
         button2.setVisibility(View.GONE);
         button3.setVisibility(View.GONE);
         button4.setVisibility(View.GONE);
-        button5.setVisibility(View.GONE);
+        button5.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if (checked) {
+                prefs.edit()
+                        .putString("sort_by", "years")
+                        .putBoolean("order_by", reverse.isChecked())
+                        .apply();
+                rv.setAdapter(new YearAdapter(context, Utils.years, pb, nf));
+            }
+        });
         reverse.setOnCheckedChangeListener((compoundButton, checked) -> {
-            ArrayList<Genre> list = Utils.genres;
+            ArrayList<Year> list = Utils.years;
             Collections.reverse(list);
 
             if (checked) prefs.edit().putBoolean("order_by", true).apply();
             else prefs.edit().putBoolean("order_by", false).apply();
-            rv.setAdapter(new GenreAdapter(context, list, pb, nf));
+            rv.setAdapter(new YearAdapter(context, list, pb, nf));
         });
     }
 
     private void getCheckState() {
         reverse.setChecked(prefs.getBoolean("order_by", false));
-        if (prefs.getString("sort_by", "name").equals("name")) button1.setChecked(true);
+        if (prefs.getString("sort_by", "years").equals("years")) button5.setChecked(true);
     }
 }

@@ -1,4 +1,4 @@
-package com.ash.studios.musify.BottomSheets;
+package com.ash.studios.musify.bottomSheets;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
