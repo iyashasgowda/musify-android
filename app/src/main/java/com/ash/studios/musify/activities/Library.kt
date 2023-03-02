@@ -17,8 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ash.studios.musify.bottomSheets.LibrarySheet
-import com.ash.studios.musify.Interfaces.IControl
-import com.ash.studios.musify.Interfaces.IService
+import com.ash.studios.musify.interfaces.IControl
+import com.ash.studios.musify.interfaces.IService
 import com.ash.studios.musify.R
 import com.ash.studios.musify.Services.MusicService
 import com.ash.studios.musify.activities.categories.*

@@ -20,8 +20,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ash.studios.musify.adapters.PLBunchAdapter
-import com.ash.studios.musify.Interfaces.IControl
-import com.ash.studios.musify.Interfaces.IService
+import com.ash.studios.musify.interfaces.IControl
+import com.ash.studios.musify.interfaces.IService
 import com.ash.studios.musify.Models.Playlist
 import com.ash.studios.musify.Models.Song
 import com.ash.studios.musify.R

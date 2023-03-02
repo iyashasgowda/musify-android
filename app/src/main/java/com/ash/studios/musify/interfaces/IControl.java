@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Interfaces;
+package com.ash.studios.musify.interfaces;
 
 public interface IControl {
     void onPrevClicked();

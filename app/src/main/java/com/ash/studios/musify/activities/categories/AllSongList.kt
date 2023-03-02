@@ -24,8 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ash.studios.musify.adapters.AllSongAdapter
 import com.ash.studios.musify.bottomSheets.AllSongsSort
-import com.ash.studios.musify.Interfaces.IControl
-import com.ash.studios.musify.Interfaces.IService
+import com.ash.studios.musify.interfaces.IControl
+import com.ash.studios.musify.interfaces.IService
 import com.ash.studios.musify.R
 import com.ash.studios.musify.Services.MusicService
 import com.ash.studios.musify.activities.Player

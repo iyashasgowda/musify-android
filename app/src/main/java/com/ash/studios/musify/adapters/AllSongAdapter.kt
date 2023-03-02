@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Interfaces.IService
+import com.ash.studios.musify.interfaces.IService
 import com.ash.studios.musify.Models.Song
 import com.ash.studios.musify.R
 import com.ash.studios.musify.utils.Instance.mp
