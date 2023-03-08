@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Models;
+package com.ash.studios.musify.models;
 
 import android.graphics.Bitmap;
 

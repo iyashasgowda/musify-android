@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Models.Year
+import com.ash.studios.musify.models.Year
 import com.ash.studios.musify.R
 import com.ash.studios.musify.activities.categories.BunchList
 import com.bumptech.glide.Glide

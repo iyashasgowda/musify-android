@@ -11,7 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.ash.studios.musify.interfaces.IService
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 import com.ash.studios.musify.R
 import com.ash.studios.musify.activities.categories.PLBunchList
 import com.ash.studios.musify.utils.Instance.mp

@@ -23,7 +23,7 @@ import com.ash.studios.musify.activities.Player
 import com.ash.studios.musify.adapters.*
 import com.ash.studios.musify.interfaces.IControl
 import com.ash.studios.musify.interfaces.IService
-import com.ash.studios.musify.Models.*
+import com.ash.studios.musify.models.*
 import com.ash.studios.musify.R
 import com.ash.studios.musify.Services.MusicService
 import com.ash.studios.musify.utils.*

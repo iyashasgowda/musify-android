@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 import com.ash.studios.musify.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

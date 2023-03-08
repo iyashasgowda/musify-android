@@ -29,13 +29,13 @@ import android.widget.Toast;
 
 import androidx.palette.graphics.Palette;
 
-import com.ash.studios.musify.Models.Album;
-import com.ash.studios.musify.Models.Artist;
-import com.ash.studios.musify.Models.Folder;
-import com.ash.studios.musify.Models.Genre;
-import com.ash.studios.musify.Models.Playlist;
-import com.ash.studios.musify.Models.Song;
-import com.ash.studios.musify.Models.Year;
+import com.ash.studios.musify.models.Album;
+import com.ash.studios.musify.models.Artist;
+import com.ash.studios.musify.models.Folder;
+import com.ash.studios.musify.models.Genre;
+import com.ash.studios.musify.models.Playlist;
+import com.ash.studios.musify.models.Song;
+import com.ash.studios.musify.models.Year;
 import com.ash.studios.musify.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

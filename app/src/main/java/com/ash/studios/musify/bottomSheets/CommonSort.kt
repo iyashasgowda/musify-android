@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 import com.ash.studios.musify.R
 import com.ash.studios.musify.adapters.AllSongAdapter
 import com.ash.studios.musify.utils.Constants.COMMON_SORT

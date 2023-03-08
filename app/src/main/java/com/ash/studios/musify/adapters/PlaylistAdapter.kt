@@ -10,7 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.ash.studios.musify.Models.Playlist
+import com.ash.studios.musify.models.Playlist
 import com.ash.studios.musify.R
 import com.ash.studios.musify.activities.categories.PLBunchList
 import com.ash.studios.musify.activities.categories.PlayList

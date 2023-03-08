@@ -26,7 +26,7 @@ import com.ash.studios.musify.adapters.YearAdapter
 import com.ash.studios.musify.bottomSheets.YearsSort
 import com.ash.studios.musify.interfaces.IControl
 import com.ash.studios.musify.interfaces.IService
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 import com.ash.studios.musify.R
 import com.ash.studios.musify.Services.MusicService
 import com.ash.studios.musify.activities.Player

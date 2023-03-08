@@ -2,7 +2,7 @@ package com.ash.studios.musify.utils
 
 import android.media.MediaPlayer
 import android.net.Uri
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 
 object Instance {
     public var position = 0

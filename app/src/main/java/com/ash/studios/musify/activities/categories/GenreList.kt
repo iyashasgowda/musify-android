@@ -26,7 +26,7 @@ import com.ash.studios.musify.adapters.GenreAdapter
 import com.ash.studios.musify.bottomSheets.GenresSort
 import com.ash.studios.musify.interfaces.IControl
 import com.ash.studios.musify.interfaces.IService
-import com.ash.studios.musify.Models.Song
+import com.ash.studios.musify.models.Song
 import com.ash.studios.musify.R
 import com.ash.studios.musify.Services.MusicService
 import com.ash.studios.musify.activities.Player

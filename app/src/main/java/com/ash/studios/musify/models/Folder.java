@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Models;
+package com.ash.studios.musify.models;
 
 import androidx.annotation.NonNull;
 
@@ -6,17 +6,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Playlist implements Serializable {
+public class Folder implements Serializable {
     private final String name;
+    private final String path;
     private final ArrayList<Song> songs;
 
-    public Playlist(String name, ArrayList<Song> songs) {
+    public Folder(String name, String path, ArrayList<Song> songs) {
         this.name = name;
+        this.path = path;
         this.songs = songs;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public ArrayList<Song> getSongs() {
@@ -26,22 +32,24 @@ public class Playlist implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Playlist)) return false;
-        Playlist playlist = (Playlist) o;
-        return Objects.equals(getName(), playlist.getName()) &&
-                Objects.equals(getSongs(), playlist.getSongs());
+        if (o == null || getClass() != o.getClass()) return false;
+        Folder folder = (Folder) o;
+        return Objects.equals(name, folder.name) &&
+                Objects.equals(path, folder.path) &&
+                Objects.equals(songs, folder.songs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getSongs());
+        return Objects.hash(name, path, songs);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "Playlist{" +
+        return "Folder{" +
                 "name='" + name + '\'' +
+                ", path='" + path + '\'' +
                 ", songs=" + songs +
                 '}';
     }

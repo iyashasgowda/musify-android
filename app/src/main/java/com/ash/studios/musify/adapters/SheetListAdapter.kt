@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ash.studios.musify.bottomSheets.PlaylistSheet
-import com.ash.studios.musify.Models.Playlist
+import com.ash.studios.musify.models.Playlist
 import com.ash.studios.musify.R
 import com.ash.studios.musify.utils.Instance.position
 import com.ash.studios.musify.utils.Utils
