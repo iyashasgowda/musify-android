@@ -5,7 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.net.Uri
-import com.ash.studios.musify.Services.MusicService
+import com.ash.studios.musify.services.MusicService
 import java.util.*
 
 class Engine {

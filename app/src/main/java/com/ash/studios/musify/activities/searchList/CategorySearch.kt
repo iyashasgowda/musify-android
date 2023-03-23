@@ -25,7 +25,7 @@ import com.ash.studios.musify.interfaces.IControl
 import com.ash.studios.musify.interfaces.IService
 import com.ash.studios.musify.models.*
 import com.ash.studios.musify.R
-import com.ash.studios.musify.Services.MusicService
+import com.ash.studios.musify.services.MusicService
 import com.ash.studios.musify.utils.*
 import com.ash.studios.musify.utils.Instance.mp
 import com.ash.studios.musify.utils.Instance.playing

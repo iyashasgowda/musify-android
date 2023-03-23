@@ -50,7 +50,7 @@
         <activity android:name=".activities.Player" />
         <activity android:name=".activities.Library" />
 
-        <service android:name=".Services.MusicService" />
+        <service android:name=".services.MusicService" />
 
         <meta-data
             android:name="preloaded_fonts"

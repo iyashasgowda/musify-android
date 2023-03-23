@@ -1,4 +1,4 @@
-package com.ash.studios.musify.Services;
+package com.ash.studios.musify.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
