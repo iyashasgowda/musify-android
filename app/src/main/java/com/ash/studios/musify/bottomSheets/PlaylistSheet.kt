@@ -33,7 +33,7 @@ class PlaylistSheet : BottomSheetDialogFragment() {
         val v = inflater.inflate(R.layout.pl_sheet, container, false)
         setIDs(v)
         addNewBtn.setOnClickListener {
-            val nameDialog = Utils.getDialog(context, R.layout.name_dg)
+            val nameDialog = Utils.getDialog(requireContext(), R.layout.name_dg)
             val okBtn = nameDialog.findViewById<TextView>(R.id.ok_btn)
             val cancel = nameDialog.findViewById<TextView>(R.id.cancel_btn)
             val plEditText = nameDialog.findViewById<EditText>(R.id.playlist_edit_text)
@@ -42,8 +42,8 @@ class PlaylistSheet : BottomSheetDialogFragment() {
             okBtn.setOnClickListener {
                 val playlistName = plEditText.text.toString().trim { it <= ' ' }
                 if (!TextUtils.isEmpty(playlistName)) {
-                    Utils.createNewPlaylist(context, playlistName)
-                    val playlists = SheetListAdapter(requireContext(), Utils.getPlaylists(context), loader, this, notFound)
+                    Utils.createNewPlaylist(requireContext(), playlistName)
+                    val playlists = SheetListAdapter(requireContext(), Utils.getPlaylists(requireContext()), loader, this, notFound)
                     rv.adapter = playlists
                     playlists.notifyDataSetChanged()
                     nameDialog.dismiss()
@@ -51,7 +51,7 @@ class PlaylistSheet : BottomSheetDialogFragment() {
                 if (rv.adapter != null && rv.adapter!!.itemCount > 0) notFound.visibility = View.GONE
             }
         }
-        rv.adapter = SheetListAdapter(requireContext(), Utils.getPlaylists(context), loader, this, notFound)
+        rv.adapter = SheetListAdapter(requireContext(), Utils.getPlaylists(requireContext()), loader, this, notFound)
         return v
     }
 
@@ -60,7 +60,7 @@ class PlaylistSheet : BottomSheetDialogFragment() {
         loader = v.findViewById(R.id.sheet_pb)
         notFound = v.findViewById(R.id.nothing_found)
         addNewBtn = v.findViewById(R.id.add_new_btn)
-        val manager = LinearLayoutManager(context)
+        val manager = LinearLayoutManager(requireContext())
         manager.reverseLayout = true
         manager.stackFromEnd = true
         rv.layoutManager = manager

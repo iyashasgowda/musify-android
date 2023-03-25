@@ -14,7 +14,7 @@ import com.ash.studios.musify.utils.Constants.TR_SORT
 import com.ash.studios.musify.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class TRSort(var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
+class TRSort(private var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
     private lateinit var button0: RadioButton
     private lateinit var button1: RadioButton
     private lateinit var button2: RadioButton

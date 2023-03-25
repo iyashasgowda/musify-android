@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.net.Uri
 import com.ash.studios.musify.services.MusicService
+import com.ash.studios.musify.utils.Instance.songs
 import java.util.*
 
 class Engine {
@@ -17,7 +18,7 @@ class Engine {
     }
 
     fun startPlayer() {
-        if (Instance.songs != null) Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+        if (songs != null) Instance.uri = Uri.parse(songs!![Instance.position].path)
         if (Instance.mp != null) {
             Instance.mp!!.stop()
             Instance.mp!!.reset()
@@ -35,22 +36,22 @@ class Engine {
             if (Instance.mp!!.isPlaying) {
                 Instance.mp!!.stop()
                 Instance.mp!!.reset()
-                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % Instance.songs!!.size
-                Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % songs!!.size
+                Instance.uri = Uri.parse(songs!![Instance.position].path)
                 Instance.mp = MediaPlayer.create(context, Instance.uri)
                 Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
                 Instance.mp!!.start()
             } else {
                 Instance.mp!!.stop()
                 Instance.mp!!.reset()
-                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % Instance.songs!!.size
-                Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % songs!!.size
+                Instance.uri = Uri.parse(songs!![Instance.position].path)
                 Instance.mp = MediaPlayer.create(context, Instance.uri)
                 Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
             }
         } else {
-            if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % Instance.songs!!.size
-            Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+            if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position = (Instance.position + 1) % songs!!.size
+            Instance.uri = Uri.parse(songs!![Instance.position].path)
             Instance.mp = MediaPlayer.create(context, Instance.uri)
             Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
         }
@@ -63,25 +64,25 @@ class Engine {
             if (Instance.mp!!.isPlaying) {
                 Instance.mp!!.stop()
                 Instance.mp!!.reset()
-                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
-                    if (Instance.position - 1 < 0) Instance.songs!!.size - 1 else Instance.position - 1
-                Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
+                    if (Instance.position - 1 < 0) songs!!.size - 1 else Instance.position - 1
+                Instance.uri = Uri.parse(songs!![Instance.position].path)
                 Instance.mp = MediaPlayer.create(context, Instance.uri)
                 Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
                 Instance.mp!!.start()
             } else {
                 Instance.mp!!.stop()
                 Instance.mp!!.reset()
-                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
-                    if (Instance.position - 1 < 0) Instance.songs!!.size - 1 else Instance.position - 1
-                Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+                if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
+                    if (Instance.position - 1 < 0) songs!!.size - 1 else Instance.position - 1
+                Instance.uri = Uri.parse(songs!![Instance.position].path)
                 Instance.mp = MediaPlayer.create(context, Instance.uri)
                 Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
             }
         } else {
-            if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(Instance.songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
-                if (Instance.position - 1 < 0) Instance.songs!!.size - 1 else Instance.position - 1
-            Instance.uri = Uri.parse(Instance.songs!![Instance.position].path)
+            if (Instance.shuffle && !Instance.repeat) Instance.position = Random().nextInt(songs!!.size - 1 + 1) else if (!Instance.shuffle && !Instance.repeat) Instance.position =
+                if (Instance.position - 1 < 0) songs!!.size - 1 else Instance.position - 1
+            Instance.uri = Uri.parse(songs!![Instance.position].path)
             Instance.mp = MediaPlayer.create(context, Instance.uri)
             Instance.mp!!.setOnCompletionListener(context as OnCompletionListener?)
         }
@@ -93,8 +94,8 @@ class Engine {
         object : Thread() {
             override fun run() {
                 super.run()
-                Utils.putCurrentList(context, Instance.songs)
-                Utils.putCurrentPosition(context, Instance.position)
+                context?.let { Utils.putCurrentList(it, songs!!) }
+                context?.let { Utils.putCurrentPosition(it, Instance.position) }
             }
         }.start()
     }

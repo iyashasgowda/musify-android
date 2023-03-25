@@ -14,7 +14,7 @@ import com.ash.studios.musify.utils.Constants.GENRES_SORT
 import com.ash.studios.musify.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class GenresSort(var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
+class GenresSort(private var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
     private lateinit var button0: RadioButton
     private lateinit var button1: RadioButton
     private lateinit var button2: RadioButton

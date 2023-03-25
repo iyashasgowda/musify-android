@@ -14,7 +14,7 @@ import com.ash.studios.musify.utils.Constants.ALBUMS_SORT
 import com.ash.studios.musify.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class AlbumsSort(var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
+class AlbumsSort(private val context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView) : BottomSheetDialogFragment() {
     private lateinit var button0: RadioButton
     private lateinit var button1: RadioButton
     private lateinit var button2: RadioButton

@@ -16,7 +16,7 @@ import com.ash.studios.musify.utils.Constants.COMMON_SORT
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-class CommonSort(var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView, var list: ArrayList<Song>) : BottomSheetDialogFragment() {
+class CommonSort(private var context: Context, var rv: RecyclerView, var pb: ProgressBar, var nf: TextView, var list: ArrayList<Song>) : BottomSheetDialogFragment() {
     private lateinit var button0: RadioButton
     private lateinit var button1: RadioButton
     private lateinit var button2: RadioButton

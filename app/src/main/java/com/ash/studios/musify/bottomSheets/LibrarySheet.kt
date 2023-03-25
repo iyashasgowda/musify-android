@@ -15,7 +15,7 @@ import com.ash.studios.musify.activities.Library
 import com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class LibrarySheet(var context: Context) : BottomSheetDialogFragment() {
+class LibrarySheet(private var context: Context) : BottomSheetDialogFragment() {
     private lateinit var list0: ConstraintLayout
     private lateinit var list1: ConstraintLayout
     private lateinit var list2: ConstraintLayout

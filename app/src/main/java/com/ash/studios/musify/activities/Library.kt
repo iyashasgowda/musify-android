@@ -120,7 +120,7 @@ class Library : AppCompatActivity(), View.OnClickListener, OnCompletionListener,
             val title = dialog.findViewById<TextView>(R.id.dialog_name)
             title.text = StringBuilder("Library")
             icon.setImageResource(R.drawable.ic_library)
-            icon.setColorFilter(Color.parseColor(Utils.getNewColor()), PorterDuff.Mode.SRC_IN)
+            icon.setColorFilter(Color.parseColor(Utils.newColor), PorterDuff.Mode.SRC_IN)
             val rescanMedia = dialog.findViewById<ConstraintLayout>(R.id.rescan_media)
             val listOption = dialog.findViewById<ConstraintLayout>(R.id.listing_options)
             val settings = dialog.findViewById<ConstraintLayout>(R.id.settings)
@@ -170,7 +170,7 @@ class Library : AppCompatActivity(), View.OnClickListener, OnCompletionListener,
     private fun setColors() {
         val icons = arrayOf(allSong, folders, albums, artists, genres, playlists, topRated, lowRated, years)
         for (i in icons.indices) {
-            val col = Utils.getNewColor()
+            val col = Utils.newColor
             colors[i] = col
             icons[i].setColorFilter(Color.parseColor(col), PorterDuff.Mode.SRC_IN)
         }

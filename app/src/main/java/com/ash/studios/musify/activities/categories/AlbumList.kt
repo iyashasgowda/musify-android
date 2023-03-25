@@ -185,7 +185,7 @@ class AlbumList : AppCompatActivity(), OnCompletionListener, IControl, IService 
         icon.setColorFilter(Color.parseColor(intent.getStringExtra("icon_color")))
         if (songs != null) updateSnippet()
         rv.layoutManager = LinearLayoutManager(context)
-        if (Utils.albums == null || Utils.albums.size == 0) Handler(Looper.getMainLooper()).postDelayed(
+        if (Utils.albums.size == 0) Handler(Looper.getMainLooper()).postDelayed(
             { rv.adapter = AlbumAdapter(context, Utils.getAlbums(context), loader, notFound) },
             10
         ) else rv.adapter = AlbumAdapter(context, Utils.albums, loader, notFound)
