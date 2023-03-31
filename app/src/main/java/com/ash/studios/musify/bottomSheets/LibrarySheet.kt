@@ -12,34 +12,31 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.ash.studios.musify.R
 import com.ash.studios.musify.activities.Library
+import com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class LibrarySheet(var context: Context) : BottomSheetDialogFragment() {
-    var list0: ConstraintLayout? = null
-    var list1: ConstraintLayout? = null
-    var list2: ConstraintLayout? = null
-    var list3: ConstraintLayout? = null
-    var list4: ConstraintLayout? = null
-    var list5: ConstraintLayout? = null
-    var list6: ConstraintLayout? = null
-    var list7: ConstraintLayout? = null
-    var list8: ConstraintLayout? = null
-    var check0: CheckBox? = null
-    var check1: CheckBox? = null
-    var check2: CheckBox? = null
-    var check3: CheckBox? = null
-    var check4: CheckBox? = null
-    var check5: CheckBox? = null
-    var check6: CheckBox? = null
-    var check7: CheckBox? = null
-    var check8: CheckBox? = null
-    var close: ImageView? = null
-    var prefs: SharedPreferences
-    var editor: SharedPreferences.Editor? = null
-
-    init {
-        prefs = context.getSharedPreferences(LIBRARY_OPTIONS, Context.MODE_PRIVATE)
-    }
+    private lateinit var list0: ConstraintLayout
+    private lateinit var list1: ConstraintLayout
+    private lateinit var list2: ConstraintLayout
+    private lateinit var list3: ConstraintLayout
+    private lateinit var list4: ConstraintLayout
+    private lateinit var list5: ConstraintLayout
+    private lateinit var list6: ConstraintLayout
+    private lateinit var list7: ConstraintLayout
+    private lateinit var list8: ConstraintLayout
+    private lateinit var check0: CheckBox
+    private lateinit var check1: CheckBox
+    private lateinit var check2: CheckBox
+    private lateinit var check3: CheckBox
+    private lateinit var check4: CheckBox
+    private lateinit var check5: CheckBox
+    private lateinit var check6: CheckBox
+    private lateinit var check7: CheckBox
+    private lateinit var check8: CheckBox
+    private lateinit var close: ImageView
+    private var prefs: SharedPreferences = context.getSharedPreferences(LIBRARY_OPTIONS, Context.MODE_PRIVATE)
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,118 +70,118 @@ class LibrarySheet(var context: Context) : BottomSheetDialogFragment() {
         list6 = (context as Library).findViewById(R.id.play_lists)
         list7 = (context as Library).findViewById(R.id.top_rated)
         list8 = (context as Library).findViewById(R.id.low_rated)
-        close.setOnClickListener(View.OnClickListener { c: View? -> dismiss() })
-        check0.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        close.setOnClickListener { dismiss() }
+        check0.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state0", true)
-                list0.setVisibility(View.VISIBLE)
+                list0.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state0", false)
-                list0.setVisibility(View.GONE)
+                list0.visibility = View.GONE
             }
             editor.apply()
-        })
-        check1.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check1.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state1", true)
-                list1.setVisibility(View.VISIBLE)
+                list1.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state1", false)
-                list1.setVisibility(View.GONE)
+                list1.visibility = View.GONE
             }
             editor.apply()
-        })
-        check2.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check2.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state2", true)
-                list2.setVisibility(View.VISIBLE)
+                list2.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state2", false)
-                list2.setVisibility(View.GONE)
+                list2.visibility = View.GONE
             }
             editor.apply()
-        })
-        check3.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check3.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state3", true)
-                list3.setVisibility(View.VISIBLE)
+                list3.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state3", false)
-                list3.setVisibility(View.GONE)
+                list3.visibility = View.GONE
             }
             editor.apply()
-        })
-        check4.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check4.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state4", true)
-                list4.setVisibility(View.VISIBLE)
+                list4.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state4", false)
-                list4.setVisibility(View.GONE)
+                list4.visibility = View.GONE
             }
             editor.apply()
-        })
-        check5.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check5.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state5", true)
-                list5.setVisibility(View.VISIBLE)
+                list5.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state5", false)
-                list5.setVisibility(View.GONE)
+                list5.visibility = View.GONE
             }
             editor.apply()
-        })
-        check6.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check6.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state6", true)
-                list6.setVisibility(View.VISIBLE)
+                list6.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state6", false)
-                list6.setVisibility(View.GONE)
+                list6.visibility = View.GONE
             }
             editor.apply()
-        })
-        check7.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check7.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state7", true)
-                list7.setVisibility(View.VISIBLE)
+                list7.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state7", false)
-                list7.setVisibility(View.GONE)
+                list7.visibility = View.GONE
             }
             editor.apply()
-        })
-        check8.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton?, checked: Boolean ->
+        }
+        check8.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean ->
             editor = prefs.edit()
             if (checked) {
                 editor.putBoolean("state8", true)
-                list8.setVisibility(View.VISIBLE)
+                list8.visibility = View.VISIBLE
             } else {
                 editor.putBoolean("state8", false)
-                list8.setVisibility(View.GONE)
+                list8.visibility = View.GONE
             }
             editor.apply()
-        })
+        }
     }
 
     private val checkStates: Unit
-        private get() {
-            check0!!.isChecked = prefs.getBoolean("state0", true)
-            check1!!.isChecked = prefs.getBoolean("state1", true)
-            check2!!.isChecked = prefs.getBoolean("state2", true)
-            check3!!.isChecked = prefs.getBoolean("state3", true)
-            check4!!.isChecked = prefs.getBoolean("state4", true)
-            check5!!.isChecked = prefs.getBoolean("state5", true)
-            check6!!.isChecked = prefs.getBoolean("state6", true)
-            check7!!.isChecked = prefs.getBoolean("state7", true)
-            check8!!.isChecked = prefs.getBoolean("state8", true)
+        get() {
+            check0.isChecked = prefs.getBoolean("state0", true)
+            check1.isChecked = prefs.getBoolean("state1", true)
+            check2.isChecked = prefs.getBoolean("state2", true)
+            check3.isChecked = prefs.getBoolean("state3", true)
+            check4.isChecked = prefs.getBoolean("state4", true)
+            check5.isChecked = prefs.getBoolean("state5", true)
+            check6.isChecked = prefs.getBoolean("state6", true)
+            check7.isChecked = prefs.getBoolean("state7", true)
+            check8.isChecked = prefs.getBoolean("state8", true)
         }
 }
