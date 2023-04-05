@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardcodedText">
+
     <item
         android:id="@+id/ic_options"
         android:icon="@drawable/ic_options"
