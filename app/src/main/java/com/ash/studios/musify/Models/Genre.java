@@ -6,10 +6,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Genre implements Serializable {
-    private long genre_id;
-    private String genre;
-    private long album_id;
-    private int song_count;
+    private final long genre_id;
+    private final String genre;
+    private final long album_id;
+    private final int song_count;
 
     public Genre(long genre_id, String genre, long album_id, int song_count) {
         this.genre_id = genre_id;
