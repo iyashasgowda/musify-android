@@ -143,11 +143,9 @@ object Utils {
     }
 
     fun getCurrentList(c: Context): ArrayList<Song> {
-        return Gson()
-            .fromJson(
-                c.getSharedPreferences("CURRENT_LIST", Context.MODE_PRIVATE)
-                    .getString("current_list", null), object : TypeToken<ArrayList<Song?>?>() {}.type
-            )
+        val s = c.getSharedPreferences("CURRENT_LIST", Context.MODE_PRIVATE).getString("current_list", null)
+        return if (s != null) Gson().fromJson(s, object : TypeToken<ArrayList<Song?>?>() {}.type)
+        else ArrayList()
     }
 
     //Get all songs and songs with categories
@@ -191,7 +189,7 @@ object Utils {
                 val albumArtist = cursor.getString(8)
                 val duration = cursor.getLong(9)
                 val albumId = cursor.getLong(10)
-                if (title != null && album != null && artist != null) if (title != "<unknown>") songs.add(
+                if (title != null && album != null && artist != null && year != null && track != null && composer != null && albumArtist != null) if (title != "<unknown>") songs.add(
                     Song(
                         id,
                         data,
@@ -249,7 +247,7 @@ object Utils {
                 val albumArtist = cursor.getString(8)
                 val duration = cursor.getLong(9)
                 val albumId = cursor.getLong(10)
-                if (title != null && album != null && artist != null) if (title != "<unknown>") songs.add(
+                if (title != null && album != null && artist != null && albumArtist != null && composer != null && year != null) if (title != "<unknown>") songs.add(
                     Song(
                         id,
                         data,
@@ -399,7 +397,7 @@ object Utils {
                 val albumArtist = cursor.getString(8)
                 val duration = cursor.getLong(9)
                 val albumId = cursor.getLong(10)
-                if (title != null && album != null && artist != null) if (title != "<unknown>") songs.add(
+                if (title != null && album != null && artist != null && composer != null && albumArtist != null && year != null) if (title != "<unknown>") songs.add(
                     Song(
                         id,
                         data,
@@ -517,7 +515,7 @@ object Utils {
                 val albumArtist = cursor.getString(8)
                 val duration = cursor.getLong(9)
                 val albumId = cursor.getLong(10)
-                if (title != null && album != null && artist != null) if (title != "<unknown>") songs.add(
+                if (title != null && album != null && artist != null && year != null && track != null && albumArtist != null && composer != null) if (title != "<unknown>") songs.add(
                     Song(
                         id,
                         data,
@@ -576,7 +574,7 @@ object Utils {
                 val albumArtist = cursor.getString(8)
                 val duration = cursor.getLong(9)
                 val albumId = cursor.getLong(10)
-                if (title != null && album != null && artist != null) if (title != "<unknown>") songs.add(
+                if (title != null && album != null && artist != null && year != null && composer != null && albumArtist != null) if (title != "<unknown>") songs.add(
                     Song(
                         id,
                         data,
@@ -604,7 +602,7 @@ object Utils {
             prefs.getString("PLAYLISTS", null),
             object : TypeToken<ArrayList<Playlist>>() {}.type
         )
-        val playlist = Playlist(name!!, ArrayList())
+        val playlist = Playlist(name, ArrayList())
         if (list != null) {
             if (!list.contains(playlist)) list.add(playlist) else return
         } else {

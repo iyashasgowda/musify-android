@@ -16,12 +16,20 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.ash.studios.musify.R
+import com.ash.studios.musify.activities.categories.AlbumList
+import com.ash.studios.musify.activities.categories.AllSongList
+import com.ash.studios.musify.activities.categories.ArtistList
+import com.ash.studios.musify.activities.categories.FolderList
+import com.ash.studios.musify.activities.categories.GenreList
+import com.ash.studios.musify.activities.categories.LRList
+import com.ash.studios.musify.activities.categories.PlayList
+import com.ash.studios.musify.activities.categories.TRList
+import com.ash.studios.musify.activities.categories.YearList
 import com.ash.studios.musify.bottomSheets.LibrarySheet
 import com.ash.studios.musify.interfaces.IControl
 import com.ash.studios.musify.interfaces.IService
-import com.ash.studios.musify.R
 import com.ash.studios.musify.services.MusicService
-import com.ash.studios.musify.activities.categories.*
 import com.ash.studios.musify.utils.App
 import com.ash.studios.musify.utils.Constants
 import com.ash.studios.musify.utils.Constants.LIBRARY_OPTIONS
@@ -140,7 +148,7 @@ class Library : AppCompatActivity(), View.OnClickListener, OnCompletionListener,
         }
         snipTitle.isSelected = true
         val savedList = Utils.getCurrentList(context)
-        if (savedList != null) {
+        if (savedList.isNotEmpty()) {
             songs = savedList
             position = Utils.getCurrentPosition(context)
             updateSnippet()
