@@ -1,17 +1,15 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    compileSdk 33
-
     defaultConfig {
         applicationId "com.ash.studios.musify"
         minSdk 21
-        targetSdk 33
-        versionCode 5
-        versionName "1.4"
+        targetSdk 34
+        compileSdk 34
+        versionCode 6
+        versionName "1.5"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
     }
@@ -26,14 +24,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
     namespace 'com.ash.studios.musify'
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     //GSON
@@ -42,26 +37,17 @@ dependencies {
     //Circular seekBar
     implementation 'me.tankery.lib:circularSeekBar:1.4.2'
 
-    //Blur imageView
-    implementation 'com.jackandphantom.android:blurimage:1.2.0'
-
-    //Bounce animation
-    implementation 'me.everything:overscroll-decor-android:1.1.0'
-
-    //Fast scroll recyclerview
-    implementation 'com.futuremind.recyclerfastscroll:fastscroll:0.2.5'
-
     //Porter shape imageView
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
     //Material design components
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
